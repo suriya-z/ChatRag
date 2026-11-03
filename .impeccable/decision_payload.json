@@ -1,0 +1,137 @@
+{
+  "title": "Select Visual Identity & Architecture",
+  "question": "The roll assigned Technical Reference Spec. Choose your visual world or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "kind": "assigned",
+      "label": "Technical Reference Spec (Spec 81)",
+      "kicker": "THE ROLL",
+      "lineage": "Bell Labs & IBM Technical Reference Manuals",
+      "thesis": "The enterprise assistant as an authoritative reference manual — dense, permanent, sub-50ms clear.",
+      "palette": [
+        "#0c0d10",
+        "#18191f",
+        "#282a36",
+        "#f59e0b",
+        "#f8fafc"
+      ],
+      "materials": [
+        "hairline technical grids",
+        "monospace index tabs",
+        "stamped validation badges"
+      ],
+      "viewport": "Three-pane technical console: permanent index rail, live citation stream, vector inspector.",
+      "risk": "Can feel intimidatingly dense if spacing is compressed.",
+      "raised": [
+        {
+          "from": "rw-manual-acetate-tab-board",
+          "raise": "Inspector panels float on subtle elevated acetate planes above the data stream."
+        },
+        {
+          "from": "vernacular-ephemera-jet-age-ticket-wallet",
+          "raise": "Every verified RAG citation carries an indelible stamped cryptographic verification badge."
+        }
+      ],
+      "comp": ".impeccable/mocks/decision/assigned.webp"
+    },
+    {
+      "id": "model-pick",
+      "kind": "pick",
+      "label": "Braun Industrial Console",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Dieter Rams functionalist design systems",
+      "thesis": "Quiet, surgical utility: high contrast, zero ornamentation, pure typographic hierarchy.",
+      "palette": [
+        "#09090b",
+        "#18181b",
+        "#27272a",
+        "#ea580c",
+        "#f4f4f5"
+      ],
+      "materials": [
+        "matte graphite surfaces",
+        "precision toggle switches",
+        "monochrome telemetry"
+      ],
+      "viewport": "Unified studio dashboard with high-density card groups and instant hotkey command line.",
+      "risk": "Familiar to modern SaaS developers; less radical departure.",
+      "comp": ".impeccable/mocks/decision/model-pick.webp"
+    },
+    {
+      "id": "challenger-acetate",
+      "kind": "challenger",
+      "catalogId": "rw-manual-acetate-tab-board",
+      "label": "Acetate Tab Board",
+      "verdict": "competitive",
+      "lineage": "Boxed software reference manuals with transparent leaves",
+      "thesis": "Every setting and query sits on a tabbed acetate leaf hinged over the underlying vector index.",
+      "palette": [
+        "#0e1017",
+        "#1e2330",
+        "#ffb800",
+        "#e2e8f0"
+      ],
+      "materials": [
+        "die-cut tab rails",
+        "frosted acetate overlays"
+      ],
+      "viewport": "Stepped tab fore-edge rail down the left margin, floating data sheets in the center.",
+      "case": "High resonance for documentation systems; distinctive physical presence.",
+      "risk": "Layering effects must be rendered with restraint on mobile viewports.",
+      "comp": ".impeccable/mocks/decision/challenger-acetate.webp",
+      "hero": "https://impeccable.style/worlds/cards/rw-manual-acetate-tab-board-hero.webp"
+    },
+    {
+      "id": "challenger-emigre",
+      "kind": "challenger",
+      "catalogId": "emigre-bitmap-specimen",
+      "label": "Emigre Bitmap Specimen",
+      "verdict": "declined",
+      "lineage": "1980s low-res digital typography",
+      "palette": [
+        "#000000",
+        "#ffffff",
+        "#00ff66"
+      ],
+      "materials": [
+        "integer-scaled bitmaps",
+        "dot matrix rules"
+      ],
+      "case": "Too experimental and coarse for enterprise security audits.",
+      "kept": "Integer-scaled monospace telemetry numbers at display size.",
+      "hero": "https://impeccable.style/worlds/cards/emigre-bitmap-specimen-hero.webp"
+    }
+  ],
+  "reroll": {
+    "registers": [
+      "safer",
+      "bolder"
+    ]
+  },
+  "buildPath": {
+    "value": "code",
+    "toggle": true
+  },
+  "canon": true,
+  "canonCard": {
+    "kind": "canon",
+    "label": "Modern Linear/Vercel SaaS",
+    "thesis": "The contemporary dark-mode developer tool standard, executed impeccably.",
+    "palette": [
+      "#000000",
+      "#111111",
+      "#222222",
+      "#3b82f6",
+      "#ffffff"
+    ],
+    "materials": [
+      "subtle border gradients",
+      "glow-free dark elevation"
+    ],
+    "viewport": "Clean sidebar with search, unified form groups, right-aligned telemetry.",
+    "risk": "Looks like every other AI developer tool on GitHub.",
+    "comp": ".impeccable/mocks/decision/canon.webp"
+  },
+  "steer": true
+}

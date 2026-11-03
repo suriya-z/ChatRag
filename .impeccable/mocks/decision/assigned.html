@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { width: 1440px; height: 900px; overflow: hidden; background: #0c0d10; color: #f8fafc; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; display: flex; }
+aside { width: 280px; height: 100%; border-right: 1px solid #282a36; background: #08090b; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.logo { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; color: #f59e0b; text-transform: uppercase; }
+.index-item { font-size: 12px; color: #94a3b8; padding: 6px 10px; border-left: 2px solid transparent; cursor: pointer; }
+.index-item.active { color: #fff; background: #18191f; border-left-color: #f59e0b; }
+main { flex: 1; height: 100%; display: flex; flex-direction: column; }
+header { height: 56px; border-bottom: 1px solid #282a36; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: #0f1015; font-size: 12px; color: #64748b; }
+.status-badge { background: #18191f; border: 1px solid #334155; color: #10b981; padding: 3px 8px; border-radius: 2px; }
+.content-grid { flex: 1; display: grid; grid-template-columns: 2fr 1fr; background: #0c0d10; }
+.feed { border-right: 1px solid #282a36; padding: 32px; display: flex; flex-direction: column; gap: 24px; }
+.query-box { background: #121318; border: 1px solid #282a36; padding: 16px; border-radius: 4px; font-size: 13px; color: #e2e8f0; }
+.citation-block { background: #18191f; border-left: 3px solid #f59e0b; padding: 14px 18px; font-size: 12px; line-height: 1.6; color: #cbd5e1; }
+.stamp { display: inline-block; font-size: 10px; font-weight: 700; color: #f59e0b; border: 1px solid #f59e0b; padding: 1px 6px; margin-bottom: 8px; text-transform: uppercase; }
+.inspector { padding: 24px; background: #0a0b0e; display: flex; flex-direction: column; gap: 16px; }
+.stat-row { display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #1e2029; color: #94a3b8; }
+.stat-val { color: #f8fafc; font-weight: 600; }
+</style>
+</head>
+<body>
+<aside>
+  <div class="logo">SPEC-81 // INDEX</div>
+  <div style="font-size: 10px; color: #475569; letter-spacing: 0.05em;">SEC. 01 — RUNTIME</div>
+  <div class="index-item active">01.01 pgvector HNSW Engine</div>
+  <div class="index-item">01.02 Chunk Pipeline (1024/128)</div>
+  <div class="index-item">01.03 Model Routing (OpenRouter)</div>
+  <div style="font-size: 10px; color: #475569; letter-spacing: 0.05em; margin-top: 12px;">SEC. 02 — VAULT</div>
+  <div class="index-item">02.01 Engineering Wikis (648 Docs)</div>
+  <div class="index-item">02.02 Architecture Specs (120 Docs)</div>
+  <div class="index-item">02.03 API Schemas (v2.4)</div>
+</aside>
+<main>
+  <header>
+    <div>HOST: 127.0.0.1:3000 // RLS: ACTIVE // LATENCY: 28ms</div>
+    <div class="status-badge">● AUTHORITATIVE</div>
+  </header>
+  <div class="content-grid">
+    <div class="feed">
+      <div class="query-box">
+        <div style="color: #64748b; font-size: 10px; margin-bottom: 4px;">QUERY STREAM // EXECUTED IN 24MS</div>
+        <div>"Explain the consensus protocol used in the state replication worker."</div>
+      </div>
+      <div class="citation-block">
+        <div class="stamp">[VERIFIED PASSAGE // DOC #1042]</div>
+        <p>The state replication worker executes Raft-lite consensus using pgvector log leases. Node heartbeats update every 250ms with lease expiration after 750ms of unacknowledged TCP transport.</p>
+      </div>
+    </div>
+    <div class="inspector">
+      <div style="font-size: 11px; font-weight: 700; color: #f59e0b; border-bottom: 1px solid #282a36; padding-bottom: 8px;">VECTOR TELEMETRY</div>
+      <div class="stat-row"><span>DIMENSIONS</span><span class="stat-val">1536 (Ada-002 / 3-small)</span></div>
+      <div class="stat-row"><span>HNSW M / EF_SEARCH</span><span class="stat-val">16 / 64</span></div>
+      <div class="stat-row"><span>SIMILARITY SCORE</span><span class="stat-val">0.9142 (Cosine)</span></div>
+      <div class="stat-row"><span>TOKEN OVERLAP</span><span class="stat-val">128 TOKENS</span></div>
+      <div class="stat-row"><span>ROLE PRIVILEGE</span><span class="stat-val">ADMIN // FULL_READ</span></div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
