@@ -74,7 +74,8 @@ body {
   flex-direction: column;
   height: 100vh;
   user-select: none;
-  z-index: 10;
+  z-index: 50;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #main-deck {
@@ -211,6 +212,15 @@ body {
   align-items: center;
   gap: 14px;
 }
+.mobile-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border-1);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 2px;
+}
 .deck-title {
   font-size: 16px;
   font-weight: 700;
@@ -266,6 +276,7 @@ body {
   background: #000000;
   position: relative;
   overflow: hidden;
+  cursor: crosshair;
 }
 #pulsar-canvas {
   width: 100%;
@@ -339,6 +350,13 @@ body {
   font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
   font-size: 12px;
   color: var(--accent-cyan);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 2px;
+  transition: background 0.15s ease;
+}
+.field-var:hover {
+  background: rgba(56, 189, 248, 0.15);
 }
 .field-desc {
   font-size: 13px;
@@ -346,7 +364,12 @@ body {
   margin-bottom: 8px;
 }
 
-/* Inputs & Toggles */
+/* Inputs, Wrappers & Password Toggles */
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 .input-text, .input-select, .input-textarea {
   width: 100%;
   background: var(--canvas);
@@ -358,6 +381,9 @@ body {
   outline: none;
   transition: border-color 0.15s ease;
 }
+.input-wrap .input-text {
+  padding-right: 64px;
+}
 .input-text:focus, .input-select:focus, .input-textarea:focus {
   border-color: var(--accent-cyan);
 }
@@ -365,6 +391,24 @@ body {
   min-height: 120px;
   line-height: 1.6;
   resize: vertical;
+}
+
+.pw-toggle-btn {
+  position: absolute;
+  right: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
+  color: var(--text-muted);
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.pw-toggle-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-cyan);
 }
 
 .toggle-row {
@@ -423,6 +467,11 @@ body {
   gap: 10px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.8);
   z-index: 1000;
+  animation: slideToast 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes slideToast {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Diff Modal / Drawer */
@@ -625,6 +674,26 @@ body {
   resize: none;
   outline: none;
 }
+
+/* Responsive Handling */
+@media (max-width: 840px) {
+  #sidebar {
+    position: fixed;
+    transform: translateX(-100%);
+  }
+  #sidebar.open {
+    transform: translateX(0);
+  }
+  .mobile-toggle {
+    display: inline-block;
+  }
+  #terminal-drawer, #raw-drawer {
+    width: 100vw;
+  }
+  .workspace-scroll {
+    padding: 24px 20px 100px;
+  }
+}
 </style>
 </head>
 <body>
@@ -642,122 +711,122 @@ body {
       <span class="kbd-hint">Ctrl+K</span>
     </div>
     <div class="catalog-list">
-      <div class="category-header">Core Infrastructure</div>
+      <div class="category-header" data-category="Core Infrastructure">Core Infrastructure</div>
 
-        <div class="catalog-item" data-id="fac-01" onclick="activateTab('fac-01')">
+        <div class="catalog-item" data-id="fac-01" data-parent-cat="Core Infrastructure" onclick="activateTab('fac-01')">
           <span class="item-title">Deployment</span>
           <span class="status-pill configured" id="pill-fac-01"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-02" onclick="activateTab('fac-02')">
+        <div class="catalog-item" data-id="fac-02" data-parent-cat="Core Infrastructure" onclick="activateTab('fac-02')">
           <span class="item-title">Feature Flags</span>
           <span class="status-pill configured" id="pill-fac-02"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-03" onclick="activateTab('fac-03')">
+        <div class="catalog-item" data-id="fac-03" data-parent-cat="Core Infrastructure" onclick="activateTab('fac-03')">
           <span class="item-title">Ai Inference</span>
           <span class="status-pill configured" id="pill-fac-03"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-09" onclick="activateTab('fac-09')">
+        <div class="catalog-item" data-id="fac-09" data-parent-cat="Core Infrastructure" onclick="activateTab('fac-09')">
           <span class="item-title">Database & Rls</span>
           <span class="status-pill configured" id="pill-fac-09"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-19" onclick="activateTab('fac-19')">
+        <div class="catalog-item" data-id="fac-19" data-parent-cat="Core Infrastructure" onclick="activateTab('fac-19')">
           <span class="item-title">Identity & Sso</span>
           <span class="status-pill configured" id="pill-fac-19"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-23" onclick="activateTab('fac-23')">
+        <div class="catalog-item" data-id="fac-23" data-parent-cat="Core Infrastructure" onclick="activateTab('fac-23')">
           <span class="item-title">System Telemetry</span>
           <span class="status-pill configured" id="pill-fac-23"></span>
         </div>
-        <div class="category-header">Retrieval & Vector Engine</div>
+        <div class="category-header" data-category="Retrieval & Vector Engine">Retrieval & Vector Engine</div>
 
-        <div class="catalog-item" data-id="fac-05" onclick="activateTab('fac-05')">
+        <div class="catalog-item" data-id="fac-05" data-parent-cat="Retrieval & Vector Engine" onclick="activateTab('fac-05')">
           <span class="item-title">Rag Behavior</span>
           <span class="status-pill configured" id="pill-fac-05"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-06" onclick="activateTab('fac-06')">
+        <div class="catalog-item" data-id="fac-06" data-parent-cat="Retrieval & Vector Engine" onclick="activateTab('fac-06')">
           <span class="item-title">Vector Retrieval</span>
           <span class="status-pill configured" id="pill-fac-06"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-07" onclick="activateTab('fac-07')">
+        <div class="catalog-item" data-id="fac-07" data-parent-cat="Retrieval & Vector Engine" onclick="activateTab('fac-07')">
           <span class="item-title">Grounding Prompt</span>
           <span class="status-pill configured" id="pill-fac-07"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-08" onclick="activateTab('fac-08')">
+        <div class="catalog-item" data-id="fac-08" data-parent-cat="Retrieval & Vector Engine" onclick="activateTab('fac-08')">
           <span class="item-title">Chunking Pipeline</span>
           <span class="status-pill configured" id="pill-fac-08"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-10" onclick="activateTab('fac-10')">
+        <div class="catalog-item" data-id="fac-10" data-parent-cat="Retrieval & Vector Engine" onclick="activateTab('fac-10')">
           <span class="item-title">Document Ingestion</span>
           <span class="status-pill configured" id="pill-fac-10"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-11" onclick="activateTab('fac-11')">
+        <div class="catalog-item" data-id="fac-11" data-parent-cat="Retrieval & Vector Engine" onclick="activateTab('fac-11')">
           <span class="item-title">Vision & Ocr</span>
           <span class="status-pill configured" id="pill-fac-11"></span>
         </div>
-        <div class="category-header">Integrations & Channels</div>
+        <div class="category-header" data-category="Integrations & Channels">Integrations & Channels</div>
 
-        <div class="catalog-item" data-id="fac-12" onclick="activateTab('fac-12')">
+        <div class="catalog-item" data-id="fac-12" data-parent-cat="Integrations & Channels" onclick="activateTab('fac-12')">
           <span class="item-title">Cloud Connectors</span>
           <span class="status-pill configured" id="pill-fac-12"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-13" onclick="activateTab('fac-13')">
+        <div class="catalog-item" data-id="fac-13" data-parent-cat="Integrations & Channels" onclick="activateTab('fac-13')">
           <span class="item-title">Firecrawl Scraper</span>
           <span class="status-pill configured" id="pill-fac-13"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-14" onclick="activateTab('fac-14')">
+        <div class="catalog-item" data-id="fac-14" data-parent-cat="Integrations & Channels" onclick="activateTab('fac-14')">
           <span class="item-title">Client Embed Widget</span>
           <span class="status-pill configured" id="pill-fac-14"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-15" onclick="activateTab('fac-15')">
+        <div class="catalog-item" data-id="fac-15" data-parent-cat="Integrations & Channels" onclick="activateTab('fac-15')">
           <span class="item-title">Whatsapp Gateway</span>
           <span class="status-pill configured" id="pill-fac-15"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-16" onclick="activateTab('fac-16')">
+        <div class="catalog-item" data-id="fac-16" data-parent-cat="Integrations & Channels" onclick="activateTab('fac-16')">
           <span class="item-title">Voice & Audio</span>
           <span class="status-pill configured" id="pill-fac-16"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-20" onclick="activateTab('fac-20')">
+        <div class="catalog-item" data-id="fac-20" data-parent-cat="Integrations & Channels" onclick="activateTab('fac-20')">
           <span class="item-title">Stripe Billing</span>
           <span class="status-pill configured" id="pill-fac-20"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-21" onclick="activateTab('fac-21')">
+        <div class="catalog-item" data-id="fac-21" data-parent-cat="Integrations & Channels" onclick="activateTab('fac-21')">
           <span class="item-title">Transactional Email</span>
           <span class="status-pill configured" id="pill-fac-21"></span>
         </div>
-        <div class="category-header">Interface & Operations</div>
+        <div class="category-header" data-category="Interface & Operations">Interface & Operations</div>
 
-        <div class="catalog-item" data-id="fac-04" onclick="activateTab('fac-04')">
+        <div class="catalog-item" data-id="fac-04" data-parent-cat="Interface & Operations" onclick="activateTab('fac-04')">
           <span class="item-title">Media Engine</span>
           <span class="status-pill configured" id="pill-fac-04"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-17" onclick="activateTab('fac-17')">
+        <div class="catalog-item" data-id="fac-17" data-parent-cat="Interface & Operations" onclick="activateTab('fac-17')">
           <span class="item-title">Session Logs</span>
           <span class="status-pill configured" id="pill-fac-17"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-18" onclick="activateTab('fac-18')">
+        <div class="catalog-item" data-id="fac-18" data-parent-cat="Interface & Operations" onclick="activateTab('fac-18')">
           <span class="item-title">Prompt Starters</span>
           <span class="status-pill configured" id="pill-fac-18"></span>
         </div>
         
-        <div class="catalog-item" data-id="fac-22" onclick="activateTab('fac-22')">
+        <div class="catalog-item" data-id="fac-22" data-parent-cat="Interface & Operations" onclick="activateTab('fac-22')">
           <span class="item-title">Visual Identity</span>
           <span class="status-pill configured" id="pill-fac-22"></span>
         </div>
@@ -769,6 +838,7 @@ body {
   <main id="main-deck">
     <header class="deck-header">
       <div class="deck-title-area">
+        <button class="mobile-toggle" onclick="toggleMobileSidebar()">☰</button>
         <span class="deck-title" id="deck-serial-title">Deployment</span>
         <span id="save-status" style="font-family: ui-monospace, 'SF Mono', Menlo, Monaco, Consolas, monospace; font-size: 12px; font-weight: 600; color: #10b981;">Syncing...</span>
       </div>
@@ -781,7 +851,7 @@ body {
       </div>
     </header>
 
-    <div id="pulsar-wrap">
+    <div id="pulsar-wrap" title="Joy Division Vector Similarity Telemetry">
       <canvas id="pulsar-canvas"></canvas>
     </div>
 
@@ -798,7 +868,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Deployment Architecture</span>
-                <span class="field-var">NEXT_PUBLIC_CHATRAG_DEPLOYMENT_MODE</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_CHATRAG_DEPLOYMENT_MODE', event)" title="Click to copy variable name">NEXT_PUBLIC_CHATRAG_DEPLOYMENT_MODE</span>
               </div>
               <div class="field-desc">Select multi-tenant for organization RLS or single-tenant for dedicated internal team.</div>
               <select id="NEXT_PUBLIC_CHATRAG_DEPLOYMENT_MODE" name="NEXT_PUBLIC_CHATRAG_DEPLOYMENT_MODE" class="input-select cfg-input" onchange="markFieldDirty('NEXT_PUBLIC_CHATRAG_DEPLOYMENT_MODE', this.value)">
@@ -809,7 +879,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Public Site URL</span>
-                <span class="field-var">NEXT_PUBLIC_SITE_URL</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_SITE_URL', event)" title="Click to copy variable name">NEXT_PUBLIC_SITE_URL</span>
               </div>
               <div class="field-desc">Canonical domain for application routing.</div>
               <input type="text" id="NEXT_PUBLIC_SITE_URL" name="NEXT_PUBLIC_SITE_URL" placeholder="http://localhost:3000" class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_SITE_URL', this.value)">
@@ -818,7 +888,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Internal Service Base URL</span>
-                <span class="field-var">CHATRAG_APP_URL</span>
+                <span class="field-var" onclick="copyVarName('CHATRAG_APP_URL', event)" title="Click to copy variable name">CHATRAG_APP_URL</span>
               </div>
               <div class="field-desc">Internal network address for server-to-server API calls.</div>
               <input type="text" id="CHATRAG_APP_URL" name="CHATRAG_APP_URL" placeholder="http://localhost:3000" class="input-text cfg-input" oninput="markFieldDirty('CHATRAG_APP_URL', this.value)">
@@ -829,7 +899,7 @@ body {
                 <div>
                   <div class="field-label">Enable Multi-Tenant Organizations</div>
                   <div class="field-desc">Enforce strict Supabase RLS tenant workspace isolation.</div>
-                  <div class="field-var">ENABLE_ORGANIZATIONS</div>
+                  <div class="field-var" onclick="copyVarName('ENABLE_ORGANIZATIONS', event)" title="Click to copy variable name">ENABLE_ORGANIZATIONS</div>
                 </div>
                 <div class="switch-rail" id="switch-ENABLE_ORGANIZATIONS">
                   <div class="switch-lever"></div>
@@ -843,7 +913,7 @@ body {
                 <div>
                   <div class="field-label">Enable Team Member Invitations</div>
                   <div class="field-desc">Allow workspace administrators to invite internal team members.</div>
-                  <div class="field-var">ENABLE_TEAM_INVITES</div>
+                  <div class="field-var" onclick="copyVarName('ENABLE_TEAM_INVITES', event)" title="Click to copy variable name">ENABLE_TEAM_INVITES</div>
                 </div>
                 <div class="switch-rail" id="switch-ENABLE_TEAM_INVITES">
                   <div class="switch-lever"></div>
@@ -857,7 +927,7 @@ body {
                 <div>
                   <div class="field-label">Enforce Storage Quotas</div>
                   <div class="field-desc">Limit document storage volumes per organization.</div>
-                  <div class="field-var">ENABLE_STORAGE_QUOTAS</div>
+                  <div class="field-var" onclick="copyVarName('ENABLE_STORAGE_QUOTAS', event)" title="Click to copy variable name">ENABLE_STORAGE_QUOTAS</div>
                 </div>
                 <div class="switch-rail" id="switch-ENABLE_STORAGE_QUOTAS">
                   <div class="switch-lever"></div>
@@ -882,7 +952,7 @@ body {
                 <div>
                   <div class="field-label">User Authentication Gate</div>
                   <div class="field-desc">Require login before accessing the knowledge base.</div>
-                  <div class="field-var">NEXT_PUBLIC_AUTH_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_AUTH_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_AUTH_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_AUTH_ENABLED">
                   <div class="switch-lever"></div>
@@ -896,7 +966,7 @@ body {
                 <div>
                   <div class="field-label">Live Web Search Augmented RAG</div>
                   <div class="field-desc">Allow the assistant to search the web for missing context.</div>
-                  <div class="field-var">NEXT_PUBLIC_WEB_SEARCH_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_WEB_SEARCH_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_WEB_SEARCH_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_WEB_SEARCH_ENABLED">
                   <div class="switch-lever"></div>
@@ -910,7 +980,7 @@ body {
                 <div>
                   <div class="field-label">Display Citation Sources</div>
                   <div class="field-desc">Show clickable verified passages and source documents in chat answers.</div>
-                  <div class="field-var">NEXT_PUBLIC_SHOW_SOURCES_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_SHOW_SOURCES_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_SHOW_SOURCES_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_SHOW_SOURCES_ENABLED">
                   <div class="switch-lever"></div>
@@ -924,7 +994,7 @@ body {
                 <div>
                   <div class="field-label">Image Generation Pipeline</div>
                   <div class="field-desc">Enable image generation tools inside chat conversations.</div>
-                  <div class="field-var">NEXT_PUBLIC_IMAGE_GENERATION_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_IMAGE_GENERATION_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_IMAGE_GENERATION_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_IMAGE_GENERATION_ENABLED">
                   <div class="switch-lever"></div>
@@ -938,7 +1008,7 @@ body {
                 <div>
                   <div class="field-label">Video Generation Pipeline</div>
                   <div class="field-desc">Enable video synthesis tools inside chat conversations.</div>
-                  <div class="field-var">NEXT_PUBLIC_VIDEO_GENERATION_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_VIDEO_GENERATION_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_VIDEO_GENERATION_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_VIDEO_GENERATION_ENABLED">
                   <div class="switch-lever"></div>
@@ -952,7 +1022,7 @@ body {
                 <div>
                   <div class="field-label">3D Generation Pipeline</div>
                   <div class="field-desc">Enable 3D asset generation capabilities.</div>
-                  <div class="field-var">NEXT_PUBLIC_3D_GENERATION_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_3D_GENERATION_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_3D_GENERATION_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_3D_GENERATION_ENABLED">
                   <div class="switch-lever"></div>
@@ -966,7 +1036,7 @@ body {
                 <div>
                   <div class="field-label">MCP Tool Discovery Surface</div>
                   <div class="field-desc">Expose registered Model Context Protocol tools in assistant drawer.</div>
-                  <div class="field-var">NEXT_PUBLIC_MCP_TOOLS_LIST_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_MCP_TOOLS_LIST_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_MCP_TOOLS_LIST_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_MCP_TOOLS_LIST_ENABLED">
                   <div class="switch-lever"></div>
@@ -989,73 +1059,97 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">OpenAI API Key</span>
-                <span class="field-var">OPENAI_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('OPENAI_API_KEY', event)" title="Click to copy variable name">OPENAI_API_KEY</span>
               </div>
               <div class="field-desc">Primary key for OpenAI models (GPT-4o, o3-mini).</div>
-              <input type="password" id="OPENAI_API_KEY" name="OPENAI_API_KEY" placeholder="sk-..." class="input-text cfg-input" oninput="markFieldDirty('OPENAI_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="OPENAI_API_KEY" name="OPENAI_API_KEY" placeholder="sk-..." class="input-text cfg-input" oninput="markFieldDirty('OPENAI_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('OPENAI_API_KEY', this)">Show</button>
+              </div>
             </div>
             
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">OpenRouter API Key</span>
-                <span class="field-var">OPENROUTER_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('OPENROUTER_API_KEY', event)" title="Click to copy variable name">OPENROUTER_API_KEY</span>
               </div>
               <div class="field-desc">Unified gateway for 100+ open-source and proprietary models.</div>
-              <input type="password" id="OPENROUTER_API_KEY" name="OPENROUTER_API_KEY" placeholder="sk-or-..." class="input-text cfg-input" oninput="markFieldDirty('OPENROUTER_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="OPENROUTER_API_KEY" name="OPENROUTER_API_KEY" placeholder="sk-or-..." class="input-text cfg-input" oninput="markFieldDirty('OPENROUTER_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('OPENROUTER_API_KEY', this)">Show</button>
+              </div>
             </div>
             
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Groq API Key</span>
-                <span class="field-var">GROQ_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('GROQ_API_KEY', event)" title="Click to copy variable name">GROQ_API_KEY</span>
               </div>
               <div class="field-desc">Ultra-low-latency LPU inference for Llama 3 and Mixtral.</div>
-              <input type="password" id="GROQ_API_KEY" name="GROQ_API_KEY" placeholder="gsk_..." class="input-text cfg-input" oninput="markFieldDirty('GROQ_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="GROQ_API_KEY" name="GROQ_API_KEY" placeholder="gsk_..." class="input-text cfg-input" oninput="markFieldDirty('GROQ_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('GROQ_API_KEY', this)">Show</button>
+              </div>
             </div>
             
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Anthropic API Key</span>
-                <span class="field-var">ANTHROPIC_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('ANTHROPIC_API_KEY', event)" title="Click to copy variable name">ANTHROPIC_API_KEY</span>
               </div>
               <div class="field-desc">Direct API key for Claude 3.5 Sonnet / Haiku.</div>
-              <input type="password" id="ANTHROPIC_API_KEY" name="ANTHROPIC_API_KEY" placeholder="sk-ant-..." class="input-text cfg-input" oninput="markFieldDirty('ANTHROPIC_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="ANTHROPIC_API_KEY" name="ANTHROPIC_API_KEY" placeholder="sk-ant-..." class="input-text cfg-input" oninput="markFieldDirty('ANTHROPIC_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('ANTHROPIC_API_KEY', this)">Show</button>
+              </div>
             </div>
             
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Google Gemini API Key</span>
-                <span class="field-var">GOOGLE_GENERATIVE_AI_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('GOOGLE_GENERATIVE_AI_API_KEY', event)" title="Click to copy variable name">GOOGLE_GENERATIVE_AI_API_KEY</span>
               </div>
               <div class="field-desc">Direct key for Gemini 1.5 Pro / Flash models.</div>
-              <input type="password" id="GOOGLE_GENERATIVE_AI_API_KEY" name="GOOGLE_GENERATIVE_AI_API_KEY" placeholder="AIzaSy..." class="input-text cfg-input" oninput="markFieldDirty('GOOGLE_GENERATIVE_AI_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="GOOGLE_GENERATIVE_AI_API_KEY" name="GOOGLE_GENERATIVE_AI_API_KEY" placeholder="AIzaSy..." class="input-text cfg-input" oninput="markFieldDirty('GOOGLE_GENERATIVE_AI_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('GOOGLE_GENERATIVE_AI_API_KEY', this)">Show</button>
+              </div>
             </div>
             
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Perplexity API Key</span>
-                <span class="field-var">PERPLEXITY_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('PERPLEXITY_API_KEY', event)" title="Click to copy variable name">PERPLEXITY_API_KEY</span>
               </div>
               <div class="field-desc">Sonar web search inference key.</div>
-              <input type="password" id="PERPLEXITY_API_KEY" name="PERPLEXITY_API_KEY" placeholder="pplx-..." class="input-text cfg-input" oninput="markFieldDirty('PERPLEXITY_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="PERPLEXITY_API_KEY" name="PERPLEXITY_API_KEY" placeholder="pplx-..." class="input-text cfg-input" oninput="markFieldDirty('PERPLEXITY_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('PERPLEXITY_API_KEY', this)">Show</button>
+              </div>
             </div>
             
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">DeepSeek API Key</span>
-                <span class="field-var">DEEPSEEK_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('DEEPSEEK_API_KEY', event)" title="Click to copy variable name">DEEPSEEK_API_KEY</span>
               </div>
               <div class="field-desc">API key for DeepSeek-R1 reasoning models.</div>
-              <input type="password" id="DEEPSEEK_API_KEY" name="DEEPSEEK_API_KEY" placeholder="sk-..." class="input-text cfg-input" oninput="markFieldDirty('DEEPSEEK_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="DEEPSEEK_API_KEY" name="DEEPSEEK_API_KEY" placeholder="sk-..." class="input-text cfg-input" oninput="markFieldDirty('DEEPSEEK_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('DEEPSEEK_API_KEY', this)">Show</button>
+              </div>
             </div>
             
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Mistral API Key</span>
-                <span class="field-var">MISTRAL_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('MISTRAL_API_KEY', event)" title="Click to copy variable name">MISTRAL_API_KEY</span>
               </div>
               <div class="field-desc">Direct API key for Mistral Large / Codestral.</div>
-              <input type="password" id="MISTRAL_API_KEY" name="MISTRAL_API_KEY" placeholder="..." class="input-text cfg-input" oninput="markFieldDirty('MISTRAL_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="MISTRAL_API_KEY" name="MISTRAL_API_KEY" placeholder="..." class="input-text cfg-input" oninput="markFieldDirty('MISTRAL_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('MISTRAL_API_KEY', this)">Show</button>
+              </div>
             </div>
             
       </div>
@@ -1072,7 +1166,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Default Image Provider</span>
-                <span class="field-var">IMAGE_GENERATION_PROVIDER</span>
+                <span class="field-var" onclick="copyVarName('IMAGE_GENERATION_PROVIDER', event)" title="Click to copy variable name">IMAGE_GENERATION_PROVIDER</span>
               </div>
               <div class="field-desc">Select image generation provider.</div>
               <select id="IMAGE_GENERATION_PROVIDER" name="IMAGE_GENERATION_PROVIDER" class="input-select cfg-input" onchange="markFieldDirty('IMAGE_GENERATION_PROVIDER', this.value)">
@@ -1083,7 +1177,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">OpenAI Image Model</span>
-                <span class="field-var">OPENAI_IMAGE_MODEL</span>
+                <span class="field-var" onclick="copyVarName('OPENAI_IMAGE_MODEL', event)" title="Click to copy variable name">OPENAI_IMAGE_MODEL</span>
               </div>
               <div class="field-desc">Model for DALL-E generation.</div>
               <select id="OPENAI_IMAGE_MODEL" name="OPENAI_IMAGE_MODEL" class="input-select cfg-input" onchange="markFieldDirty('OPENAI_IMAGE_MODEL', this.value)">
@@ -1094,7 +1188,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">OpenAI Image Quality</span>
-                <span class="field-var">OPENAI_IMAGE_QUALITY</span>
+                <span class="field-var" onclick="copyVarName('OPENAI_IMAGE_QUALITY', event)" title="Click to copy variable name">OPENAI_IMAGE_QUALITY</span>
               </div>
               <div class="field-desc">Image rendering quality.</div>
               <select id="OPENAI_IMAGE_QUALITY" name="OPENAI_IMAGE_QUALITY" class="input-select cfg-input" onchange="markFieldDirty('OPENAI_IMAGE_QUALITY', this.value)">
@@ -1105,7 +1199,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">OpenAI Image Size</span>
-                <span class="field-var">OPENAI_IMAGE_SIZE</span>
+                <span class="field-var" onclick="copyVarName('OPENAI_IMAGE_SIZE', event)" title="Click to copy variable name">OPENAI_IMAGE_SIZE</span>
               </div>
               <div class="field-desc">Image dimensions.</div>
               <select id="OPENAI_IMAGE_SIZE" name="OPENAI_IMAGE_SIZE" class="input-select cfg-input" onchange="markFieldDirty('OPENAI_IMAGE_SIZE', this.value)">
@@ -1116,7 +1210,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Max Attachment Size (MB)</span>
-                <span class="field-var">NEXT_PUBLIC_MAX_ATTACHMENT_SIZE_MB</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_MAX_ATTACHMENT_SIZE_MB', event)" title="Click to copy variable name">NEXT_PUBLIC_MAX_ATTACHMENT_SIZE_MB</span>
               </div>
               <div class="field-desc">Maximum upload limit per file in chat attachments.</div>
               <input type="number" id="NEXT_PUBLIC_MAX_ATTACHMENT_SIZE_MB" name="NEXT_PUBLIC_MAX_ATTACHMENT_SIZE_MB" placeholder="20" class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_MAX_ATTACHMENT_SIZE_MB', this.value)">
@@ -1125,7 +1219,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Allowed Upload File Extensions</span>
-                <span class="field-var">NEXT_PUBLIC_ALLOWED_FILE_TYPES</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_ALLOWED_FILE_TYPES', event)" title="Click to copy variable name">NEXT_PUBLIC_ALLOWED_FILE_TYPES</span>
               </div>
               <div class="field-desc">Comma-separated list of permitted attachment extensions.</div>
               <input type="text" id="NEXT_PUBLIC_ALLOWED_FILE_TYPES" name="NEXT_PUBLIC_ALLOWED_FILE_TYPES" placeholder=".pdf,.docx,.txt,.csv,.png,.jpg" class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_ALLOWED_FILE_TYPES', this.value)">
@@ -1145,7 +1239,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">RAG Behavior Mode</span>
-                <span class="field-var">RAG_BEHAVIOR_MODE</span>
+                <span class="field-var" onclick="copyVarName('RAG_BEHAVIOR_MODE', event)" title="Click to copy variable name">RAG_BEHAVIOR_MODE</span>
               </div>
               <div class="field-desc">Strict: Answers ONLY from uploaded docs with zero hallucination. Balanced: Uses docs first, general knowledge to explain. Flexible: Free-flowing conversational assistant referencing docs when relevant.</div>
               <select id="RAG_BEHAVIOR_MODE" name="RAG_BEHAVIOR_MODE" class="input-select cfg-input" onchange="markFieldDirty('RAG_BEHAVIOR_MODE', this.value)">
@@ -1169,7 +1263,7 @@ body {
                 <div>
                   <div class="field-label">Multi-Pass Query Expansion</div>
                   <div class="field-desc">Decompose complex queries into sub-queries for parallel vector scans.</div>
-                  <div class="field-var">RAG_MULTI_PASS</div>
+                  <div class="field-var" onclick="copyVarName('RAG_MULTI_PASS', event)" title="Click to copy variable name">RAG_MULTI_PASS</div>
                 </div>
                 <div class="switch-rail" id="switch-RAG_MULTI_PASS">
                   <div class="switch-lever"></div>
@@ -1183,7 +1277,7 @@ body {
                 <div>
                   <div class="field-label">Adaptive Distance Thresholding</div>
                   <div class="field-desc">Dynamically adjust similarity thresholds based on query specificity.</div>
-                  <div class="field-var">RAG_ADAPTIVE_RETRIEVAL</div>
+                  <div class="field-var" onclick="copyVarName('RAG_ADAPTIVE_RETRIEVAL', event)" title="Click to copy variable name">RAG_ADAPTIVE_RETRIEVAL</div>
                 </div>
                 <div class="switch-rail" id="switch-RAG_ADAPTIVE_RETRIEVAL">
                   <div class="switch-lever"></div>
@@ -1197,7 +1291,7 @@ body {
                 <div>
                   <div class="field-label">Query Rewriting & HyDE</div>
                   <div class="field-desc">Synthesize hypothetical answer embeddings to improve match recall.</div>
-                  <div class="field-var">RAG_QUERY_ENHANCEMENT</div>
+                  <div class="field-var" onclick="copyVarName('RAG_QUERY_ENHANCEMENT', event)" title="Click to copy variable name">RAG_QUERY_ENHANCEMENT</div>
                 </div>
                 <div class="switch-rail" id="switch-RAG_QUERY_ENHANCEMENT">
                   <div class="switch-lever"></div>
@@ -1209,7 +1303,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Cosine Similarity Threshold</span>
-                <span class="field-var">RAG_SIMILARITY_THRESHOLD</span>
+                <span class="field-var" onclick="copyVarName('RAG_SIMILARITY_THRESHOLD', event)" title="Click to copy variable name">RAG_SIMILARITY_THRESHOLD</span>
               </div>
               <div class="field-desc">Minimum cosine similarity score (0.00 to 1.00) required to include a document chunk.</div>
               <input type="text" id="RAG_SIMILARITY_THRESHOLD" name="RAG_SIMILARITY_THRESHOLD" placeholder="0.75" class="input-text cfg-input" oninput="markFieldDirty('RAG_SIMILARITY_THRESHOLD', this.value)">
@@ -1218,7 +1312,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Top-K Retrieved Chunks</span>
-                <span class="field-var">RAG_MAX_RESULTS</span>
+                <span class="field-var" onclick="copyVarName('RAG_MAX_RESULTS', event)" title="Click to copy variable name">RAG_MAX_RESULTS</span>
               </div>
               <div class="field-desc">Maximum number of vector matches passed into LLM context window.</div>
               <input type="number" id="RAG_MAX_RESULTS" name="RAG_MAX_RESULTS" placeholder="5" class="input-text cfg-input" oninput="markFieldDirty('RAG_MAX_RESULTS', this.value)">
@@ -1238,7 +1332,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Pre-Context System Prompt</span>
-                <span class="field-var">RAG_PRE_CONTEXT</span>
+                <span class="field-var" onclick="copyVarName('RAG_PRE_CONTEXT', event)" title="Click to copy variable name">RAG_PRE_CONTEXT</span>
               </div>
               <div class="field-desc">System instructions injected before retrieved document passages. Use {{context}} placeholder.</div>
               <textarea id="RAG_PRE_CONTEXT" name="RAG_PRE_CONTEXT" placeholder="You are Pulsar, an authoritative enterprise internal assistant. Answer the user query using only the following context:
@@ -1249,7 +1343,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Post-Context System Prompt</span>
-                <span class="field-var">RAG_POST_CONTEXT</span>
+                <span class="field-var" onclick="copyVarName('RAG_POST_CONTEXT', event)" title="Click to copy variable name">RAG_POST_CONTEXT</span>
               </div>
               <div class="field-desc">Instructions appended after document passages (e.g. citation format rules).</div>
               <textarea id="RAG_POST_CONTEXT" name="RAG_POST_CONTEXT" placeholder="Always cite document name and section headers when referencing facts." class="input-textarea cfg-input" oninput="markFieldDirty('RAG_POST_CONTEXT', this.value)"></textarea>
@@ -1271,7 +1365,7 @@ body {
                 <div>
                   <div class="field-label">Enable Model Context Protocol (MCP)</div>
                   <div class="field-desc">Allow assistant to connect to local and remote MCP servers.</div>
-                  <div class="field-var">NEXT_PUBLIC_MCP_SYSTEM_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_MCP_SYSTEM_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_MCP_SYSTEM_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_MCP_SYSTEM_ENABLED">
                   <div class="switch-lever"></div>
@@ -1283,7 +1377,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Document Chunk Size (Tokens)</span>
-                <span class="field-var">CHUNK_SIZE_TOKENS</span>
+                <span class="field-var" onclick="copyVarName('CHUNK_SIZE_TOKENS', event)" title="Click to copy variable name">CHUNK_SIZE_TOKENS</span>
               </div>
               <div class="field-desc">Target token count per document chunk during ingestion.</div>
               <input type="number" id="CHUNK_SIZE_TOKENS" name="CHUNK_SIZE_TOKENS" placeholder="512" class="input-text cfg-input" oninput="markFieldDirty('CHUNK_SIZE_TOKENS', this.value)">
@@ -1292,7 +1386,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Chunk Overlap (Tokens)</span>
-                <span class="field-var">CHUNK_OVERLAP_TOKENS</span>
+                <span class="field-var" onclick="copyVarName('CHUNK_OVERLAP_TOKENS', event)" title="Click to copy variable name">CHUNK_OVERLAP_TOKENS</span>
               </div>
               <div class="field-desc">Overlap token boundary between consecutive document segments.</div>
               <input type="number" id="CHUNK_OVERLAP_TOKENS" name="CHUNK_OVERLAP_TOKENS" placeholder="64" class="input-text cfg-input" oninput="markFieldDirty('CHUNK_OVERLAP_TOKENS', this.value)">
@@ -1312,7 +1406,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Supabase Project URL</span>
-                <span class="field-var">NEXT_PUBLIC_SUPABASE_URL</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_SUPABASE_URL', event)" title="Click to copy variable name">NEXT_PUBLIC_SUPABASE_URL</span>
               </div>
               <div class="field-desc">Your Supabase project endpoint.</div>
               <input type="text" id="NEXT_PUBLIC_SUPABASE_URL" name="NEXT_PUBLIC_SUPABASE_URL" placeholder="https://xyz.supabase.co" class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_SUPABASE_URL', this.value)">
@@ -1321,19 +1415,25 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Supabase Anon / Public Key</span>
-                <span class="field-var">NEXT_PUBLIC_SUPABASE_ANON_KEY</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_SUPABASE_ANON_KEY', event)" title="Click to copy variable name">NEXT_PUBLIC_SUPABASE_ANON_KEY</span>
               </div>
               <div class="field-desc">Client-safe anonymous public key.</div>
-              <input type="password" id="NEXT_PUBLIC_SUPABASE_ANON_KEY" name="NEXT_PUBLIC_SUPABASE_ANON_KEY" placeholder="eyJhb..." class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_SUPABASE_ANON_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="NEXT_PUBLIC_SUPABASE_ANON_KEY" name="NEXT_PUBLIC_SUPABASE_ANON_KEY" placeholder="eyJhb..." class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_SUPABASE_ANON_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('NEXT_PUBLIC_SUPABASE_ANON_KEY', this)">Show</button>
+              </div>
             </div>
             
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Supabase Service Role Key</span>
-                <span class="field-var">SUPABASE_SERVICE_ROLE_KEY</span>
+                <span class="field-var" onclick="copyVarName('SUPABASE_SERVICE_ROLE_KEY', event)" title="Click to copy variable name">SUPABASE_SERVICE_ROLE_KEY</span>
               </div>
               <div class="field-desc">Privileged key for backend vector indexing and document uploads.</div>
-              <input type="password" id="SUPABASE_SERVICE_ROLE_KEY" name="SUPABASE_SERVICE_ROLE_KEY" placeholder="eyJhb..." class="input-text cfg-input" oninput="markFieldDirty('SUPABASE_SERVICE_ROLE_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="SUPABASE_SERVICE_ROLE_KEY" name="SUPABASE_SERVICE_ROLE_KEY" placeholder="eyJhb..." class="input-text cfg-input" oninput="markFieldDirty('SUPABASE_SERVICE_ROLE_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('SUPABASE_SERVICE_ROLE_KEY', this)">Show</button>
+              </div>
             </div>
             
       </div>
@@ -1352,7 +1452,7 @@ body {
                 <div>
                   <div class="field-label">Hide Document Management Dashboard</div>
                   <div class="field-desc">Restrict document upload access to admins only.</div>
-                  <div class="field-var">NEXT_PUBLIC_HIDE_DOCUMENT_DASHBOARD</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_HIDE_DOCUMENT_DASHBOARD', event)" title="Click to copy variable name">NEXT_PUBLIC_HIDE_DOCUMENT_DASHBOARD</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_HIDE_DOCUMENT_DASHBOARD">
                   <div class="switch-lever"></div>
@@ -1364,7 +1464,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Processing Timeout (ms)</span>
-                <span class="field-var">DOCUMENT_PROCESSING_TIMEOUT_MS</span>
+                <span class="field-var" onclick="copyVarName('DOCUMENT_PROCESSING_TIMEOUT_MS', event)" title="Click to copy variable name">DOCUMENT_PROCESSING_TIMEOUT_MS</span>
               </div>
               <div class="field-desc">Maximum parsing duration before worker termination.</div>
               <input type="number" id="DOCUMENT_PROCESSING_TIMEOUT_MS" name="DOCUMENT_PROCESSING_TIMEOUT_MS" placeholder="120000" class="input-text cfg-input" oninput="markFieldDirty('DOCUMENT_PROCESSING_TIMEOUT_MS', this.value)">
@@ -1386,7 +1486,7 @@ body {
                 <div>
                   <div class="field-label">Enable Automatic OCR on Images</div>
                   <div class="field-desc">Extract text from diagram snapshots and PDF scans.</div>
-                  <div class="field-var">OCR_EXTRACTION_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('OCR_EXTRACTION_ENABLED', event)" title="Click to copy variable name">OCR_EXTRACTION_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-OCR_EXTRACTION_ENABLED">
                   <div class="switch-lever"></div>
@@ -1398,7 +1498,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Multimodal Embedding Model</span>
-                <span class="field-var">VISION_EMBEDDING_MODEL</span>
+                <span class="field-var" onclick="copyVarName('VISION_EMBEDDING_MODEL', event)" title="Click to copy variable name">VISION_EMBEDDING_MODEL</span>
               </div>
               <div class="field-desc">Embedding model for image vectors.</div>
               <select id="VISION_EMBEDDING_MODEL" name="VISION_EMBEDDING_MODEL" class="input-select cfg-input" onchange="markFieldDirty('VISION_EMBEDDING_MODEL', this.value)">
@@ -1422,7 +1522,7 @@ body {
                 <div>
                   <div class="field-label">Enable Nango Cloud Connectors</div>
                   <div class="field-desc">Sync internal documentation from external cloud workspaces.</div>
-                  <div class="field-var">NEXT_PUBLIC_NANGO_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_NANGO_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_NANGO_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_NANGO_ENABLED">
                   <div class="switch-lever"></div>
@@ -1434,16 +1534,19 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Nango Secret Key</span>
-                <span class="field-var">NANGO_SECRET_KEY</span>
+                <span class="field-var" onclick="copyVarName('NANGO_SECRET_KEY', event)" title="Click to copy variable name">NANGO_SECRET_KEY</span>
               </div>
               <div class="field-desc">API secret from your Nango dashboard.</div>
-              <input type="password" id="NANGO_SECRET_KEY" name="NANGO_SECRET_KEY" placeholder="nango_sec_..." class="input-text cfg-input" oninput="markFieldDirty('NANGO_SECRET_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="NANGO_SECRET_KEY" name="NANGO_SECRET_KEY" placeholder="nango_sec_..." class="input-text cfg-input" oninput="markFieldDirty('NANGO_SECRET_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('NANGO_SECRET_KEY', this)">Show</button>
+              </div>
             </div>
             
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Nango Public Key</span>
-                <span class="field-var">NANGO_PUBLIC_KEY</span>
+                <span class="field-var" onclick="copyVarName('NANGO_PUBLIC_KEY', event)" title="Click to copy variable name">NANGO_PUBLIC_KEY</span>
               </div>
               <div class="field-desc">Frontend public key for OAuth modal flow.</div>
               <input type="text" id="NANGO_PUBLIC_KEY" name="NANGO_PUBLIC_KEY" placeholder="nango_pub_..." class="input-text cfg-input" oninput="markFieldDirty('NANGO_PUBLIC_KEY', this.value)">
@@ -1465,7 +1568,7 @@ body {
                 <div>
                   <div class="field-label">Enable Firecrawl Web Scraper</div>
                   <div class="field-desc">Allow scraping documentation sites directly into knowledge base.</div>
-                  <div class="field-var">NEXT_PUBLIC_FIRECRAWL_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_FIRECRAWL_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_FIRECRAWL_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_FIRECRAWL_ENABLED">
                   <div class="switch-lever"></div>
@@ -1479,7 +1582,7 @@ body {
                 <div>
                   <div class="field-label">Show Scraper on Dashboard</div>
                   <div class="field-desc">Expose web scraper tool in the assistant side rail.</div>
-                  <div class="field-var">NEXT_PUBLIC_WEB_SCRAPER_SHOW_ON_DASHBOARD</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_WEB_SCRAPER_SHOW_ON_DASHBOARD', event)" title="Click to copy variable name">NEXT_PUBLIC_WEB_SCRAPER_SHOW_ON_DASHBOARD</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_WEB_SCRAPER_SHOW_ON_DASHBOARD">
                   <div class="switch-lever"></div>
@@ -1491,10 +1594,13 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Firecrawl API Key</span>
-                <span class="field-var">FIRECRAWL_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('FIRECRAWL_API_KEY', event)" title="Click to copy variable name">FIRECRAWL_API_KEY</span>
               </div>
               <div class="field-desc">API credentials from firecrawl.dev.</div>
-              <input type="password" id="FIRECRAWL_API_KEY" name="FIRECRAWL_API_KEY" placeholder="fc_..." class="input-text cfg-input" oninput="markFieldDirty('FIRECRAWL_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="FIRECRAWL_API_KEY" name="FIRECRAWL_API_KEY" placeholder="fc_..." class="input-text cfg-input" oninput="markFieldDirty('FIRECRAWL_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('FIRECRAWL_API_KEY', this)">Show</button>
+              </div>
             </div>
             
       </div>
@@ -1513,7 +1619,7 @@ body {
                 <div>
                   <div class="field-label">Enable Client Embed Widget</div>
                   <div class="field-desc">Allow embedding the assistant via script tag on external domains.</div>
-                  <div class="field-var">NEXT_PUBLIC_EMBED_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_EMBED_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_EMBED_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_EMBED_ENABLED">
                   <div class="switch-lever"></div>
@@ -1525,7 +1631,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Widget Header Title</span>
-                <span class="field-var">NEXT_PUBLIC_EMBED_TITLE</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_EMBED_TITLE', event)" title="Click to copy variable name">NEXT_PUBLIC_EMBED_TITLE</span>
               </div>
               <div class="field-desc">Display title in floating widget modal.</div>
               <input type="text" id="NEXT_PUBLIC_EMBED_TITLE" name="NEXT_PUBLIC_EMBED_TITLE" placeholder="Pulsar Internal Assistant" class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_EMBED_TITLE', this.value)">
@@ -1534,7 +1640,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Widget Accent Color Hex</span>
-                <span class="field-var">NEXT_PUBLIC_EMBED_PRIMARY_COLOR</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_EMBED_PRIMARY_COLOR', event)" title="Click to copy variable name">NEXT_PUBLIC_EMBED_PRIMARY_COLOR</span>
               </div>
               <div class="field-desc">Brand color for floating launcher bubble.</div>
               <input type="text" id="NEXT_PUBLIC_EMBED_PRIMARY_COLOR" name="NEXT_PUBLIC_EMBED_PRIMARY_COLOR" placeholder="#38bdf8" class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_EMBED_PRIMARY_COLOR', this.value)">
@@ -1556,7 +1662,7 @@ body {
                 <div>
                   <div class="field-label">Enable WhatsApp Ingestion Gateway</div>
                   <div class="field-desc">Allow team members to query the knowledge base via WhatsApp.</div>
-                  <div class="field-var">NEXT_PUBLIC_WHATSAPP_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_WHATSAPP_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_WHATSAPP_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_WHATSAPP_ENABLED">
                   <div class="switch-lever"></div>
@@ -1568,7 +1674,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">WhatsApp Provider Backend</span>
-                <span class="field-var">WHATSAPP_PROVIDER</span>
+                <span class="field-var" onclick="copyVarName('WHATSAPP_PROVIDER', event)" title="Click to copy variable name">WHATSAPP_PROVIDER</span>
               </div>
               <div class="field-desc">Routing platform for WhatsApp protocol.</div>
               <select id="WHATSAPP_PROVIDER" name="WHATSAPP_PROVIDER" class="input-select cfg-input" onchange="markFieldDirty('WHATSAPP_PROVIDER', this.value)">
@@ -1579,7 +1685,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Inbound Webhook URL</span>
-                <span class="field-var">WHATSAPP_WEBHOOK_URL</span>
+                <span class="field-var" onclick="copyVarName('WHATSAPP_WEBHOOK_URL', event)" title="Click to copy variable name">WHATSAPP_WEBHOOK_URL</span>
               </div>
               <div class="field-desc">Target URL for incoming WhatsApp message events.</div>
               <input type="text" id="WHATSAPP_WEBHOOK_URL" name="WHATSAPP_WEBHOOK_URL" placeholder="https://your-domain.com/api/whatsapp/webhook" class="input-text cfg-input" oninput="markFieldDirty('WHATSAPP_WEBHOOK_URL', this.value)">
@@ -1588,10 +1694,13 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Webhook Verification Secret</span>
-                <span class="field-var">WHATSAPP_WEBHOOK_SECRET</span>
+                <span class="field-var" onclick="copyVarName('WHATSAPP_WEBHOOK_SECRET', event)" title="Click to copy variable name">WHATSAPP_WEBHOOK_SECRET</span>
               </div>
               <div class="field-desc">Secret token to verify webhook payload authenticity.</div>
-              <input type="password" id="WHATSAPP_WEBHOOK_SECRET" name="WHATSAPP_WEBHOOK_SECRET" placeholder="..." class="input-text cfg-input" oninput="markFieldDirty('WHATSAPP_WEBHOOK_SECRET', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="WHATSAPP_WEBHOOK_SECRET" name="WHATSAPP_WEBHOOK_SECRET" placeholder="..." class="input-text cfg-input" oninput="markFieldDirty('WHATSAPP_WEBHOOK_SECRET', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('WHATSAPP_WEBHOOK_SECRET', this)">Show</button>
+              </div>
             </div>
             
       </div>
@@ -1610,7 +1719,7 @@ body {
                 <div>
                   <div class="field-label">Disable Audio Playback</div>
                   <div class="field-desc">Mute all text-to-speech voice generation.</div>
-                  <div class="field-var">NEXT_PUBLIC_TTS_DISABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_TTS_DISABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_TTS_DISABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_TTS_DISABLED">
                   <div class="switch-lever"></div>
@@ -1622,7 +1731,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Voice Engine Provider</span>
-                <span class="field-var">NEXT_PUBLIC_VOICE_PROVIDER</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_VOICE_PROVIDER', event)" title="Click to copy variable name">NEXT_PUBLIC_VOICE_PROVIDER</span>
               </div>
               <div class="field-desc">Select speech synthesis service.</div>
               <select id="NEXT_PUBLIC_VOICE_PROVIDER" name="NEXT_PUBLIC_VOICE_PROVIDER" class="input-select cfg-input" onchange="markFieldDirty('NEXT_PUBLIC_VOICE_PROVIDER', this.value)">
@@ -1633,10 +1742,13 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">ElevenLabs API Key</span>
-                <span class="field-var">ELEVENLABS_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('ELEVENLABS_API_KEY', event)" title="Click to copy variable name">ELEVENLABS_API_KEY</span>
               </div>
               <div class="field-desc">API key for high-fidelity voice cloning.</div>
-              <input type="password" id="ELEVENLABS_API_KEY" name="ELEVENLABS_API_KEY" placeholder="el_..." class="input-text cfg-input" oninput="markFieldDirty('ELEVENLABS_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="ELEVENLABS_API_KEY" name="ELEVENLABS_API_KEY" placeholder="el_..." class="input-text cfg-input" oninput="markFieldDirty('ELEVENLABS_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('ELEVENLABS_API_KEY', this)">Show</button>
+              </div>
             </div>
             
       </div>
@@ -1653,7 +1765,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Title Generation Model</span>
-                <span class="field-var">CHAT_TITLE_MODEL</span>
+                <span class="field-var" onclick="copyVarName('CHAT_TITLE_MODEL', event)" title="Click to copy variable name">CHAT_TITLE_MODEL</span>
               </div>
               <div class="field-desc">Lightweight model used to generate session titles.</div>
               <input type="text" id="CHAT_TITLE_MODEL" name="CHAT_TITLE_MODEL" placeholder="openai/gpt-4o-mini" class="input-text cfg-input" oninput="markFieldDirty('CHAT_TITLE_MODEL', this.value)">
@@ -1662,7 +1774,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Title Temperature</span>
-                <span class="field-var">CHAT_TITLE_TEMPERATURE</span>
+                <span class="field-var" onclick="copyVarName('CHAT_TITLE_TEMPERATURE', event)" title="Click to copy variable name">CHAT_TITLE_TEMPERATURE</span>
               </div>
               <div class="field-desc">Creativity parameter for title summarization (0.0 to 1.0).</div>
               <input type="text" id="CHAT_TITLE_TEMPERATURE" name="CHAT_TITLE_TEMPERATURE" placeholder="0.3" class="input-text cfg-input" oninput="markFieldDirty('CHAT_TITLE_TEMPERATURE', this.value)">
@@ -1671,7 +1783,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Max Tokens for Title</span>
-                <span class="field-var">CHAT_TITLE_MAX_TOKENS</span>
+                <span class="field-var" onclick="copyVarName('CHAT_TITLE_MAX_TOKENS', event)" title="Click to copy variable name">CHAT_TITLE_MAX_TOKENS</span>
               </div>
               <div class="field-desc">Token ceiling for chat title strings.</div>
               <input type="number" id="CHAT_TITLE_MAX_TOKENS" name="CHAT_TITLE_MAX_TOKENS" placeholder="24" class="input-text cfg-input" oninput="markFieldDirty('CHAT_TITLE_MAX_TOKENS', this.value)">
@@ -1693,7 +1805,7 @@ body {
                 <div>
                   <div class="field-label">Display Starter Suggestion Chips</div>
                   <div class="field-desc">Show prompt suggestion cards on empty chat landing screens.</div>
-                  <div class="field-var">NEXT_PUBLIC_SHOW_SUGGESTIONS</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_SHOW_SUGGESTIONS', event)" title="Click to copy variable name">NEXT_PUBLIC_SHOW_SUGGESTIONS</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_SHOW_SUGGESTIONS">
                   <div class="switch-lever"></div>
@@ -1716,7 +1828,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">GitHub OAuth Client ID</span>
-                <span class="field-var">NEXT_PUBLIC_GITHUB_CLIENT_ID</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_GITHUB_CLIENT_ID', event)" title="Click to copy variable name">NEXT_PUBLIC_GITHUB_CLIENT_ID</span>
               </div>
               <div class="field-desc">Client ID for GitHub Single Sign-On.</div>
               <input type="text" id="NEXT_PUBLIC_GITHUB_CLIENT_ID" name="NEXT_PUBLIC_GITHUB_CLIENT_ID" placeholder="Ov23..." class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_GITHUB_CLIENT_ID', this.value)">
@@ -1725,10 +1837,13 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">GitHub OAuth Client Secret</span>
-                <span class="field-var">GITHUB_CLIENT_SECRET</span>
+                <span class="field-var" onclick="copyVarName('GITHUB_CLIENT_SECRET', event)" title="Click to copy variable name">GITHUB_CLIENT_SECRET</span>
               </div>
               <div class="field-desc">Client secret for GitHub OAuth authentication.</div>
-              <input type="password" id="GITHUB_CLIENT_SECRET" name="GITHUB_CLIENT_SECRET" placeholder="..." class="input-text cfg-input" oninput="markFieldDirty('GITHUB_CLIENT_SECRET', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="GITHUB_CLIENT_SECRET" name="GITHUB_CLIENT_SECRET" placeholder="..." class="input-text cfg-input" oninput="markFieldDirty('GITHUB_CLIENT_SECRET', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('GITHUB_CLIENT_SECRET', this)">Show</button>
+              </div>
             </div>
             
       </div>
@@ -1745,7 +1860,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Stripe Publishable Key</span>
-                <span class="field-var">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY', event)" title="Click to copy variable name">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</span>
               </div>
               <div class="field-desc">Frontend publishable key for Stripe checkout.</div>
               <input type="text" id="NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" name="NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" placeholder="pk_test_..." class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY', this.value)">
@@ -1754,19 +1869,25 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Stripe Secret Key</span>
-                <span class="field-var">STRIPE_SECRET_KEY</span>
+                <span class="field-var" onclick="copyVarName('STRIPE_SECRET_KEY', event)" title="Click to copy variable name">STRIPE_SECRET_KEY</span>
               </div>
               <div class="field-desc">Backend secret key for subscription creation.</div>
-              <input type="password" id="STRIPE_SECRET_KEY" name="STRIPE_SECRET_KEY" placeholder="sk_test_..." class="input-text cfg-input" oninput="markFieldDirty('STRIPE_SECRET_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="STRIPE_SECRET_KEY" name="STRIPE_SECRET_KEY" placeholder="sk_test_..." class="input-text cfg-input" oninput="markFieldDirty('STRIPE_SECRET_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('STRIPE_SECRET_KEY', this)">Show</button>
+              </div>
             </div>
             
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Stripe Webhook Secret</span>
-                <span class="field-var">STRIPE_WEBHOOK_SECRET</span>
+                <span class="field-var" onclick="copyVarName('STRIPE_WEBHOOK_SECRET', event)" title="Click to copy variable name">STRIPE_WEBHOOK_SECRET</span>
               </div>
               <div class="field-desc">Secret token verifying Stripe checkout events.</div>
-              <input type="password" id="STRIPE_WEBHOOK_SECRET" name="STRIPE_WEBHOOK_SECRET" placeholder="whsec_..." class="input-text cfg-input" oninput="markFieldDirty('STRIPE_WEBHOOK_SECRET', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="STRIPE_WEBHOOK_SECRET" name="STRIPE_WEBHOOK_SECRET" placeholder="whsec_..." class="input-text cfg-input" oninput="markFieldDirty('STRIPE_WEBHOOK_SECRET', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('STRIPE_WEBHOOK_SECRET', this)">Show</button>
+              </div>
             </div>
             
       </div>
@@ -1785,7 +1906,7 @@ body {
                 <div>
                   <div class="field-label">Enable Custom SMTP / Resend</div>
                   <div class="field-desc">Route transactional emails through custom delivery gateway.</div>
-                  <div class="field-var">NEXT_PUBLIC_CUSTOM_SMTP_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_CUSTOM_SMTP_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_CUSTOM_SMTP_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_CUSTOM_SMTP_ENABLED">
                   <div class="switch-lever"></div>
@@ -1797,7 +1918,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">From Sender Name</span>
-                <span class="field-var">NEXT_PUBLIC_SMTP_FROM_NAME</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_SMTP_FROM_NAME', event)" title="Click to copy variable name">NEXT_PUBLIC_SMTP_FROM_NAME</span>
               </div>
               <div class="field-desc">Display name in outgoing email headers.</div>
               <input type="text" id="NEXT_PUBLIC_SMTP_FROM_NAME" name="NEXT_PUBLIC_SMTP_FROM_NAME" placeholder="Pulsar Knowledge Platform" class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_SMTP_FROM_NAME', this.value)">
@@ -1806,7 +1927,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">From Sender Address</span>
-                <span class="field-var">NEXT_PUBLIC_SMTP_FROM_EMAIL</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_SMTP_FROM_EMAIL', event)" title="Click to copy variable name">NEXT_PUBLIC_SMTP_FROM_EMAIL</span>
               </div>
               <div class="field-desc">Verified sender email address.</div>
               <input type="text" id="NEXT_PUBLIC_SMTP_FROM_EMAIL" name="NEXT_PUBLIC_SMTP_FROM_EMAIL" placeholder="notifications@yourdomain.com" class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_SMTP_FROM_EMAIL', this.value)">
@@ -1815,10 +1936,13 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Resend API Key</span>
-                <span class="field-var">RESEND_API_KEY</span>
+                <span class="field-var" onclick="copyVarName('RESEND_API_KEY', event)" title="Click to copy variable name">RESEND_API_KEY</span>
               </div>
               <div class="field-desc">API key from resend.com.</div>
-              <input type="password" id="RESEND_API_KEY" name="RESEND_API_KEY" placeholder="re_..." class="input-text cfg-input" oninput="markFieldDirty('RESEND_API_KEY', this.value)">
+              <div class="input-wrap">
+                <input type="password" id="RESEND_API_KEY" name="RESEND_API_KEY" placeholder="re_..." class="input-text cfg-input" oninput="markFieldDirty('RESEND_API_KEY', this.value)">
+                <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility('RESEND_API_KEY', this)">Show</button>
+              </div>
             </div>
             
       </div>
@@ -1835,7 +1959,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Application Name</span>
-                <span class="field-var">NEXT_PUBLIC_APP_NAME</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_APP_NAME', event)" title="Click to copy variable name">NEXT_PUBLIC_APP_NAME</span>
               </div>
               <div class="field-desc">Custom brand name across navigation headers and browser tabs.</div>
               <input type="text" id="NEXT_PUBLIC_APP_NAME" name="NEXT_PUBLIC_APP_NAME" placeholder="Pulsar" class="input-text cfg-input" oninput="markFieldDirty('NEXT_PUBLIC_APP_NAME', this.value)">
@@ -1844,7 +1968,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Default Visual Theme</span>
-                <span class="field-var">NEXT_PUBLIC_DEFAULT_THEME</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_DEFAULT_THEME', event)" title="Click to copy variable name">NEXT_PUBLIC_DEFAULT_THEME</span>
               </div>
               <div class="field-desc">Base visual theme mode for new sessions.</div>
               <select id="NEXT_PUBLIC_DEFAULT_THEME" name="NEXT_PUBLIC_DEFAULT_THEME" class="input-select cfg-input" onchange="markFieldDirty('NEXT_PUBLIC_DEFAULT_THEME', this.value)">
@@ -1855,7 +1979,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Interface Language</span>
-                <span class="field-var">NEXT_PUBLIC_DEFAULT_LANGUAGE</span>
+                <span class="field-var" onclick="copyVarName('NEXT_PUBLIC_DEFAULT_LANGUAGE', event)" title="Click to copy variable name">NEXT_PUBLIC_DEFAULT_LANGUAGE</span>
               </div>
               <div class="field-desc">Primary UI localization.</div>
               <select id="NEXT_PUBLIC_DEFAULT_LANGUAGE" name="NEXT_PUBLIC_DEFAULT_LANGUAGE" class="input-select cfg-input" onchange="markFieldDirty('NEXT_PUBLIC_DEFAULT_LANGUAGE', this.value)">
@@ -1877,7 +2001,7 @@ body {
             <div class="field-group">
               <div class="field-label-row">
                 <span class="field-label">Master Admin Email</span>
-                <span class="field-var">ADMIN_EMAIL</span>
+                <span class="field-var" onclick="copyVarName('ADMIN_EMAIL', event)" title="Click to copy variable name">ADMIN_EMAIL</span>
               </div>
               <div class="field-desc">Super-admin account email for system control.</div>
               <input type="text" id="ADMIN_EMAIL" name="ADMIN_EMAIL" placeholder="admin@yourdomain.com" class="input-text cfg-input" oninput="markFieldDirty('ADMIN_EMAIL', this.value)">
@@ -1888,7 +2012,7 @@ body {
                 <div>
                   <div class="field-label">Read-Only Knowledge Base</div>
                   <div class="field-desc">Lock all documents against edits or deletions from chat users.</div>
-                  <div class="field-var">NEXT_PUBLIC_READ_ONLY_DOCUMENTS_ENABLED</div>
+                  <div class="field-var" onclick="copyVarName('NEXT_PUBLIC_READ_ONLY_DOCUMENTS_ENABLED', event)" title="Click to copy variable name">NEXT_PUBLIC_READ_ONLY_DOCUMENTS_ENABLED</div>
                 </div>
                 <div class="switch-rail" id="switch-NEXT_PUBLIC_READ_ONLY_DOCUMENTS_ENABLED">
                   <div class="switch-lever"></div>
@@ -1949,8 +2073,8 @@ let currentConfig = {};
 let activeTabId = 'fac-01';
 let commandPaletteIndex = 0;
 let filteredCommands = [];
+let cursorDistort = 0.5;
 
-// Logger Helper
 function logEvent(type, msg) {
   const container = document.getElementById('log-stream');
   if (!container) return;
@@ -1962,7 +2086,7 @@ function logEvent(type, msg) {
   container.scrollTop = container.scrollHeight;
 }
 
-// Joy Division Canvas Simulation
+// Reactive Joy Division Canvas Simulation
 function initPulsarCanvas() {
   const canvas = document.getElementById('pulsar-canvas');
   if (!canvas) return;
@@ -1970,9 +2094,16 @@ function initPulsarCanvas() {
   let width = canvas.width = canvas.offsetWidth;
   let height = canvas.height = canvas.offsetHeight;
 
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   window.addEventListener('resize', () => {
     width = canvas.width = canvas.offsetWidth;
     height = canvas.height = canvas.offsetHeight;
+  });
+
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    cursorDistort = (e.clientX - rect.left) / rect.width;
   });
 
   const linesCount = 20;
@@ -1981,9 +2112,8 @@ function initPulsarCanvas() {
   function render() {
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, width, height);
-
     ctx.lineWidth = 1;
-    t += 0.02;
+    if (!prefersReduced) t += 0.02;
 
     for (let i = 0; i < linesCount; i++) {
       const yBase = (height / (linesCount + 1)) * (i + 1);
@@ -1992,7 +2122,7 @@ function initPulsarCanvas() {
 
       for (let x = 0; x < width; x += 3) {
         const normX = x / width;
-        const centerDist = Math.abs(normX - 0.5);
+        const centerDist = Math.abs(normX - cursorDistort);
         const envelope = Math.max(0, 1 - centerDist * 3.5);
         const wave = Math.sin(x * 0.03 + t + i * 0.4) * Math.cos(x * 0.015 - t);
         const yOffset = wave * envelope * 24;
@@ -2002,12 +2132,11 @@ function initPulsarCanvas() {
       }
       ctx.stroke();
     }
-    requestAnimationFrame(render);
+    if (!prefersReduced) requestAnimationFrame(render);
   }
   render();
 }
 
-// View Transition Enabled Tab Switching
 function activateTab(tabId) {
   const switchFn = () => {
     activeTabId = tabId;
@@ -2023,6 +2152,11 @@ function activateTab(tabId) {
     const titleSpan = activeItem ? activeItem.querySelector('.item-title').textContent : 'Deployment';
     document.getElementById('deck-serial-title').textContent = titleSpan;
     window.location.hash = tabId;
+
+    // Mobile sidebar auto-close
+    if (window.innerWidth <= 840) {
+      document.getElementById('sidebar').classList.remove('open');
+    }
   };
 
   if (document.startViewTransition) {
@@ -2032,7 +2166,29 @@ function activateTab(tabId) {
   }
 }
 
-// Toggle switch handler
+function toggleMobileSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function togglePasswordVisibility(fieldId, btn) {
+  const input = document.getElementById(fieldId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = 'Hide';
+  } else {
+    input.type = 'password';
+    btn.textContent = 'Show';
+  }
+}
+
+function copyVarName(varName, e) {
+  if (e) e.stopPropagation();
+  navigator.clipboard.writeText(varName).then(() => {
+    showToast(`Copied: ${varName}`);
+  });
+}
+
 function toggleSwitch(fieldId) {
   const input = document.getElementById(fieldId);
   const rail = document.getElementById(`switch-${fieldId}`);
@@ -2045,7 +2201,6 @@ function toggleSwitch(fieldId) {
   markFieldDirty(fieldId, input.value);
 }
 
-// Real-time Diff Tracking
 function markFieldDirty(fieldId, newVal) {
   currentConfig[fieldId] = newVal;
   updateDiffState();
@@ -2100,7 +2255,6 @@ function closeDiffModal() {
   document.getElementById('diff-modal').style.display = 'none';
 }
 
-// Toast
 function showToast(msg) {
   const toast = document.getElementById('toast');
   toast.textContent = msg;
@@ -2108,7 +2262,6 @@ function showToast(msg) {
   setTimeout(() => { toast.style.display = 'none'; }, 3200);
 }
 
-// Load config
 async function loadConfig() {
   try {
     logEvent('info', 'GET /api/config — querying environment state...');
@@ -2145,7 +2298,6 @@ async function loadConfig() {
   }
 }
 
-// Save config
 async function saveConfig() {
   try {
     logEvent('info', 'POST /api/config — saving changes to .env.local...');
@@ -2171,7 +2323,6 @@ async function saveConfig() {
   }
 }
 
-// Reload Server
 async function reloadEnv() {
   try {
     showToast('Reloading server environment...');
@@ -2190,7 +2341,6 @@ async function reloadEnv() {
   }
 }
 
-// Drawers
 function toggleRawDrawer() {
   const d = document.getElementById('raw-drawer');
   d.style.display = d.style.display === 'flex' ? 'none' : 'flex';
@@ -2280,21 +2430,18 @@ function execCommand(idx) {
 window.addEventListener('keydown', (e) => {
   const isInput = document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA';
   
-  // Cmd/Ctrl+K: Command Palette
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault();
     openCommandPalette();
     return;
   }
 
-  // Ctrl+S: Save
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
     e.preventDefault();
     saveConfig();
     return;
   }
 
-  // Escape: Close all overlays
   if (e.key === 'Escape') {
     closeCommandPalette();
     closeDiffModal();
@@ -2303,7 +2450,6 @@ window.addEventListener('keydown', (e) => {
     return;
   }
 
-  // If in Command Palette: Up / Down / Enter
   if (document.getElementById('cmd-palette').style.display === 'flex') {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -2320,7 +2466,6 @@ window.addEventListener('keydown', (e) => {
     return;
   }
 
-  // Vim j/k outside input
   if (!isInput) {
     if (e.key === 'j') {
       navigateTabs(1);
@@ -2354,14 +2499,30 @@ function navigateTabs(delta) {
   if (targetId) activateTab(targetId);
 }
 
+// Category-Aware Sidebar Filtering
 function filterCatalog(q) {
   const term = q.toLowerCase();
-  document.querySelectorAll('.catalog-item').forEach(el => {
+  const items = Array.from(document.querySelectorAll('.catalog-item'));
+  
+  items.forEach(el => {
     const title = el.querySelector('.item-title').textContent.toLowerCase();
     if (title.includes(term)) {
       el.style.display = 'flex';
     } else {
       el.style.display = 'none';
+    }
+  });
+
+  // Hide empty category headers
+  document.querySelectorAll('.category-header').forEach(catHeader => {
+    const catName = catHeader.getAttribute('data-category');
+    const visibleChildren = items.filter(it => 
+      it.getAttribute('data-parent-cat') === catName && it.style.display !== 'none'
+    );
+    if (visibleChildren.length === 0 && term.length > 0) {
+      catHeader.style.display = 'none';
+    } else {
+      catHeader.style.display = 'block';
     }
   });
 }
