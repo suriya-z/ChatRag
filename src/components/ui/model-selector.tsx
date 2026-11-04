@@ -20,7 +20,7 @@ const tooltipStyles = `
     left: 50%;
     transform: translateX(-50%) translateY(-4px);
     padding: 4px 8px;
-    background: #FF6417;
+    background: #11131a; border: 1px solid #1a1c24; border-radius: 4px;
     color: white;
     font-size: 11px;
     font-weight: 500;
@@ -57,10 +57,10 @@ export function ModelSelector() {
     }
   }, []);
 
-  const dropdownBgColor = isDarkMode ? '#2F2F2F' : '#EFE1D5';
-  const hoverColor = isDarkMode ? '#424242' : '#E5D6C9';
-  const textColor = isDarkMode ? '#E6E6E6' : '#444';
-  const checkColor = isDarkMode ? '#E6E6E6' : '#FF6417';
+  const dropdownBgColor = '#11131a';
+  const hoverColor = '#181b24';
+  const textColor = '#ffffff';
+  const checkColor = '#38bdf8';
 
   return (
     <div

@@ -689,27 +689,27 @@
 }
 
 @layer base {
-  :root {
-    --background: #FFF1E5;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 22 100% 54%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+  :root, .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 231 28% 4%;
+    --card-foreground: 0 0% 100%;
+    --popover: 227 21% 8%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 199 95% 61%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 227 21% 8%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 227 21% 8%;
+    --muted-foreground: 215 16% 65%;
+    --accent: 227 21% 8%;
+    --accent-foreground: 199 95% 61%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: #FFE0D0;
-    --input: #FFE0D0;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    --destructive-foreground: 0 0% 100%;
+    --border: 229 16% 12%;
+    --input: 229 16% 12%;
+    --ring: 199 95% 61%;
+    --radius: 0.25rem;
     --z-header: 100;
     --z-overlay: 200;
     --z-visual-backdrop: 250;
@@ -717,13 +717,13 @@
     --z-modal: 300;
     --z-dropdown: 10000;
     --z-tooltip: 10001;
-    --scrollbar-width: 3px;
-    --scrollbar-track: #FFF1E5;
-    --scrollbar-track-dark: #212121;
-    --scrollbar-thumb: #EADDD7;
-    --scrollbar-thumb-dark: #2F2F2F;
-    --scrollbar-thumb-hover: #D4C0B6;
-    --scrollbar-thumb-hover-dark: #424242;
+    --scrollbar-width: 5px;
+    --scrollbar-track: #000000;
+    --scrollbar-track-dark: #000000;
+    --scrollbar-thumb: #1a1c24;
+    --scrollbar-thumb-dark: #1a1c24;
+    --scrollbar-thumb-hover: #38bdf8;
+    --scrollbar-thumb-hover-dark: #38bdf8;
     --z-negative: -1;
     --z-normal: 1;
     --z-sticky: 10;
@@ -731,7 +731,6 @@
     --z-popover: 50;
     --z-tooltip: 60;
 
-    /* Enhanced mobile browser compatibility variables */
     --safe-area-inset-top: env(safe-area-inset-top);
     --safe-area-inset-right: env(safe-area-inset-right);
     --safe-area-inset-bottom: env(safe-area-inset-bottom);
@@ -739,28 +738,11 @@
     --viewport-height: 100vh;
     --viewport-height-mobile: 100dvh;
   }
+}
 
-  .dark {
-    --background: 20 14.3% 4.1%;
-    --foreground: 60 9.1% 97.8%;
-    --card: 20 14.3% 4.1%;
-    --card-foreground: 60 9.1% 97.8%;
-    --popover: 20 14.3% 4.1%;
-    --popover-foreground: 60 9.1% 97.8%;
-    --primary: 60 9.1% 97.8%;
-    --primary-foreground: 24 9.8% 10%;
-    --secondary: 12 6.5% 15.1%;
-    --secondary-foreground: 60 9.1% 97.8%;
-    --muted: 12 6.5% 15.1%;
-    --muted-foreground: 24 5.4% 63.9%;
-    --accent: 12 6.5% 15.1%;
-    --accent-foreground: 60 9.1% 97.8%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 60 9.1% 97.8%;
-    --border: 12 6.5% 15.1%;
-    --input: 12 6.5% 15.1%;
-    --ring: 24 5.4% 63.9%;
-  }
+::selection {
+  background: #38bdf8;
+  color: #000000;
 }
 
 /* Font Family Classes - Only applied when explicitly added to elements */
@@ -1524,16 +1506,16 @@ html {
 
 /* Direct child div of wrapper (the actual dropdown content) */
 [data-radix-popper-content-wrapper]>div {
-  background-color: #EFE1D5 !important;
-  border-radius: 12px !important;
+  background-color: #11131a !important;
+  border-radius: 4px !important;
   overflow: hidden !important;
-  border: 1px solid #D4C4B5 !important;
-  box-shadow: none !important;
+  border: 1px solid #1a1c24 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
 }
 
 .dark [data-radix-popper-content-wrapper]>div {
-  background-color: #2F2F2F !important;
-  border: 1px solid #4A4A4A !important;
+  background-color: #11131a !important;
+  border: 1px solid #1a1c24 !important;
 }
 
 /* Select/listbox dropdowns - remove double border effect */
@@ -1621,15 +1603,15 @@ html {
 
 /* Prevent flash of white content in dropdowns */
 html.dark {
-  --dropdown-bg: #2F2F2F;
-  --dropdown-border: #424242;
-  --dropdown-hover: #424242;
+  --dropdown-bg: #11131a;
+  --dropdown-border: #1a1c24;
+  --dropdown-hover: #181b24;
 }
 
 html:not(.dark) {
-  --dropdown-bg: #FFF0E8;
-  --dropdown-border: transparent;
-  --dropdown-hover: #e5d6c9;
+  --dropdown-bg: #11131a;
+  --dropdown-border: #1a1c24;
+  --dropdown-hover: #181b24;
 }
 
 /* Pre-style dropdown elements before they animate in */
@@ -1947,7 +1929,7 @@ body.dialog-open {
 
 .dark .chat-message::-webkit-scrollbar-track,
 .dark .scroll-container::-webkit-scrollbar-track {
-  background-color: #212121 !important;
+  background-color: #000000 !important;
 }
 
 /* Light theme scrollbar */
@@ -1959,7 +1941,7 @@ body.dialog-open {
 
 .chat-message::-webkit-scrollbar-track,
 .scroll-container::-webkit-scrollbar-track {
-  background-color: #FFF1E5 !important;
+  background-color: #000000 !important;
 }
 
 /* Scrollbar Fix for Dialog and Chat Messages */
@@ -2439,7 +2421,7 @@ html {
 #main-chat-container::-webkit-scrollbar-track,
 .absolute.inset-0.overflow-y-auto.scrollbar.scroll-container::-webkit-scrollbar-track,
 .chat-message-container::-webkit-scrollbar-track {
-  background-color: var(--scrollbar-track, #FFF1E5) !important;
+  background-color: var(--scrollbar-track, #000000) !important;
   position: absolute !important;
   right: 0 !important;
   top: 0 !important;
@@ -2453,7 +2435,7 @@ html {
 .dark #main-chat-container::-webkit-scrollbar-track,
 .dark .absolute.inset-0.overflow-y-auto.scrollbar.scroll-container::-webkit-scrollbar-track,
 .dark .chat-message-container::-webkit-scrollbar-track {
-  background-color: var(--scrollbar-track-dark, #212121) !important;
+  background-color: var(--scrollbar-track-dark, #000000) !important;
 }
 
 /* Thumb styling - chat containers only */
@@ -2474,7 +2456,7 @@ html {
 .dark #main-chat-container::-webkit-scrollbar-thumb,
 .dark .absolute.inset-0.overflow-y-auto.scrollbar.scroll-container::-webkit-scrollbar-thumb,
 .dark .chat-message-container::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar-thumb-dark, #2F2F2F) !important;
+  background-color: var(--scrollbar-thumb-dark, #1a1c24) !important;
 }
 
 /* SIDEBAR SPECIFIC SCROLLBAR STYLING */
@@ -2497,13 +2479,13 @@ html {
 .sidebar .scrollbar::-webkit-scrollbar-track,
 .group\/sidebar .scrollbar::-webkit-scrollbar-track,
 .fixed.top-0.left-0.z-40.h-full.w-64.overflow-hidden .overflow-y-auto.scrollbar::-webkit-scrollbar-track {
-  background-color: #FFF1E5 !important;
+  background-color: #000000 !important;
 }
 
 .dark .sidebar .scrollbar::-webkit-scrollbar-track,
 .dark .group\/sidebar .scrollbar::-webkit-scrollbar-track,
 .dark .fixed.top-0.left-0.z-40.h-full.w-64.overflow-hidden .overflow-y-auto.scrollbar::-webkit-scrollbar-track {
-  background-color: #212121 !important;
+  background-color: #000000 !important;
 }
 
 .sidebar .scrollbar::-webkit-scrollbar-thumb,
@@ -2516,7 +2498,7 @@ html {
 .dark .sidebar .scrollbar::-webkit-scrollbar-thumb,
 .dark .group\/sidebar .scrollbar::-webkit-scrollbar-thumb,
 .dark .fixed.top-0.left-0.z-40.h-full.w-64.overflow-hidden .overflow-y-auto.scrollbar::-webkit-scrollbar-thumb {
-  background-color: #2F2F2F !important;
+  background-color: #1a1c24 !important;
 }
 
 /* Sidebar scrollbar hover effects */
@@ -2545,7 +2527,7 @@ html {
 }
 
 .light-scrollbar::-webkit-scrollbar-track {
-  background-color: #FFF1E5 !important;
+  background-color: #000000 !important;
 }
 
 .light-scrollbar::-webkit-scrollbar-thumb {
@@ -2570,7 +2552,7 @@ html {
 }
 
 .dark-scrollbar::-webkit-scrollbar-track {
-  background-color: #212121 !important;
+  background-color: #000000 !important;
 }
 
 .dark-scrollbar::-webkit-scrollbar-thumb {
@@ -2657,11 +2639,11 @@ body,
 
 /* Sidebar-specific scrollbar utility classes */
 .scrollbar-track-\[\#FFF1E5\]::-webkit-scrollbar-track {
-  background-color: #FFF1E5 !important;
+  background-color: #000000 !important;
 }
 
 .dark .scrollbar-track-\[\#212121\]::-webkit-scrollbar-track {
-  background-color: #212121 !important;
+  background-color: #000000 !important;
 }
 
 .scrollbar-thumb-\[\#EADDD7\]::-webkit-scrollbar-thumb {
@@ -2670,7 +2652,7 @@ body,
 }
 
 .dark .scrollbar-thumb-\[\#2F2F2F\]::-webkit-scrollbar-thumb {
-  background-color: #2F2F2F !important;
+  background-color: #1a1c24 !important;
 }
 
 .group-hover\/sidebar\:scrollbar-thumb-\[\#D4C0B6\]:hover::-webkit-scrollbar-thumb {
@@ -2713,7 +2695,7 @@ body,
 }
 
 .dark .chat-message-container::-webkit-scrollbar-track {
-  background-color: #212121 !important;
+  background-color: #000000 !important;
 }
 
 .chat-message-container::-webkit-scrollbar-thumb {
@@ -2724,7 +2706,7 @@ body,
 }
 
 .dark .chat-message-container::-webkit-scrollbar-thumb {
-  background-color: #2F2F2F !important;
+  background-color: #1a1c24 !important;
 }
 
 /* Add hover effects for scrollbar */
@@ -2761,7 +2743,7 @@ body,
   box-shadow: none !important;
   border: 1px solid rgba(58, 58, 58, 1) !important;
   /* Dark gray border instead of white */
-  background-color: #212121 !important;
+  background-color: #000000 !important;
 }
 
 /* Document dashboard hover effects for tables */
@@ -2847,12 +2829,10 @@ body,
 
 /* First column cells (row headers) styling */
 .chat-message table tr td:first-child {
-  background-color: #ffe8dc !important;
-  /* Changed from #F5E9DF to #ffe8dc as requested */
+  background-color: #0d0f15 !important;
   font-weight: 600 !important;
-  color: #1A1A1A !important;
-  border-right: 1px solid #E6D5C5 !important;
-  /* Ensure the right border is visible */
+  color: #ffffff !important;
+  border-right: 1px solid #1a1c24 !important;
 }
 
 /* Bottom-left corner cell special styling */
@@ -2862,11 +2842,9 @@ body,
 }
 
 .dark .chat-message table tr td:first-child {
-  background-color: #262626 !important;
-  /* Slightly darker than regular dark cell background */
-  color: #E6E6E6 !important;
-  border-right: 1px solid #424242 !important;
-  /* Dark mode border */
+  background-color: #0d0f15 !important;
+  color: #ffffff !important;
+  border-right: 1px solid #1a1c24 !important;
 }
 
 /* Ensure top-left corner cell has proper styling */
@@ -2888,10 +2866,11 @@ body,
 
   .chat-message table th,
   .chat-message table td {
-    padding: 0.3rem 0.5rem !important;
-    word-break: break-word !important;
-    hyphens: auto !important;
-  }
+  border: 1px solid #1a1c24 !important;
+  padding: 0.5rem 0.75rem !important;
+  background-color: #090a0f !important;
+  color: #cbd5e1 !important;
+}
 
   /* Allow horizontal scrolling for tables on mobile */
   .chat-message div:has(> table) {
@@ -2934,7 +2913,7 @@ body,
   margin-bottom: 0.5rem !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  border: 1px solid #E6D5C5 !important;
+  border: 1px solid #1a1c24 !important;
   border-radius: 8px !important;
   overflow: hidden !important;
   width: 100% !important;
@@ -2947,7 +2926,7 @@ body,
 .chat-message h3:has(+ table),
 .chat-message h3:has(+ div table) {
   font-weight: bold !important;
-  border-bottom: 1px solid #E6D5C5 !important;
+  border-bottom: 1px solid #1a1c24 !important;
   padding-bottom: 0.5rem !important;
   margin-bottom: 0.75rem !important;
   margin-top: 2rem !important;
@@ -2972,22 +2951,20 @@ body,
 
 /* Table header styling */
 .chat-message table th {
-  background-color: #EFE1D5 !important;
-  color: #1A1A1A !important;
+  background-color: #11131a !important;
+  color: #ffffff !important;
   font-weight: 600 !important;
-  border: 1px solid #E6D5C5 !important;
+  border: 1px solid #1a1c24 !important;
   padding: 0.5rem 0.75rem !important;
   text-align: left !important;
 }
 
 /* First column cells (row headers) styling */
 .chat-message table tr td:first-child {
-  background-color: #ffe8dc !important;
-  /* Changed from #F5E9DF to #ffe8dc as requested */
+  background-color: #0d0f15 !important;
   font-weight: 600 !important;
-  color: #1A1A1A !important;
-  border-right: 1px solid #E6D5C5 !important;
-  /* Ensure the right border is visible */
+  color: #ffffff !important;
+  border-right: 1px solid #1a1c24 !important;
 }
 
 /* Bottom-left corner cell special styling */
@@ -2997,11 +2974,9 @@ body,
 }
 
 .dark .chat-message table tr td:first-child {
-  background-color: #262626 !important;
-  /* Slightly darker than regular dark cell background */
-  color: #E6E6E6 !important;
-  border-right: 1px solid #424242 !important;
-  /* Dark mode border */
+  background-color: #0d0f15 !important;
+  color: #ffffff !important;
+  border-right: 1px solid #1a1c24 !important;
 }
 
 /* Ensure top-left corner cell has proper styling */
@@ -3015,23 +2990,23 @@ body,
 }
 
 .dark .chat-message table th {
-  background-color: #2F2F2F !important;
-  color: #E6E6E6 !important;
-  border-color: #424242 !important;
+  background-color: #11131a !important;
+  color: #ffffff !important;
+  border-color: #1a1c24 !important;
 }
 
 /* Table cell styling */
 .chat-message table td {
-  border: 1px solid #E6D5C5 !important;
+  border: 1px solid #1a1c24 !important;
   padding: 0.5rem 0.75rem !important;
-  background-color: #FFF1E5 !important;
-  color: #1A1A1A !important;
+  background-color: #090a0f !important;
+  color: #cbd5e1 !important;
 }
 
 .dark .chat-message table td {
-  border-color: #424242 !important;
-  background-color: #212121 !important;
-  color: #E6E6E6 !important;
+  border-color: #1a1c24 !important;
+  background-color: #090a0f !important;
+  color: #cbd5e1 !important;
 }
 
 /* Ensure iframe content is isolated from dark mode */
@@ -3381,11 +3356,11 @@ div[class*="text-"]::after {
 .explanation-text {
   animation: fadeIn 0.3s ease-in-out;
   position: relative;
-  border-left: 3px solid #FF6417 \!important;
+  border-left: 1px solid #38bdf8 !important;
 }
 
 .dark .explanation-text {
-  border-left: 3px solid #6BA5ED \!important;
+  border-left: 1px solid #38bdf8 !important;
 }
 
 /* At the end of the file, add this CSS */

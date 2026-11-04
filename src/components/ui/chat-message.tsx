@@ -118,7 +118,7 @@ function highlightDocumentMentions(text: string) {
     const cleanedDocName = docName.replace(/\\/g, '');
 
     return `<span class="inline-flex items-center leading-none">
-      <span class="text-[#FF6417] dark:text-[#FF8A4D] font-medium align-baseline leading-none">${cleanedDocName}</span>
+      <span class="text-[#38bdf8] font-medium align-baseline leading-none">${cleanedDocName}</span>
     </span>`;
   });
 
@@ -491,7 +491,7 @@ const GeneratedImage = React.memo(function GeneratedImage({
       className={cn(
         "relative rounded-lg overflow-hidden group w-full max-w-4xl mb-4 cursor-pointer",
         getAspectRatioClass(),
-        isSourceImage && "border-2 border-[#FF6417] dark:border-[#E55000]" // Add border for source images
+        isSourceImage && "border border-[#38bdf8]" // Add border for source images
       )}
       style={{ touchAction: 'manipulation' }} // Disable double-tap zoom for faster touch response
       onClick={handleImageClick} // Make the entire container clickable
@@ -523,7 +523,7 @@ const GeneratedImage = React.memo(function GeneratedImage({
             </div>
             <div className="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div
-                className="bg-[#FF6417] dark:bg-[#FF8A4D] h-2 rounded-full transition-all duration-300"
+                className="bg-[#38bdf8] h-1.5 rounded-none transition-all duration-300"
                 style={{ width: `${Math.max(5, loadingProgress)}%` }}
               ></div>
             </div>
@@ -876,7 +876,7 @@ const LoadingVideo = React.memo(function LoadingVideo({
 
           <div className="w-full max-w-xs bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-2">
             <div
-              className="bg-[#FF6417] dark:bg-[#FF8A4D] h-2.5 rounded-full transition-all duration-300"
+              className="bg-[#38bdf8] h-1.5 rounded-none transition-all duration-300"
               style={{ width: `${Math.max(5, progress || 0)}%` }}
             ></div>
           </div>
@@ -996,7 +996,7 @@ const LoadingImage = React.memo(function LoadingImage({
               </div>
               <div className="w-40 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
-                  className="bg-[#FF6417] dark:bg-[#FF8A4D] h-2 rounded-full transition-all duration-300"
+                  className="bg-[#38bdf8] h-1.5 rounded-none transition-all duration-300"
                   style={{ width: `${Math.max(5, progress || 0)}%` }}
                 ></div>
               </div>
@@ -3940,7 +3940,7 @@ ChatMessage = function ({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[#FF6417] dark:text-[#FF8A4D] hover:underline font-medium"
+        className="text-[#38bdf8] hover:underline font-medium"
       >
         {children}
       </a>
@@ -4397,7 +4397,7 @@ ChatMessage = function ({
                     {/* Check if we have specific loading text */}
                     {typeof message.content === 'string' && message.content === 'Generating image...' ? (
                       <>
-                        <Loader2 className="h-4 w-4 animate-spin text-[#FF6417] dark:text-[#FF6417]" />
+                        <Loader2 className="h-4 w-4 animate-spin text-[#38bdf8]" />
                         <span className="text-sm text-gray-600 dark:text-gray-400">Generating image...</span>
                       </>
                     ) : (
@@ -4780,12 +4780,12 @@ ChatMessage = function ({
                               // Disable if TTS is playing (loading audio) OR if settings are initializing
                               disabled={audioState.isLoading || audioSettings.loading}
                               className={cn(
-                                "flex items-center justify-center w-8 h-8 text-gray-700 dark:text-gray-400 hover:bg-[#FFE0D0] dark:hover:bg-[#424242] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors",
+                                "flex items-center justify-center w-8 h-8 text-gray-700 dark:text-gray-400 hover:bg-[#181b24] hover:text-white rounded-[4px] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors",
                                 // Only apply opacity for active TTS loading (bouncing dots), NOT initial settings load
                                 audioState.isLoading && "opacity-70 cursor-wait",
                                 // Just applying cursor-wait for initial load
                                 audioSettings.loading && "cursor-wait",
-                                audioState.isPlaying && "text-[#FF6417] dark:text-[#E6E6E6]"
+                                audioState.isPlaying && "text-[#38bdf8]"
                               )}
                               aria-label={audioState.isLoading ? "Loading..." : audioState.isPlaying ? "Stop" : "Play text to speech"}
                               onMouseEnter={() => setTooltipIfNotTouch(setShowAISpeakTooltip, true)}
@@ -4837,7 +4837,7 @@ ChatMessage = function ({
                               downloadMessageAsPDF(message.role as 'user' | 'assistant', textToDownload);
                             }}
                             className={cn(
-                              "flex items-center justify-center w-8 h-8 text-gray-700 dark:text-gray-400 hover:bg-[#FFE0D0] dark:hover:bg-[#424242] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors"
+                              "flex items-center justify-center w-8 h-8 text-gray-700 dark:text-gray-400 hover:bg-[#181b24] hover:text-white rounded-[4px] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors"
                             )}
                             aria-label="Download as PDF"
                             onMouseEnter={() => setTooltipIfNotTouch(setShowPDFTooltip, true)}
@@ -4864,7 +4864,7 @@ ChatMessage = function ({
                             onClick={handleSendToRAG}
                             disabled={isSendingToRAG}
                             className={cn(
-                              "flex items-center justify-center w-8 h-8 text-gray-700 dark:text-gray-400 hover:bg-[#FFE0D0] dark:hover:bg-[#424242] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors",
+                              "flex items-center justify-center w-8 h-8 text-gray-700 dark:text-gray-400 hover:bg-[#181b24] hover:text-white rounded-[4px] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors",
                               isSendingToRAG && "opacity-70 cursor-wait"
                             )}
                             aria-label="Send to knowledge base"
@@ -4902,7 +4902,7 @@ ChatMessage = function ({
                                   <button
                                     ref={previewButtonRef}
                                     onClick={() => openArtifact(code.trim(), language as any)}
-                                    className="flex items-center justify-center w-8 h-8 text-gray-700 dark:text-gray-400 hover:bg-[#FFE0D0] dark:hover:bg-[#424242] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors"
+                                    className="flex items-center justify-center w-8 h-8 text-gray-700 dark:text-gray-400 hover:bg-[#181b24] hover:text-white rounded-[4px] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors"
                                     onMouseEnter={() => setTooltipIfNotTouch(setShowPreviewTooltip, true)}
                                     onMouseLeave={() => setShowPreviewTooltip(false)}
                                     onFocus={() => setTooltipIfNotTouch(setShowPreviewTooltip, true)}
@@ -4932,7 +4932,7 @@ ChatMessage = function ({
                               <DropdownMenuTrigger asChild>
                                 <button
                                   ref={optionsButtonRef}
-                                  className="dropdown-trigger flex items-center justify-center w-6 h-8 text-gray-700 dark:text-gray-400 hover:bg-[#FFE0D0] dark:hover:bg-[#424242] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors"
+                                  className="dropdown-trigger flex items-center justify-center w-6 h-8 text-gray-700 dark:text-gray-400 hover:bg-[#181b24] hover:text-white rounded-[4px] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors"
                                   onMouseEnter={() => setShowAIOptionsTooltip(true)}
                                   onMouseLeave={() => setShowAIOptionsTooltip(false)}
                                   onFocus={() => setShowAIOptionsTooltip(true)}
@@ -4943,11 +4943,11 @@ ChatMessage = function ({
                               </DropdownMenuTrigger>
                               <DropdownMenuContent
                                 align="end"
-                                className="w-32 bg-[#FFF0E8] dark:bg-[#2F2F2F] rounded-xl shadow-lg p-1"
+                                className="w-32 bg-[#11131a] border border-[#1a1c24] rounded-[4px] shadow-lg p-1"
                               >
                                 <DropdownMenuItem
                                   onClick={handleDownloadAudio}
-                                  className="flex items-center gap-2 cursor-pointer px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#FFE0D0] dark:hover:bg-[#424242] rounded-lg transition-colors"
+                                  className="flex items-center gap-2 cursor-pointer px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-[#181b24] hover:text-white rounded-[4px] rounded-lg transition-colors"
                                 >
                                   <Download className="h-3.5 w-3.5" />
                                   <span>Download</span>
@@ -5028,7 +5028,7 @@ ChatMessage = function ({
                 <div className={cn(
                   "inline-block overflow-hidden max-w-none chat-message",
                   isLastMessage && "mb-4",
-                  "bg-[#EFE1D5] dark:bg-[#303030] rounded-[20px] px-4 py-2",
+                  "bg-[#11131a] border border-[#1a1c24] text-white rounded-[4px] px-4 py-2.5 shadow-sm",
                   textSizeClasses[textSize].base,
                   fontClasses[fontFamily]
                 )}>
@@ -5051,7 +5051,7 @@ ChatMessage = function ({
                         />
                       ) : (
                         <div className={cn(
-                          "break-words text-gray-700 dark:text-gray-300",
+                          "break-words text-white",
                           textSizeClasses[textSize].base,
                           fontClasses[fontFamily] || '',
                           "leading-normal"
@@ -5091,9 +5091,9 @@ ChatMessage = function ({
                             onClick={handleTextToSpeech}
                             disabled={audioState.isLoading}
                             className={cn(
-                              "flex items-center justify-center w-7 h-7 text-gray-600 dark:text-gray-400 hover:bg-[#FFE0D0] dark:hover:bg-[#424242] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors",
+                              "flex items-center justify-center w-7 h-7 text-gray-600 dark:text-gray-400 hover:bg-[#181b24] hover:text-white rounded-[4px] hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors",
                               audioState.isLoading && "opacity-70 cursor-wait",
-                              audioState.isPlaying && "text-[#FF6417] dark:text-[#E6E6E6]"
+                              audioState.isPlaying && "text-[#38bdf8]"
                             )}
                             aria-label={audioState.isLoading ? "Loading..." : audioState.isPlaying ? "Stop" : "Play text to speech"}
                             onMouseEnter={() => setTooltipIfNotTouch(setShowUserSpeakTooltip, true)}

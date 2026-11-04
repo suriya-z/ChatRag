@@ -1,5 +1,7 @@
 'use client';
 
+import { PulsarWaveHero } from '@/components/ui/pulsar-wave-hero';
+
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { ChatInput, type ChatInputHandle } from '@/components/ui/chat-input';
@@ -4488,7 +4490,7 @@ export default function Home() {
     <main className={cn(
       "flex flex-col h-screen transition-[margin] duration-200 ease-in-out relative",
       isSidebarOpen ? "lg:ml-64" : "",
-      !backgroundImage ? (theme === 'dark' ? "bg-[#212121]" : "bg-[#FFF1E5]") : ""
+      !backgroundImage ? "bg-[#000000]" : ""
     )}>
       {/* Removed Tool call confirmation dialog */}
       {backgroundImage && (
@@ -4519,7 +4521,7 @@ export default function Home() {
         />
         <div className={cn(
           "absolute inset-0 flex flex-col",
-          !backgroundImage && (theme === 'dark' ? "bg-[#212121]" : "bg-[#FFF1E5]")
+          !backgroundImage && "bg-[#000000]"
         )}>
           {/* Add keyboard aware handler */}
           <script
@@ -4567,9 +4569,9 @@ export default function Home() {
                 <div
                   ref={chatContainerRef}
                   id="main-chat-container"
-                  className="absolute inset-0 overflow-y-auto scrollbar scroll-container chat-message-container main-content-mobile-padding chat-messages-fade-mask scrollbar-w-3 scrollbar-track-[#FFF1E5] dark:scrollbar-track-[#212121] scrollbar-thumb-[#EADDD7] dark:scrollbar-thumb-[#2F2F2F] group-hover/chat:scrollbar-thumb-[#D4C0B6] group-hover/chat:dark:scrollbar-thumb-[#424242] group-data-[state=dimmed]/root:scrollbar-thumb-[#EADDD7] group-data-[state=dimmed]/root:dark:scrollbar-thumb-[#2F2F2F]"
+                  className="absolute inset-0 overflow-y-auto scrollbar scroll-container chat-message-container main-content-mobile-padding chat-messages-fade-mask scrollbar-w-3 scrollbar-track-[#000000] dark:scrollbar-track-[#000000] scrollbar-thumb-[#1a1c24] dark:scrollbar-thumb-[#1a1c24] group-hover/chat:scrollbar-thumb-[#38bdf8] group-hover/chat:dark:scrollbar-thumb-[#38bdf8] group-data-[state=dimmed]/root:scrollbar-thumb-[#1a1c24] group-data-[state=dimmed]/root:dark:scrollbar-thumb-[#1a1c24]"
                   style={{
-                    backgroundColor: !backgroundImage ? (theme === 'dark' ? '#212121' : '#FFF1E5') : 'transparent'
+                    backgroundColor: !backgroundImage ? '#000000' : 'transparent'
                   }}
                 >
                   <AnimatePresence mode="wait">
@@ -4613,7 +4615,7 @@ export default function Home() {
               <div
                 className="flex-1 flex flex-col relative main-content-mobile-padding"
                 style={{
-                  backgroundColor: !backgroundImage ? (theme === 'dark' ? '#212121' : '#FFF1E5') : 'transparent'
+                  backgroundColor: !backgroundImage ? '#000000' : 'transparent'
                 }}
               >
                 {/* Chat switching transition overlay - invisible, same color as background */}
@@ -4621,7 +4623,7 @@ export default function Home() {
                   <div
                     className="absolute inset-0 z-50 pointer-events-none"
                     style={{
-                      backgroundColor: !backgroundImage ? (theme === 'dark' ? '#212121' : '#FFF1E5') : 'transparent'
+                      backgroundColor: !backgroundImage ? '#000000' : 'transparent'
                     }}
                   >
                     {/* Invisible overlay */}
@@ -4776,7 +4778,10 @@ export default function Home() {
                         };
 
                         return (
-                          <SuggestionButtons onSuggestionClick={handleSuggestionClick} />
+                          <>
+                            <PulsarWaveHero />
+                            <SuggestionButtons onSuggestionClick={handleSuggestionClick} />
+                          </>
                         );
                       })()}
                     </div>
@@ -4949,7 +4954,7 @@ export default function Home() {
                 {/* Mobile disclaimer for conversation view - fixed at absolute bottom, above ChatInput */}
                 {/* ios-hidden: On iOS, this is hidden via CSS because chat-input.tsx already shows the disclaimer */}
                 <div
-                  className="sm:hidden ios-hidden fixed bottom-0 left-0 right-0 text-center pointer-events-none bg-[#FFF1E5] dark:bg-[#212121] z-50"
+                  className="sm:hidden ios-hidden fixed bottom-0 left-0 right-0 text-center pointer-events-none bg-[#000000] dark:bg-[#000000] z-50"
                   style={{
                     paddingTop: '4px',
                     paddingBottom: '12px'

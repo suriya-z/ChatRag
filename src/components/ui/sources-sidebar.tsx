@@ -226,7 +226,7 @@ export function SourcesSidebar({
         {isSourcesOpen && (
           <motion.aside
             ref={sidebarRef}
-            className="fixed right-2 top-4 bottom-4 z-[60] bg-[#FFF1E5]/60 dark:bg-[#212121]/75 backdrop-blur-md border border-[#FFE0D0]/60 dark:border-[#2F2F2F]/60 rounded-l-2xl overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.2),0_4px_10px_-2px_rgba(0,0,0,0.08)] dark:shadow-[0_6px_15px_-2px_rgba(0,0,0,0.3),0_2px_6px_-1px_rgba(0,0,0,0.15)]"
+            className="fixed right-2 top-4 bottom-4 z-[60] bg-[#090a0f] border border-[#1a1c24] rounded-[4px] overflow-hidden shadow-2xl"
             style={{ width: `${width}px` }}
             initial={{ x: '100%' }}
             animate={{ x: 0, transition: { type: 'spring', stiffness: 300, damping: 30, mass: 1 } }}
@@ -234,14 +234,14 @@ export function SourcesSidebar({
           >
             <div className="flex h-full flex-col">
               {/* Header - Modern design */}
-              <div className="flex items-center justify-between px-6 py-4 bg-[#FFF1E5]/30 dark:bg-[#212121]/30 backdrop-blur-sm border-b border-[#FFE0D0]/40 dark:border-[#2F2F2F]/40">
-                <h2 className="text-lg font-semibold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+              <div className="flex items-center justify-between px-6 py-4 bg-[#11131a] border-b border-[#1a1c24]">
+                <h2 className="text-lg font-semibold text-white tracking-tight">
                   Sources
                 </h2>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleClose}
-                    className="group relative flex items-center justify-center w-10 h-10 rounded-xl text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-100 bg-[#EFE1D5]/25 hover:bg-[#FFE0D0]/50 dark:bg-black/10 dark:hover:bg-black/20 backdrop-blur-none border border-[#FFE0D0]/40 hover:border-[#FFE0D0]/70 dark:border-white/10 dark:hover:border-white/20 transition-all duration-200 hover:scale-105"
+                    className="group relative flex items-center justify-center w-8 h-8 rounded-[4px] text-gray-300 hover:text-white bg-[#090a0f] hover:bg-[#181b24] border border-[#1a1c24] hover:border-[#38bdf8] transition-colors"
                   >
                     <X className="w-4 h-4 transition-transform duration-200 group-hover:rotate-90" />
                   </button>

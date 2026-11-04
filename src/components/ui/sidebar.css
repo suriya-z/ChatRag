@@ -2,27 +2,27 @@
 
 /* Theme-based CSS variables */
 [data-theme="dark"] {
-  --dropdown-bg: #2F2F2F;
-  --dropdown-hover: #424242;
-  --dropdown-text: #E6E6E6;
-  --dropdown-border: #2F2F2F;
+  --dropdown-bg: #11131a;
+  --dropdown-hover: #181b24;
+  --dropdown-text: #ffffff;
+  --dropdown-border: #11131a;
 
-  --folder-dropdown-bg: #2F2F2F;
-  --folder-dropdown-hover: #424242;
-  --folder-dropdown-text: #E6E6E6;
-  --folder-dropdown-border: #2F2F2F;
+  --folder-dropdown-bg: #11131a;
+  --folder-dropdown-hover: #181b24;
+  --folder-dropdown-text: #ffffff;
+  --folder-dropdown-border: #11131a;
 }
 
 [data-theme="light"] {
-  --dropdown-bg: #EFE1D5;
+  --dropdown-bg: #11131a;
   --dropdown-hover: #e5d6c9;
   --dropdown-text: #444;
-  --dropdown-border: #EFE1D5;
+  --dropdown-border: #11131a;
 
-  --folder-dropdown-bg: #EFE1D5;
+  --folder-dropdown-bg: #11131a;
   --folder-dropdown-hover: #e5d6c9;
   --folder-dropdown-text: #444;
-  --folder-dropdown-border: #EFE1D5;
+  --folder-dropdown-border: #11131a;
 }
 
 /* ============================================
@@ -39,35 +39,35 @@
 /* Hover styles - only apply on devices with true hover capability */
 @media (hover: hover) and (pointer: fine) {
   .chat-item-hover:hover {
-    background-color: #FFE8DC;
+    background-color: #181b24;
   }
 
   .dark .chat-item-hover:hover,
   [data-theme="dark"] .chat-item-hover:hover {
-    background-color: #2F2F2F;
+    background-color: #11131a;
   }
 
   .folder-item-hover:hover {
-    background-color: #FFE8DC;
+    background-color: #181b24;
   }
 
   .dark .folder-item-hover:hover,
   [data-theme="dark"] .folder-item-hover:hover {
-    background-color: #2F2F2F;
+    background-color: #11131a;
   }
 }
 
 /* Active state for touch devices - provides immediate feedback on tap */
 .chat-item-hover:active,
 .folder-item-hover:active {
-  background-color: #FFE8DC;
+  background-color: #181b24;
 }
 
 .dark .chat-item-hover:active,
 [data-theme="dark"] .chat-item-hover:active,
 .dark .folder-item-hover:active,
 [data-theme="dark"] .folder-item-hover:active {
-  background-color: #2F2F2F;
+  background-color: #11131a;
 }
 
 /* Dropdown item hover states */

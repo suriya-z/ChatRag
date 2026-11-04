@@ -3,16 +3,16 @@
 // Dropdown styles - frozen to prevent mutations
 export const DROPDOWN_STYLES = Object.freeze({
   dark: Object.freeze({
-    backgroundColor: '#2F2F2F',
-    color: '#E6E6E6',
-    border: '1px solid #2F2F2F',
-    hoverColor: '#424242'
+    backgroundColor: '#11131a',
+    color: '#ffffff',
+    border: '1px solid #1a1c24',
+    hoverColor: '#181b24'
   }),
   light: Object.freeze({
-    backgroundColor: '#EFE1D5',
-    color: '#444',
-    border: '1px solid #EFE1D5',
-    hoverColor: '#e5d6c9'
+    backgroundColor: '#11131a',
+    color: '#cbd5e1',
+    border: '1px solid #1a1c24',
+    hoverColor: '#181b24'
   })
 });
 
@@ -22,21 +22,21 @@ export const DROPDOWN_ITEM_BASE_STYLE = Object.freeze({
   padding: '12px 16px',
   margin: '2px 0',
   outline: 'none',
-  borderRadius: '8px',
+  borderRadius: '4px',
   transition: 'background-color 0.15s ease'
 });
 
 // Folder dropdown styles - matching chat dropdown for consistency
 export const FOLDER_DROPDOWN_STYLES = Object.freeze({
   dark: Object.freeze({
-    backgroundColor: '#2F2F2F',
-    border: '1px solid #2F2F2F',
-    hoverColor: '#424242'
+    backgroundColor: '#11131a',
+    border: '1px solid #1a1c24',
+    hoverColor: '#181b24'
   }),
   light: Object.freeze({
-    backgroundColor: '#EFE1D5',
-    border: '1px solid #EFE1D5',
-    hoverColor: '#e5d6c9'
+    backgroundColor: '#11131a',
+    border: '1px solid #1a1c24',
+    hoverColor: '#181b24'
   })
 });
 
@@ -46,7 +46,7 @@ export const FOLDER_ITEM_STYLE = Object.freeze({
   border: 'none',
   padding: '12px 16px',
   transition: 'background-color 0.15s ease',
-  borderRadius: '8px',
+  borderRadius: '4px',
   margin: '2px 0'
 });
 

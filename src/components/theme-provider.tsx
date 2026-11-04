@@ -67,11 +67,7 @@ export function ThemeProvider({
     root.classList.add(resolvedTheme);
     
     // Set background color CSS variable
-    if (resolvedTheme === 'light') {
-      root.style.setProperty('--bg-color', '#FFF1E5');
-    } else {
-      root.style.setProperty('--bg-color', '#1A1A1A');
-    }
+    root.style.setProperty('--bg-color', '#000000');
     
     window.localStorage.setItem(storageKey, theme);
   }, [theme, resolvedTheme, storageKey]);

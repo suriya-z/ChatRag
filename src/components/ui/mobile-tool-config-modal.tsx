@@ -321,7 +321,7 @@ export function MobileToolConfigModal({
                   className: "h-5 w-5"
                 } as React.HTMLAttributes<HTMLElement>)}
               </div>
-              <h2 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
+              <h2 className="text-xl font-bold text-white tracking-tight">
                 {toolConfig.title}
               </h2>
             </div>

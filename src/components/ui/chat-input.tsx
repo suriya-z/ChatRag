@@ -660,12 +660,12 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
   const borderLength = parseInt(process.env.NEXT_PUBLIC_BORDER_LENGTH || env.NEXT_PUBLIC_BORDER_LENGTH || '220');
 
   const borderColor1 = borderGradientEnabled
-    ? (process.env.NEXT_PUBLIC_BORDER_GRADIENT_COLOR_1 || env.NEXT_PUBLIC_BORDER_GRADIENT_COLOR_1 || '#FF6417')
-    : (process.env.NEXT_PUBLIC_BORDER_COLOR || env.NEXT_PUBLIC_BORDER_COLOR || '#FF6417');
+    ? (process.env.NEXT_PUBLIC_BORDER_GRADIENT_COLOR_1 || env.NEXT_PUBLIC_BORDER_GRADIENT_COLOR_1 || '#38bdf8')
+    : (process.env.NEXT_PUBLIC_BORDER_COLOR || env.NEXT_PUBLIC_BORDER_COLOR || '#38bdf8');
 
   const borderColor2 = borderGradientEnabled
-    ? (process.env.NEXT_PUBLIC_BORDER_GRADIENT_COLOR_2 || env.NEXT_PUBLIC_BORDER_GRADIENT_COLOR_2 || '#FF1744')
-    : (process.env.NEXT_PUBLIC_BORDER_COLOR || env.NEXT_PUBLIC_BORDER_COLOR || '#FF6417');
+    ? (process.env.NEXT_PUBLIC_BORDER_GRADIENT_COLOR_2 || env.NEXT_PUBLIC_BORDER_GRADIENT_COLOR_2 || '#0284c7')
+    : (process.env.NEXT_PUBLIC_BORDER_COLOR || env.NEXT_PUBLIC_BORDER_COLOR || '#38bdf8');
 
 
 
@@ -3226,8 +3226,8 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
       return (
         <button
           className={cn(
-            "inline-flex h-9 w-9 items-center justify-center rounded-tl-xl rounded-tr-xl rounded-bl-xl rounded-br-3xl transition-colors",
-            "bg-[#FF6417] dark:bg-[#FF6417] hover:bg-[#E55000] dark:hover:bg-[#E55000]",
+            "inline-flex h-9 w-9 items-center justify-center rounded-[4px] transition-colors",
+            "bg-white text-black hover:bg-[#38bdf8] hover:text-black font-semibold",
             "group relative focus:outline-none"
           )}
           onClick={(e) => {
@@ -3237,8 +3237,8 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
           }}
           disabled={parentIsLoading || isProcessingDoc}
         >
-          <ArrowUp className="h-5 w-5 text-white transform -translate-x-[1px] -translate-y-[1px]" />
-          <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-[calc(100%+4px)] px-2 py-1 text-xs font-medium text-white dark:text-[#E6E6E6] bg-[#FF6417] dark:bg-[#1A1A1A] rounded-md opacity-0 group-hover:opacity-100 whitespace-nowrap">
+          <ArrowUp className="h-5 w-5 text-black transform -translate-x-[0.5px] -translate-y-[0.5px]" />
+          <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-[calc(100%+4px)] px-2 py-1 text-xs font-medium text-white bg-[#11131a] border border-[#1a1c24] rounded-[4px] opacity-0 group-hover:opacity-100 whitespace-nowrap">
             {t('generate3DModel')}
           </div>
         </button>
@@ -3307,12 +3307,12 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
         type={parentIsLoading ? "button" : "submit"}
         onClick={handleButtonClick}
         className={cn(
-          "inline-flex h-9 w-9 items-center justify-center rounded-tl-xl rounded-tr-xl rounded-bl-xl rounded-br-3xl transition-all duration-200 group relative",
+          "inline-flex h-9 w-9 items-center justify-center rounded-[4px] transition-all duration-200 group relative",
           parentIsLoading
-            ? "bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800"
+            ? "bg-rose-600 hover:bg-rose-500 text-white"
             : isDisabled || !input.trim()
-              ? "bg-[#FFF0E8] dark:bg-[#2A2A2A] hover:bg-[#FFE0D0] dark:hover:bg-[#333333]"
-              : "bg-[#FF6417] hover:bg-[#E55000] dark:bg-[#E6E6E6] dark:hover:bg-[#D4D4D4]",
+              ? "bg-[#11131a] text-[#475569] border border-[#1a1c24]"
+              : "bg-white text-black hover:bg-[#38bdf8] hover:text-black font-semibold",
           "disabled:opacity-50 disabled:cursor-not-allowed"
         )}
         disabled={!parentIsLoading && (isDisabled || !input.trim())}
@@ -3322,13 +3322,13 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
           <StopCircle className="h-5 w-5 text-white" />
         ) : (
           <ArrowUp className={cn(
-            "h-5 w-5 transform -translate-x-[1px] -translate-y-[1px]",
+            "h-5 w-5 transform -translate-x-[0.5px] -translate-y-[0.5px]",
             isDisabled || !input.trim()
-              ? "text-gray-700 dark:text-gray-400"
-              : "text-white dark:text-[#1A1A1A]"
+              ? "text-[#475569]"
+              : "text-black"
           )} />
         )}
-        <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+4px)] px-2 py-1 text-xs font-medium text-white dark:text-[#E6E6E6] bg-[#FF6417] dark:bg-[#1A1A1A] rounded-md opacity-0 group-hover:opacity-100 whitespace-nowrap">
+        <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+4px)] px-2 py-1 text-xs font-medium text-white bg-[#11131a] border border-[#1a1c24] rounded-[4px] opacity-0 group-hover:opacity-100 whitespace-nowrap">
           {parentIsLoading ? t('stopGenerating') : t('sendPrompt')}
         </div>
       </button>
@@ -4190,7 +4190,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
         -webkit-user-select: text !important;
         user-select: text !important;
         /* Better cursor visibility */
-        caret-color: #FF6417 !important;
+        caret-color: #38bdf8 !important;
         /* Critical iOS fixes */
         font-size: max(16px, 1rem) !important; /* Prevent zoom on all mobile devices */
         /* Enhanced iOS Safari input behavior */
@@ -4593,16 +4593,10 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
             onSubmit={handleFormSubmit}
             onClick={handleFormClick}
             className={cn(
-              'relative rounded-3xl p-1 w-full sm:max-w-full lg:max-w-[52rem] border border-[#D4C0B6]/20 dark:border-gray-600/20',
-              // Force opaque background in voice mode with !important to ensure no bleed-through
-              isVoiceModeActive
-                ? '!bg-[#EFE1D5] dark:!bg-[#2F2F2F] !opacity-100 shadow-xl'
-                : 'bg-[#EFE1D5]/70 dark:bg-[#2F2F2F]/70 backdrop-blur-sm',
+              'relative rounded-[4px] p-1 w-full sm:max-w-full lg:max-w-[52rem] border border-[#1a1c24] bg-[#090a0f] focus-within:border-[#38bdf8] transition-colors',
               'sm:mb-8',
-              'rounded-3xl', // Consistent radius
-              // Only apply opacity reduction if NOT in voice mode (or force it off)
               (isProcessingDoc && !isVoiceModeActive) && 'opacity-70',
-              'z-20' // Ensure it sits above voice overlay text
+              'z-20'
             )}
           >
             {/* Animated Gradient Border - SVG Implementation */}
@@ -4620,9 +4614,9 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                   style={{
                     overflow: 'visible',
                     filter: `
-                      drop-shadow(0 0 1.5px rgba(255,100,23,0.8))
-                      drop-shadow(0 0 3px rgba(255,100,23,0.5))
-                      drop-shadow(0 0 5px rgba(255,100,23,0.25))
+                      drop-shadow(0 0 1.5px rgba(56,189,248,0.8))
+                      drop-shadow(0 0 3px rgba(56,189,248,0.5))
+                      drop-shadow(0 0 5px rgba(56,189,248,0.25))
                     `,
                     opacity: 0.85
                   }}
@@ -4631,9 +4625,9 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                   <rect
                     x="1.25" y="1.25"
                     width="calc(100% - 2.5px)" height="calc(100% - 2.5px)"
-                    rx="24" ry="24"
+                    rx="4" ry="4"
                     fill="none"
-                    stroke="#FF6417"
+                    stroke="#38bdf8"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     style={{
@@ -4646,9 +4640,9 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                   <rect
                     x="1.25" y="1.25"
                     width="calc(100% - 2.5px)" height="calc(100% - 2.5px)"
-                    rx="24" ry="24"
+                    rx="4" ry="4"
                     fill="none"
-                    stroke="#FF6417"
+                    stroke="#38bdf8"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     style={{
@@ -4662,7 +4656,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
             </div>
 
             {/* Background Layer - 80% opacity for aesthetic */}
-            <div className="absolute inset-0 rounded-3xl bg-[#EFE1D5]/80 dark:bg-[#2F2F2F]/80 backdrop-blur-sm z-10" />
+            <div className="absolute inset-0 rounded-[4px] bg-[#090a0f] border border-[#1a1c24] z-10" />
             <div className={cn("relative px-2 sm:px-1 flex flex-col z-20", isLongInput && "max-h-[400px]")}>
 
               {/* Document preview - Minimal design */}
@@ -4681,7 +4675,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                       )} />
                       {processingDoc && !docProcessingError && (
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <Loader2 className="h-5 w-5 animate-spin text-[#FF6417] dark:text-[#FF6417]" />
+                          <Loader2 className="h-5 w-5 animate-spin text-[#38bdf8] dark:text-[#38bdf8]" />
                         </div>
                       )}
                     </div>
@@ -4694,7 +4688,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                           handleClearFile();
                         }
                       }}
-                      className="absolute w-5 h-5 p-0 rounded-full hover:bg-[#FF6417]/10 transition-all border border-[#D4C0B6]/30 dark:border-gray-600/30 hover:border-[#FF6417] dark:hover:border-[#FF6417] bg-[#EFE1D5]/90 dark:bg-[#2F2F2F]/90 flex items-center justify-center shadow-sm"
+                      className="absolute w-5 h-5 p-0 rounded-full hover:bg-[#38bdf8]/10 transition-all border border-[#D4C0B6]/30 dark:border-gray-600/30 hover:border-[#38bdf8] dark:hover:border-[#38bdf8] bg-[#EFE1D5]/90 dark:bg-[#2F2F2F]/90 flex items-center justify-center shadow-sm"
                       style={{
                         position: 'absolute',
                         top: '-8px',
@@ -4702,7 +4696,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                         zIndex: 30
                       }}
                     >
-                      <X className="w-3 h-3 text-[#FF6417] dark:text-[#FF6417]" />
+                      <X className="w-3 h-3 text-[#38bdf8] dark:text-[#38bdf8]" />
                     </button>
                   </div>
                 </div>
@@ -4734,7 +4728,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                     <button
                       type="button"
                       onClick={handleClearFile}
-                      className="absolute w-5 h-5 p-0 rounded-full hover:bg-[#FF6417]/10 transition-all border border-[#D4C0B6]/30 dark:border-gray-600/30 hover:border-[#FF6417] dark:hover:border-[#FF6417] bg-[#EFE1D5]/90 dark:bg-[#2F2F2F]/90 flex items-center justify-center shadow-sm"
+                      className="absolute w-5 h-5 p-0 rounded-full hover:bg-[#38bdf8]/10 transition-all border border-[#D4C0B6]/30 dark:border-gray-600/30 hover:border-[#38bdf8] dark:hover:border-[#38bdf8] bg-[#EFE1D5]/90 dark:bg-[#2F2F2F]/90 flex items-center justify-center shadow-sm"
                       style={{
                         position: 'absolute',
                         top: '-8px',
@@ -4742,7 +4736,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                         zIndex: 30
                       }}
                     >
-                      <X className="w-3 h-3 text-[#FF6417] dark:text-[#FF6417]" />
+                      <X className="w-3 h-3 text-[#38bdf8] dark:text-[#38bdf8]" />
                     </button>
                   </div>
                 </div>
@@ -4782,7 +4776,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                         <button
                           type="button"
                           onClick={() => multiFileStore.removeFile(index)}
-                          className="absolute w-5 h-5 p-0 rounded-full hover:bg-[#FF6417]/10 transition-all border border-[#D4C0B6]/30 dark:border-gray-600/30 hover:border-[#FF6417] dark:hover:border-[#FF6417] bg-[#EFE1D5]/90 dark:bg-[#2F2F2F]/90 flex items-center justify-center shadow-sm"
+                          className="absolute w-5 h-5 p-0 rounded-full hover:bg-[#38bdf8]/10 transition-all border border-[#D4C0B6]/30 dark:border-gray-600/30 hover:border-[#38bdf8] dark:hover:border-[#38bdf8] bg-[#EFE1D5]/90 dark:bg-[#2F2F2F]/90 flex items-center justify-center shadow-sm"
                           style={{
                             position: 'absolute',
                             top: '-8px',
@@ -4790,7 +4784,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                             zIndex: 30
                           }}
                         >
-                          <X className="w-3 h-3 text-[#FF6417] dark:text-[#FF6417]" />
+                          <X className="w-3 h-3 text-[#38bdf8] dark:text-[#38bdf8]" />
                         </button>
                       </div>
                     ))}
@@ -5037,7 +5031,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
 
         {/* Mobile disclaimer text - inside chat-input-container so it's visible in fixed mobile dock */}
         <div
-          className="sm:hidden w-full text-center pointer-events-none bg-[#FFF1E5] dark:bg-[#212121]"
+          className="sm:hidden w-full text-center pointer-events-none bg-[#000000]"
           style={{
             paddingTop: '4px',
             paddingBottom: '6px'

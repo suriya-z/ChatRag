@@ -114,11 +114,11 @@ export default function ClientLayout({
           }
           
           html.light {
-            --bg-color: #FFF1E5;
+            --bg-color: #000000;
           }
           
           html.dark {
-            --bg-color: #1A1A1A;
+            --bg-color: #000000;
           }
           
           html, body {
@@ -406,13 +406,13 @@ export default function ClientLayout({
               <main className={`main-content scrollbar
                 scrollbar-w-3
                 scrollbar-track-transparent dark:scrollbar-track-transparent
-                scrollbar-thumb-[#EFE1D5]
-                dark:scrollbar-thumb-[#2F2F2F]
-                group-data-[state=dimmed]/root:scrollbar-thumb-[#EFE1D5]
-                group-data-[state=dimmed]/root:dark:scrollbar-thumb-[#2F2F2F]
-                hover:scrollbar-thumb-[#D4C0B6]
-                hover:dark:scrollbar-thumb-[#424242]
-                bg-[#FFF1E5] dark:bg-[#1A1A1A]
+                scrollbar-thumb-[#1a1c24]
+                dark:scrollbar-thumb-[#1a1c24]
+                group-data-[state=dimmed]/root:scrollbar-thumb-[#1a1c24]
+                group-data-[state=dimmed]/root:dark:scrollbar-thumb-[#1a1c24]
+                hover:scrollbar-thumb-[#262936]
+                hover:dark:scrollbar-thumb-[#262936]
+                bg-[#000000] dark:bg-[#000000]
                 w-full h-full`}
               >
                 {children}

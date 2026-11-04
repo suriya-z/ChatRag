@@ -43,8 +43,8 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
   const { theme } = useTheme();
   const { t } = useLanguage();
   const isDarkMode = theme === 'dark';
-  const dropdownBgColor = isDarkMode ? '#2F2F2F' : '#EFE1D5';
-  const dropdownBorder = isDarkMode ? '1px solid #2F2F2F' : '1px solid #EFE1D5';
+  const dropdownBgColor = '#11131a';
+  const dropdownBorder = '1px solid #1a1c24';
 
   // Separate dropdown states for each ModelSelector instance
   const [isModelDropdownOpenClosed, setIsModelDropdownOpenClosed] = useState(false);
@@ -286,7 +286,10 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
         
         /* Make header transparent in both light and dark mode */
         .header-container {
-          background-color: transparent !important;
+          background-color: rgba(0, 0, 0, 0.85) !important;
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border-bottom: 1px solid rgba(26, 28, 36, 0.8);
         }
         
         /* Ensure header remains visible when keyboard is open */
@@ -329,8 +332,8 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                 <button
                   onClick={onToggleSidebar}
                   className={cn(
-                    "flex items-center justify-center w-9 h-9 text-gray-700 dark:text-gray-200 rounded-lg transition-colors group relative backdrop-blur-md",
-                    "bg-[#FFE0D0]/30 hover:bg-[#FFE0D0] dark:bg-[#2F2F2F]/30 dark:hover:bg-[#424242]"
+                    "flex items-center justify-center w-9 h-9 text-gray-700 dark:text-gray-200 rounded-[4px] transition-colors group relative backdrop-blur-md",
+                    "bg-[#090a0f] border border-[#1a1c24] text-white hover:bg-[#11131a] hover:border-[#38bdf8] rounded-[4px]"
                   )}
                 >
                   <PanelLeft className="h-5 w-5" />
@@ -348,8 +351,8 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                     onNewChat();
                   }}
                   className={cn(
-                    "flex items-center justify-center w-9 h-9 text-gray-700 dark:text-gray-200 rounded-lg transition-colors group relative backdrop-blur-md",
-                    "bg-[#FFE0D0]/30 hover:bg-[#FFE0D0] dark:bg-[#2F2F2F]/30 dark:hover:bg-[#424242]"
+                    "flex items-center justify-center w-9 h-9 text-gray-700 dark:text-gray-200 rounded-[4px] transition-colors group relative backdrop-blur-md",
+                    "bg-[#090a0f] border border-[#1a1c24] text-white hover:bg-[#11131a] hover:border-[#38bdf8] rounded-[4px]"
                   )}
                 >
                   <SquarePen className="h-5 w-5" />
@@ -367,10 +370,10 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                       <button
                         ref={modelTriggerRef}
                         className={cn(
-                          "inline-flex items-center h-9 px-3 border border-[#FFE0D0]/50 dark:border-[#2F2F2F]/50 rounded-md transition-colors backdrop-blur-md",
+                          "inline-flex items-center h-9 px-3 border border-[#1a1c24] hover:border-[#38bdf8] bg-[#090a0f] text-white rounded-[4px] transition-colors",
                           isModelDropdownOpenClosed
-                            ? "bg-[#FFE8DC] dark:bg-[#2E2E2E]"
-                            : "hover:bg-[#FFE0D0] dark:hover:bg-[#424242] bg-transparent"
+                            ? "bg-[#11131a] text-white"
+                            : "hover:bg-[#181b24] hover:text-white bg-transparent"
                         )}
                       >
                         <span className="font-medium text-sm truncate max-w-[140px] md:max-w-none text-gray-700 dark:text-gray-200">
@@ -385,14 +388,14 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                     align="start"
                     side="bottom"
                     sideOffset={4}
-                    className="w-72 rounded-xl"
+                    className="w-72 rounded-[4px] border border-[#1a1c24] bg-[#11131a]"
                     style={{
                       backgroundColor: 'transparent',
                       border: 'none',
                       boxShadow: '0 10px 40px -5px rgba(0, 0, 0, 0.15), 0 4px 25px -2px rgba(0, 0, 0, 0.1)',
                       padding: 0,
                       overflow: 'hidden',
-                      borderRadius: '12px',
+                      borderRadius: '4px',
                       zIndex: 9999
                     }}
                     forceMount
@@ -420,10 +423,10 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                       <button
                         ref={modelTriggerOpenRef}
                         className={cn(
-                          "inline-flex items-center h-9 px-3 border border-[#FFE0D0]/50 dark:border-[#2F2F2F]/50 rounded-md transition-colors backdrop-blur-md",
+                          "inline-flex items-center h-9 px-3 border border-[#1a1c24] hover:border-[#38bdf8] bg-[#090a0f] text-white rounded-[4px] transition-colors",
                           isModelDropdownOpenOpen
-                            ? "bg-[#FFE8DC] dark:bg-[#2E2E2E]"
-                            : "hover:bg-[#FFE0D0] dark:hover:bg-[#424242] bg-transparent"
+                            ? "bg-[#11131a] text-white"
+                            : "hover:bg-[#181b24] hover:text-white bg-transparent"
                         )}
                         style={{
                           // Ensure consistent appearance across browsers
@@ -443,14 +446,14 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                     align="start"
                     side="bottom"
                     sideOffset={4}
-                    className="w-72 rounded-xl"
+                    className="w-72 rounded-[4px] border border-[#1a1c24] bg-[#11131a]"
                     style={{
                       backgroundColor: 'transparent',
                       border: 'none',
                       boxShadow: '0 10px 40px -5px rgba(0, 0, 0, 0.15), 0 4px 25px -2px rgba(0, 0, 0, 0.1)',
                       padding: 0,
                       overflow: 'hidden',
-                      borderRadius: '12px'
+                      borderRadius: '4px'
                     }}
                     forceMount
                   >
@@ -464,7 +467,7 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
           {/* Right section */}
           <div className="flex items-center pointer-events-auto min-w-[80px] z-20">
             <div className={cn(
-              "flex items-center border border-[#FFE0D0] dark:border-[#2F2F2F] rounded-lg mr-2 sm:mr-4 backdrop-blur-md"
+              "flex items-center border border-[#1a1c24] bg-[#090a0f] rounded-[4px] mr-2 sm:mr-4"
             )} style={{ background: 'transparent' }}>
               {!isAuthPage && hasActiveChat ? (
                 <TextSizeSlider />
@@ -497,7 +500,7 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                       }}
                       onClick={handleGhostModeToggle}
                       className={cn(
-                        "flex items-center justify-center w-10 h-10 rounded-lg text-gray-700 dark:text-gray-200 transition-colors group relative backdrop-blur-md",
+                        "flex items-center justify-center w-10 h-10 rounded-[4px] text-gray-700 dark:text-gray-200 transition-colors group relative backdrop-blur-md",
                         isGhostMode
                           ? "bg-purple-500/20 hover:bg-purple-500/30 dark:bg-purple-600/20 dark:hover:bg-purple-600/30 text-purple-600 dark:text-purple-400"
                           : "bg-transparent hover:bg-[#FFE0D0] dark:bg-transparent dark:hover:bg-[#424242]"
@@ -531,8 +534,8 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
             <button
               onClick={onToggleSidebar}
               className={cn(
-                "flex items-center justify-center w-10 h-10 text-gray-700 dark:text-gray-200 rounded-lg transition-colors group relative backdrop-blur-md",
-                "bg-[#FFE0D0]/30 hover:bg-[#FFE0D0] dark:bg-[#2F2F2F]/30 dark:hover:bg-[#424242]"
+                "flex items-center justify-center w-10 h-10 text-gray-700 dark:text-gray-200 rounded-[4px] transition-colors group relative backdrop-blur-md",
+                "bg-[#090a0f] border border-[#1a1c24] text-white hover:bg-[#11131a] hover:border-[#38bdf8] rounded-[4px]"
               )}
             >
               <PanelLeft className="h-5 w-5" />
@@ -548,10 +551,10 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                   <button
                     ref={modelTriggerMobileRef}
                     className={cn(
-                      "inline-flex items-center h-9 px-3 border border-[#FFE0D0]/50 dark:border-[#2F2F2F]/50 rounded-md transition-colors backdrop-blur-md",
+                      "inline-flex items-center h-9 px-3 border border-[#1a1c24] hover:border-[#38bdf8] bg-[#090a0f] text-white rounded-[4px] transition-colors",
                       isModelDropdownOpenMobile
-                        ? "bg-[#FFE8DC] dark:bg-[#2E2E2E]"
-                        : "hover:bg-[#FFE0D0] dark:hover:bg-[#424242] bg-transparent"
+                        ? "bg-[#11131a] text-white"
+                        : "hover:bg-[#181b24] hover:text-white bg-transparent"
                     )}
                   >
                     <span className="font-medium text-sm truncate max-w-[140px] text-gray-700 dark:text-gray-200">
@@ -566,14 +569,14 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                 align="center"
                 side="bottom"
                 sideOffset={4}
-                className="w-72 rounded-xl"
+                className="w-72 rounded-[4px] border border-[#1a1c24] bg-[#11131a]"
                 style={{
                   backgroundColor: 'transparent',
                   border: 'none',
                   boxShadow: '0 10px 40px -5px rgba(0, 0, 0, 0.15), 0 4px 25px -2px rgba(0, 0, 0, 0.1)',
                   padding: 0,
                   overflow: 'hidden',
-                  borderRadius: '12px'
+                  borderRadius: '4px'
                 }}
                 forceMount
               >

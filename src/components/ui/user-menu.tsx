@@ -32,9 +32,9 @@ export function UserMenu({ email, onSignOut }: UserMenuProps) {
   const { t } = useLanguage();
 
   // Define colors to match other dropdown menus
-  const dropdownBgColor = isDarkMode ? '#2F2F2F' : '#EFE1D5';
-  const hoverColor = isDarkMode ? '#424242' : '#E5D6C9';
-  const textColor = isDarkMode ? '#E6E6E6' : '#444';
+  const dropdownBgColor = '#11131a';
+  const hoverColor = '#181b24';
+  const textColor = '#ffffff';
 
   // Get first two letters of email if available
   const initials = email
@@ -109,7 +109,7 @@ export function UserMenu({ email, onSignOut }: UserMenuProps) {
         <DropdownMenuTrigger asChild>
           <button
             ref={triggerRef}
-            className="dropdown-trigger inline-flex items-center justify-center w-10 h-10 rounded-full bg-transparent dark:bg-transparent border border-[#FFE0D0] dark:border-[#2F2F2F] hover:bg-[#FFE0D0] dark:hover:bg-[#424242] transition-colors backdrop-blur-md"
+            className="dropdown-trigger inline-flex items-center justify-center w-10 h-10 rounded-full bg-transparent dark:bg-transparent border border-[#FFE0D0] dark:border-[#2F2F2F] hover:bg-[#181b24] transition-colors backdrop-blur-md"
           >
             {initials ? (
               <span className="text-xs font-medium text-gray-800 dark:text-gray-200 leading-none">{initials}</span>

@@ -627,28 +627,30 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
           }
           
           .suggestion-button {
-            min-width: max-content;
-            height: 42px !important;
-            padding: 0 16px !important;
-            font-size: 14px !important;
-            font-weight: 500 !important;
-            border-radius: 22px !important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-            background: linear-gradient(135deg, rgba(239, 225, 213, 0.25), rgba(239, 225, 213, 0.15)) !important;
-            backdrop-filter: blur(20px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-            border: 1px solid rgba(212, 192, 182, 0.3) !important;
-            color: #444444 !important;
-          }
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          height: 40px;
+          padding: 0 14px;
+          border-radius: 4px !important;
+          font-size: 13px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          transition: all 0.15s ease;
+          cursor: pointer;
+          white-space: nowrap;
+          z-index: 20;
+          position: relative;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
           
           .dark .suggestion-button {
-            background: linear-gradient(135deg, rgba(47, 47, 47, 0.25), rgba(47, 47, 47, 0.15)) !important;
-            backdrop-filter: blur(20px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
-            border: 1px solid rgba(96, 96, 96, 0.3) !important;
-            color: #e0e0e0 !important;
-          }
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          border-radius: 4px !important;
+        }
           
           /* Hide buttons when mobile dropdown is active */
           .mobile-buttons-hidden {
@@ -1043,15 +1045,13 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         
         /* Light mode styles */
         .suggestion-button {
-          background: linear-gradient(135deg, rgba(239, 225, 213, 0.25), rgba(239, 225, 213, 0.15));
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
-          color: #444444;
-          border: 1px solid rgba(212, 192, 182, 0.3);
-          height: 42px;
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          height: 40px;
           padding: 0 14px;
-          border-radius: 8px;
-          font-size: 14px;
+          border-radius: 4px !important;
+          font-size: 13px;
           font-weight: 500;
           display: flex;
           align-items: center;
@@ -1060,49 +1060,63 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
           white-space: nowrap;
           z-index: 20;
           position: relative;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
         
         .suggestion-button:hover {
-          background: linear-gradient(135deg, rgba(239, 225, 213, 0.35), rgba(239, 225, 213, 0.25));
-          border-color: rgba(212, 192, 182, 0.4);
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
           transform: translateY(-1px);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .suggestion-button.active {
-          background: linear-gradient(135deg, rgba(239, 225, 213, 0.45), rgba(239, 225, 213, 0.35));
-          border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0;
-          border-bottom-color: transparent;
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
           z-index: 30;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         
         /* Intermediate screen size - smaller buttons to prevent overlap */
         @media (min-width: 640px) and (max-width: 767px) {
           .suggestion-button {
-            height: 38px !important;
-            padding: 0 12px !important;
-            font-size: 13px !important;
-          }
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          height: 40px;
+          padding: 0 14px;
+          border-radius: 4px !important;
+          font-size: 13px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          transition: all 0.15s ease;
+          cursor: pointer;
+          white-space: nowrap;
+          z-index: 20;
+          position: relative;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
         }
 
         /* Mobile button hover - no transform */
         @media (max-width: 639px) {
           .suggestion-button:hover {
-            transform: none !important;
-          }
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
+          transform: translateY(-1px);
+        }
         }
         
         /* Mobile active state - button moves UP instead of down */
         @media (max-width: 639px) {
           .suggestion-button.active {
-            border-radius: 8px !important;
-            border-bottom-color: rgba(0,0,0,0.05) !important;
-            transform: translateY(-2px) !important;
-          }
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
+          z-index: 30;
+        }
           
           .active-group {
             transform: translateY(-2px) !important;
@@ -1111,44 +1125,41 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         
         /* Dark mode styles */
         html.dark .suggestion-button {
-          background: linear-gradient(135deg, rgba(47, 47, 47, 0.25), rgba(47, 47, 47, 0.15));
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
-          color: #9e9e9e;
-          border: 1px solid rgba(96, 96, 96, 0.3);
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          border-radius: 4px !important;
         }
         
         html.dark .suggestion-button:hover {
-          background: linear-gradient(135deg, rgba(47, 47, 47, 0.35), rgba(47, 47, 47, 0.25));
-          border-color: rgba(96, 96, 96, 0.4);
-          color: #ffffff;
-          transform: translateY(-1px);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
         }
         
         html.dark .suggestion-button.active {
-          background: linear-gradient(135deg, rgba(47, 47, 47, 0.45), rgba(47, 47, 47, 0.35));
-          border-bottom-color: transparent;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
         }
 
         /* Intermediate screen size - smaller buttons for dark mode */
         @media (min-width: 640px) and (max-width: 767px) {
           html.dark .suggestion-button {
-            height: 38px !important;
-            padding: 0 12px !important;
-            font-size: 13px !important;
-          }
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          border-radius: 4px !important;
+        }
         }
         
         /* Mobile dark mode active state */
         @media (max-width: 639px) {
           .dark .suggestion-button.active {
-            border-bottom-color: rgba(255, 255, 255, 0.08) !important;
-            transform: translateY(-2px) !important;
-          }
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
+        }
         }
                 
         .suggestion-button-icon {
@@ -1188,12 +1199,10 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         
         /* Dark mode dropdown */
         html.dark .suggestion-dropdown-menu {
-          /* Opaque popover (no bleed-through) */
-          background: #121212;
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow:
-            0 12px 34px rgba(0, 0, 0, 0.42),
-            0 2px 12px rgba(0, 0, 0, 0.22);
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          border-radius: 4px !important;
+          box-shadow: 0 12px 34px rgba(0, 0, 0, 0.8);
         }
         
         /* Light mode dropdown items */
@@ -1255,8 +1264,8 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         
         /* Dark mode dropdown items */
         html.dark .suggestion-dropdown-item {
-          color: rgba(255, 255, 255, 0.88);
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          color: #cbd5e1 !important;
+          border-top: 1px solid #1a1c24 !important;
         }
         
         .suggestion-dropdown-item.first-item {
@@ -1272,7 +1281,8 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         }
         
         html.dark .suggestion-dropdown-item:hover {
-          background-color: rgba(255, 255, 255, 0.08);
+          background-color: #11131a !important;
+          color: #38bdf8 !important;
         }
         
         .suggestion-dropdown-item:active {
@@ -1284,7 +1294,22 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         }
         
         .suggestion-group-container.active-group .suggestion-button {
-          box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          height: 40px;
+          padding: 0 14px;
+          border-radius: 4px !important;
+          font-size: 13px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          transition: all 0.15s ease;
+          cursor: pointer;
+          white-space: nowrap;
+          z-index: 20;
+          position: relative;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         /* Prefix/suffix styling */
@@ -1304,32 +1329,32 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
 
         /* Make sure dark mode is properly applied when using data-theme */
         [data-theme="dark"] .suggestion-button {
-          background: linear-gradient(135deg, rgba(47, 47, 47, 0.25), rgba(47, 47, 47, 0.15));
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
-          color: #9e9e9e;
-          border: 1px solid rgba(96, 96, 96, 0.3);
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          border-radius: 4px !important;
         }
         
         [data-theme="dark"] .suggestion-button:hover {
-          background-color: rgba(255, 255, 255, 0.03);
-          border-color: rgba(255, 255, 255, 0.1);
-          color: #ffffff;
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
         }
         
         [data-theme="dark"] .suggestion-button.active {
-          background-color: rgba(255, 255, 255, 0.05);
-          border-bottom-color: transparent;
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
         }
 
         /* Intermediate screen size - smaller buttons for data-theme dark */
         @media (min-width: 640px) and (max-width: 767px) {
           [data-theme="dark"] .suggestion-button {
-            height: 38px !important;
-            padding: 0 12px !important;
-            font-size: 13px !important;
-          }
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          border-radius: 4px !important;
+        }
         }
         
         [data-theme="dark"] .suggestion-dropdown-menu {
@@ -1363,40 +1388,41 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         
         /* Additional support for .dark class */
         .dark .suggestion-button {
-          background: linear-gradient(135deg, rgba(47, 47, 47, 0.25), rgba(47, 47, 47, 0.15));
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
-          color: #9e9e9e;
-          border: 1px solid rgba(96, 96, 96, 0.3);
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          border-radius: 4px !important;
         }
         
         .dark .suggestion-button:hover {
-          background-color: rgba(255, 255, 255, 0.03);
-          border-color: rgba(255, 255, 255, 0.1);
-          color: #ffffff;
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
         }
         
         .dark .suggestion-button.active {
-          background-color: rgba(255, 255, 255, 0.05);
-          border-bottom-color: transparent;
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
         }
 
         /* Intermediate screen size - smaller buttons for .dark class */
         @media (min-width: 640px) and (max-width: 767px) {
           .dark .suggestion-button {
-            height: 38px !important;
-            padding: 0 12px !important;
-            font-size: 13px !important;
-          }
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          border-radius: 4px !important;
+        }
         }
         
         /* Mobile dark mode active state */
         @media (max-width: 639px) {
           .dark .suggestion-button.active {
-            border-bottom-color: rgba(255, 255, 255, 0.08) !important;
-            transform: translateY(-2px) !important;
-          }
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
+        }
         }
         
         .dark .suggestion-dropdown-menu {
@@ -1431,24 +1457,25 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         /* For compatibility with other dark mode implementations */
         @media (prefers-color-scheme: dark) {
           :root:not(.light) .suggestion-button {
-            background: linear-gradient(135deg, rgba(47, 47, 47, 0.25), rgba(47, 47, 47, 0.15));
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            color: #9e9e9e;
-            border: 1px solid rgba(96, 96, 96, 0.3);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-          }
+          background: #090a0f !important;
+          border: 1px solid #1a1c24 !important;
+          color: #cbd5e1 !important;
+          border-radius: 4px !important;
+        }
           
           :root:not(.light) .suggestion-button:hover {
-            background-color: rgba(255, 255, 255, 0.03);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-          }
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
+          transform: translateY(-1px);
+        }
           
           :root:not(.light) .suggestion-button.active {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-bottom-color: transparent;
-          }
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
+          z-index: 30;
+        }
           
           :root:not(.light) .suggestion-dropdown-menu {
             background-color: transparent;
@@ -1484,8 +1511,10 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         @media (max-width: 639px) {
           html.dark .suggestion-button:hover,
           .dark .suggestion-button:hover {
-            transform: none !important;
-          }
+          background: #11131a !important;
+          border-color: #38bdf8 !important;
+          color: #ffffff !important;
+        }
         }
 
       `}</style>

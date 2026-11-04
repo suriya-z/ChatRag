@@ -53,7 +53,7 @@ export function OrganizationSwitcher() {
   const hoverColor = DROPDOWN_STYLES[themeKey].hoverColor;
   const textColor = DROPDOWN_STYLES[themeKey].color;
   const iconColor = isDarkMode ? '#9E9E9E' : '#666';
-  const checkColor = isDarkMode ? '#E6E6E6' : '#FF6417';
+  const checkColor = '#38bdf8';
 
   const handleSwitch = async (orgId: string | null) => {
     await setCurrentOrganization(orgId);
@@ -99,7 +99,7 @@ export function OrganizationSwitcher() {
       {/* Current workspace button */}
       <button
         onClick={handleToggle}
-        className="w-full flex items-center justify-between gap-2 px-3 py-3 lg:py-2 rounded-lg transition-colors hover:bg-[#FFE8DC] dark:hover:bg-[#2F2F2F]"
+        className="w-full flex items-center justify-between gap-2 px-3 py-3 lg:py-2 rounded-lg transition-colors hover:bg-[#FFE8DC] hover:bg-[#181b24]"
       >
         <div className="flex items-center gap-2 truncate">
           {isPersonalMode ? (
