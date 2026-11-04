@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signInWithEmail, signUpWithEmail, signInWithSocial } from '@/lib/supabase-auth';
-import { Github, Loader2, ArrowRight } from 'lucide-react';
+import { Github, Loader2, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AuthPage() {
@@ -13,7 +13,7 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,7 +38,7 @@ export default function AuthPage() {
         }
         setTimeout(() => {
           router.push('/auth/verify-email');
-        }, 500);
+        }, 400);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');
@@ -48,40 +48,65 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full bg-[#000000] p-4 select-none relative">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="w-full max-w-md"
-      >
-        <div className="bg-[#090a0f] border border-[#1a1c24] rounded-[4px] shadow-2xl p-6 sm:p-8">
-          {/* Technical Telemetry Header */}
-          <div className="flex items-center justify-between pb-4 mb-6 border-b border-[#1a1c24]">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#38bdf8] animate-pulse" />
-              <span className="font-mono text-[10px] uppercase tracking-widest text-[#94a3b8]">
-                CHATRAG // ACCESS GATE
-              </span>
-            </div>
-            <span className="font-mono text-[10px] text-[#64748b]">PORT 3000</span>
-          </div>
+    <div className="relative flex items-center justify-center min-h-screen w-full bg-[#070709] px-4 py-12 overflow-hidden select-none">
+      {/* Ambient background illumination */}
+      <div 
+        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[720px] h-[480px] rounded-full opacity-35 blur-[120px]"
+        style={{
+          background: 'radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(120, 119, 198, 0.15) 50%, transparent 80%)'
+        }}
+      />
+      <div 
+        className="pointer-events-none absolute -bottom-40 right-1/4 w-[480px] h-[360px] rounded-full opacity-20 blur-[100px]"
+        style={{
+          background: 'radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, transparent 70%)'
+        }}
+      />
 
-          {/* Heading */}
-          <div className="mb-6">
-            <h1 className="text-xl font-bold tracking-tight text-white mb-1 font-sans">
-              {isLogin ? 'AUTHENTICATE' : 'INITIALIZE ACCOUNT'}
+      {/* Subtle background grid pattern */}
+      <div 
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)',
+          backgroundSize: '32px 32px'
+        }}
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 18, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-[420px] z-10"
+      >
+        <div className="relative rounded-2xl bg-[#0f1015]/85 backdrop-blur-xl border border-white/[0.08] shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_24px_60px_-12px_rgba(0,0,0,0.85)] p-8 sm:p-9">
+          
+          {/* Hermes Agent Badge & Icon */}
+          <div className="flex flex-col items-center text-center mb-7">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.35 }}
+              className="relative mb-4"
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-b from-white/[0.12] to-white/[0.03] border border-white/[0.12] flex items-center justify-center shadow-[0_4px_20px_rgba(56,189,248,0.2)]">
+                <Sparkles className="w-5 h-5 text-[#38bdf8]" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-[#10b981] border-2 border-[#0f1015]" />
+            </motion.div>
+
+            <h1 className="text-2xl font-semibold tracking-tight text-white mb-1.5 font-sans">
+              {isLogin ? 'Welcome back' : 'Create an account'}
             </h1>
-            <p className="text-xs font-mono text-[#94a3b8] tracking-wide">
-              {isLogin ? 'Provide credentials to enter ChatRAG workspace' : 'Create new verified operator account'}
+            <p className="text-sm text-zinc-400 max-w-[280px]">
+              {isLogin ? 'Sign in to continue to ChatRAG' : 'Get started with intelligent retrieval'}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="block text-[10px] font-mono uppercase tracking-widest text-[#94a3b8] mb-1.5">
-                EMAIL IDENTIFIER
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="block text-xs font-medium text-zinc-300">
+                Email
               </label>
               <input
                 id="email"
@@ -89,25 +114,35 @@ export default function AuthPage() {
                 type="email"
                 autoComplete="email"
                 required
-                className="h-10 w-full bg-[#11131a] border border-[#1a1c24] rounded-[4px] px-3 text-white text-sm font-mono placeholder:text-[#475569] focus:outline-none focus:border-[#38bdf8] focus:ring-1 focus:ring-[#38bdf8] transition-colors"
-                placeholder="operator@domain.corp"
+                className="h-11 w-full bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3.5 text-zinc-100 text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-2 focus:ring-[#38bdf8]/15 transition-all"
+                placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
             {/* Password Field */}
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="password" className="block text-[10px] font-mono uppercase tracking-widest text-[#94a3b8]">
-                  SECURITY KEY
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="block text-xs font-medium text-zinc-300">
+                  Password
                 </label>
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-[10px] font-mono text-[#64748b] hover:text-[#38bdf8] transition-colors uppercase tracking-wider"
+                  className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors flex items-center gap-1"
                 >
-                  {showPassword ? '[ HIDE ]' : '[ SHOW ]'}
+                  {showPassword ? (
+                    <>
+                      <EyeOff className="w-3.5 h-3.5" />
+                      <span>Hide</span>
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Show</span>
+                    </>
+                  )}
                 </button>
               </div>
               <input
@@ -116,24 +151,26 @@ export default function AuthPage() {
                 type={showPassword ? 'text' : 'password'}
                 autoComplete={isLogin ? 'current-password' : 'new-password'}
                 required
-                className="h-10 w-full bg-[#11131a] border border-[#1a1c24] rounded-[4px] px-3 text-white text-sm font-mono placeholder:text-[#475569] focus:outline-none focus:border-[#38bdf8] focus:ring-1 focus:ring-[#38bdf8] transition-colors"
-                placeholder="••••••••••••"
+                className="h-11 w-full bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3.5 text-zinc-100 text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-2 focus:ring-[#38bdf8]/15 transition-all"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
             {/* Remember Me */}
-            <div className="flex items-center gap-2 pt-1 pb-1">
-              <input
-                id="remember-me"
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="h-3.5 w-3.5 rounded-[2px] bg-[#11131a] border-[#1a1c24] text-[#38bdf8] focus:ring-[#38bdf8] focus:ring-offset-0 cursor-pointer accent-[#38bdf8]"
-              />
-              <label htmlFor="remember-me" className="text-xs font-mono text-[#94a3b8] cursor-pointer tracking-wide">
-                PERSIST SESSION // 14 DAYS
+            <div className="flex items-center justify-between pt-1">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input
+                  id="remember-me"
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 rounded bg-zinc-900 border-zinc-700 text-[#38bdf8] focus:ring-[#38bdf8]/20 focus:ring-offset-0 cursor-pointer accent-[#38bdf8]"
+                />
+                <span className="text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">
+                  Remember me
+                </span>
               </label>
             </div>
 
@@ -142,52 +179,53 @@ export default function AuthPage() {
               <motion.div
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-xs font-mono text-rose-400 bg-rose-950/20 border border-rose-900/40 p-2.5 rounded-[4px]"
+                className="text-xs text-rose-300 bg-rose-950/30 border border-rose-800/40 p-3 rounded-lg text-center"
               >
-                [ERROR]: {error}
+                {error}
               </motion.div>
             )}
 
             {/* Submit Button */}
-            <button
+            <motion.button
               type="submit"
               disabled={isLoading}
-              className="w-full h-10 flex items-center justify-center bg-white text-black hover:bg-[#38bdf8] hover:text-black font-semibold rounded-[4px] text-xs font-mono uppercase tracking-wider transition-colors disabled:opacity-40 disabled:cursor-not-allowed mt-2"
+              whileTap={{ scale: 0.985 }}
+              className="w-full h-11 flex items-center justify-center bg-white text-zinc-950 hover:bg-zinc-100 active:bg-zinc-200 font-medium rounded-lg text-sm transition-all shadow-[0_1px_2px_rgba(0,0,0,0.2)] disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin text-black" />
-                  <span>PROCESSING...</span>
+                  <Loader2 className="w-4 h-4 animate-spin text-zinc-950" />
+                  <span>{isLogin ? 'Signing in...' : 'Creating account...'}</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
-                  <span>{isLogin ? 'ENTER WORKSPACE' : 'REGISTER CREDENTIALS'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </div>
+                <span>{isLogin ? 'Sign in' : 'Create account'}</span>
               )}
-            </button>
+            </motion.button>
 
-            {/* Technical Divider */}
-            <div className="relative my-5">
+            {/* Divider */}
+            <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#1a1c24]" />
+                <div className="w-full border-t border-white/[0.08]" />
               </div>
-              <div className="relative flex justify-center text-[10px] font-mono tracking-widest text-[#64748b]">
-                <span className="bg-[#090a0f] px-3 uppercase">OR FEDERATED SSO</span>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-[#0f1015] px-3 text-zinc-500 font-normal">
+                  or continue with
+                </span>
               </div>
             </div>
 
             {/* Social Authentication */}
             <div className="grid grid-cols-2 gap-3">
-              <button
+              <motion.button
                 type="button"
+                whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   setError('');
                   signInWithSocial('google').catch((err) =>
                     setError(err instanceof Error ? err.message : 'Google sign-in failed')
                   );
                 }}
-                className="h-10 flex items-center justify-center gap-2 rounded-[4px] bg-[#11131a] hover:bg-[#181b24] border border-[#1a1c24] hover:border-[#38bdf8] text-white transition-colors text-xs font-mono uppercase tracking-wider"
+                className="h-10 flex items-center justify-center gap-2.5 rounded-lg bg-zinc-900/40 hover:bg-zinc-800/60 border border-white/[0.08] hover:border-white/[0.15] text-zinc-200 transition-all text-xs font-medium"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24">
                   <path
@@ -207,35 +245,40 @@ export default function AuthPage() {
                     fill="#EA4335"
                   />
                 </svg>
-                <span>GOOGLE</span>
-              </button>
+                <span>Google</span>
+              </motion.button>
 
-              <button
+              <motion.button
                 type="button"
+                whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   setError('');
                   signInWithSocial('github').catch((err) =>
                     setError(err instanceof Error ? err.message : 'GitHub sign-in failed')
                   );
                 }}
-                className="h-10 flex items-center justify-center gap-2 rounded-[4px] bg-[#11131a] hover:bg-[#181b24] border border-[#1a1c24] hover:border-[#38bdf8] text-white transition-colors text-xs font-mono uppercase tracking-wider"
+                className="h-10 flex items-center justify-center gap-2.5 rounded-lg bg-zinc-900/40 hover:bg-zinc-800/60 border border-white/[0.08] hover:border-white/[0.15] text-zinc-200 transition-all text-xs font-medium"
               >
-                <Github className="h-4 w-4 text-white" />
-                <span>GITHUB</span>
-              </button>
+                <Github className="h-4 w-4 text-zinc-200" />
+                <span>GitHub</span>
+              </motion.button>
             </div>
 
             {/* Toggle Login / Register */}
-            <div className="text-center pt-4 border-t border-[#1a1c24]/60">
+            <div className="text-center pt-5 border-t border-white/[0.06]">
               <button
                 type="button"
                 onClick={() => {
                   setIsLogin(!isLogin);
                   setError('');
                 }}
-                className="text-xs font-mono text-[#94a3b8] hover:text-[#38bdf8] transition-colors uppercase tracking-wider"
+                className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors"
               >
-                {isLogin ? '[ NEW OPERATOR? REGISTER ACCOUNT ]' : '[ EXISTING OPERATOR? SIGN IN ]'}
+                {isLogin ? (
+                  <>Don&apos;t have an account? <span className="text-[#38bdf8] font-medium hover:underline ml-1">Sign up</span></>
+                ) : (
+                  <>Already have an account? <span className="text-[#38bdf8] font-medium hover:underline ml-1">Sign in</span></>
+                )}
               </button>
             </div>
           </form>

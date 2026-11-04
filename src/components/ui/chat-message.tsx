@@ -871,7 +871,7 @@ const LoadingVideo = React.memo(function LoadingVideo({
           {/* Technical Telemetry Indicator */}
           <div className="flex items-center gap-2 pt-1">
             <span className="w-1.5 h-1.5 rounded-[1px] bg-[#38bdf8] animate-pulse" />
-            <span className="font-mono text-xs text-[#94a3b8] uppercase tracking-wider">GENERATING // ACTIVE</span>
+            <span className="font-sans text-xs text-zinc-400">Generating...</span>
           </div>
 
           {status && (
@@ -4380,7 +4380,7 @@ ChatMessage = function ({
                       <>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-[1px] bg-[#38bdf8] animate-pulse" />
-                          <span className="font-mono text-xs text-[#94a3b8] uppercase tracking-wider">RETRIEVING // INFERENCE ACTIVE</span>
+                          <span className="font-sans text-xs text-zinc-400">Thinking...</span>
                         </div>
                       </>
                     )}
@@ -4995,7 +4995,7 @@ ChatMessage = function ({
                 <div className={cn(
                   "inline-block overflow-hidden max-w-none chat-message",
                   isLastMessage && "mb-4",
-                  "bg-[#11131a] border border-[#1a1c24] text-white rounded-[4px] px-4 py-2.5 shadow-sm",
+                  "bg-zinc-900/80 border border-white/[0.08] text-zinc-100 rounded-2xl rounded-br-sm px-4 py-3 shadow-md backdrop-blur-sm",
                   textSizeClasses[textSize].base,
                   fontClasses[fontFamily]
                 )}>

@@ -3226,8 +3226,8 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
       return (
         <button
           className={cn(
-            "inline-flex h-9 w-9 items-center justify-center rounded-[4px] transition-colors",
-            "bg-white text-black hover:bg-[#38bdf8] hover:text-black font-semibold",
+            "inline-flex h-9 w-9 items-center justify-center rounded-lg transition-all",
+            "bg-white text-zinc-950 hover:bg-[#38bdf8] hover:text-black font-medium shadow-sm",
             "group relative focus:outline-none"
           )}
           onClick={(e) => {
@@ -3277,15 +3277,11 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
             {isRecording ? (
               <Mic className="h-5 w-5 text-white" />
             ) : isTranscribing ? (
-              <div className="flex items-center gap-1">
-                <div className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                <div className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                <div className="w-1 h-1 bg-gray-500 dark:bg-gray-400 rounded-full animate-bounce"></div>
-              </div>
+              <Loader2 className="h-4 w-4 animate-spin text-[#38bdf8]" />
             ) : (
               <Mic className="h-5 w-5 text-gray-700 dark:text-gray-400" />
             )}
-            <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+4px)] px-2 py-1 text-xs font-medium text-white dark:text-[#E6E6E6] bg-[#FF6417] dark:bg-[#1A1A1A] rounded-md opacity-0 group-hover:opacity-100 whitespace-nowrap">
+            <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+4px)] px-2 py-1 text-xs font-medium text-white dark:text-[#E6E6E6] bg-zinc-900 border border-white/[0.08] text-zinc-200 rounded-md opacity-0 group-hover:opacity-100 whitespace-nowrap">
               {isRecording ? t('stopRecording') : isTranscribing ? t('processing') : t('voiceModeDictate')}
             </div>
           </button>
@@ -3307,12 +3303,12 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
         type={parentIsLoading ? "button" : "submit"}
         onClick={handleButtonClick}
         className={cn(
-          "inline-flex h-9 w-9 items-center justify-center rounded-[4px] transition-all duration-200 group relative",
+          "inline-flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-200 group relative",
           parentIsLoading
             ? "bg-rose-600 hover:bg-rose-500 text-white"
             : isDisabled || !input.trim()
-              ? "bg-[#11131a] text-[#475569] border border-[#1a1c24]"
-              : "bg-white text-black hover:bg-[#38bdf8] hover:text-black font-semibold",
+              ? "bg-zinc-800/40 text-zinc-500 border border-white/[0.06]"
+              : "bg-white text-zinc-950 hover:bg-[#38bdf8] hover:text-black font-medium shadow-sm",
           "disabled:opacity-50 disabled:cursor-not-allowed"
         )}
         disabled={!parentIsLoading && (isDisabled || !input.trim())}
@@ -4593,7 +4589,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
             onSubmit={handleFormSubmit}
             onClick={handleFormClick}
             className={cn(
-              'relative rounded-[4px] p-1 w-full sm:max-w-full lg:max-w-[52rem] border border-[#1a1c24] bg-[#090a0f] focus-within:border-[#38bdf8] transition-colors',
+              'relative rounded-xl p-1.5 w-full sm:max-w-full lg:max-w-[52rem] border border-white/[0.08] bg-[#0f1015]/90 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.5)] focus-within:border-[#38bdf8]/40 focus-within:shadow-[0_4px_24px_rgba(56,189,248,0.12)] transition-all',
               'sm:mb-8',
               (isProcessingDoc && !isVoiceModeActive) && 'opacity-70',
               'z-20'
@@ -4625,7 +4621,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                   <rect
                     x="1.25" y="1.25"
                     width="calc(100% - 2.5px)" height="calc(100% - 2.5px)"
-                    rx="4" ry="4"
+                    rx="12" ry="12"
                     fill="none"
                     stroke="#38bdf8"
                     strokeWidth="2.5"
@@ -4640,7 +4636,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
                   <rect
                     x="1.25" y="1.25"
                     width="calc(100% - 2.5px)" height="calc(100% - 2.5px)"
-                    rx="4" ry="4"
+                    rx="12" ry="12"
                     fill="none"
                     stroke="#38bdf8"
                     strokeWidth="2.5"
@@ -4656,7 +4652,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
             </div>
 
             {/* Background Layer - 80% opacity for aesthetic */}
-            <div className="absolute inset-0 rounded-[4px] bg-[#090a0f] border border-[#1a1c24] z-10" />
+            <div className="absolute inset-0 rounded-xl bg-[#0f1015]/90 border border-white/[0.08] z-10" />
             <div className={cn("relative px-2 sm:px-1 flex flex-col z-20", isLongInput && "max-h-[400px]")}>
 
               {/* Document preview - Minimal design */}
