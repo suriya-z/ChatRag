@@ -314,8 +314,8 @@ export function MobileToolConfigModal({
             <div className="flex items-center gap-3">
               <div className={cn(
                 "w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg",
-                toolConfig.icon && toolType === 'image-generation' && "bg-gradient-to-br from-amber-400 to-orange-500 shadow-orange-500/20",
-                toolConfig.icon && toolType === 'video-generation' && "bg-gradient-to-br from-orange-500 to-red-500 shadow-red-500/20",
+                toolConfig.icon && toolType === 'image-generation' && "bg-[#11131a] border border-[#1a1c24] text-[#38bdf8]",
+                toolConfig.icon && toolType === 'video-generation' && "bg-[#11131a] border border-[#1a1c24] text-[#38bdf8]",
               )}>
                 {React.cloneElement(toolConfig.icon as React.ReactElement, {
                   className: "h-5 w-5"

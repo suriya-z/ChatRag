@@ -207,7 +207,7 @@ export const WorkspaceTab = memo(function WorkspaceTab() {
         <h3 className="hidden sm:block text-xl font-semibold text-gray-900 dark:text-white">{t('workspace')}</h3>
         <div className="bg-[#FFF0E8] dark:bg-[#1A1A1A] rounded-lg p-5 border border-[#FFE0D0] dark:border-[#2A2A2A]">
           <div className="flex items-center gap-3 mb-3">
-            <User className="h-6 w-6 text-[#FF6417] dark:text-[#FF8A4D]" />
+            <User className="h-6 w-6 text-[#38bdf8]" />
             <h4 className="text-lg font-medium text-gray-900 dark:text-white">{t('personalWorkspace')}</h4>
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -239,9 +239,9 @@ export const WorkspaceTab = memo(function WorkspaceTab() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <div className="flex items-center gap-3 flex-1 min-w-0 overflow-hidden">
             {currentOrganization.is_personal ? (
-              <Briefcase className="h-6 w-6 text-[#FF6417] dark:text-[#FF8A4D]" />
+              <Briefcase className="h-6 w-6 text-[#38bdf8]" />
             ) : (
-              <Building2 className="h-6 w-6 text-[#FF6417] dark:text-[#FF8A4D]" />
+              <Building2 className="h-6 w-6 text-[#38bdf8]" />
             )}
             <div className="flex-1">
               {/* Editable name */}
@@ -276,7 +276,7 @@ export const WorkspaceTab = memo(function WorkspaceTab() {
                   {isAdminOrOwner && (
                     <button
                       onClick={handleStartEdit}
-                      className="p-1 rounded hover:bg-[#FF6417]/10 text-gray-500 hover:text-[#FF6417] flex-shrink-0"
+                      className="p-1 rounded hover:bg-white text-black hover:bg-[#38bdf8]/10 text-gray-500 hover:text-[#38bdf8] flex-shrink-0"
                     >
                       <Edit2 className="h-4 w-4" />
                     </button>
@@ -296,7 +296,7 @@ export const WorkspaceTab = memo(function WorkspaceTab() {
               disabled={isSharing}
               variant="outline"
               size="sm"
-              className="border-[#FF6417] text-[#FF6417] hover:bg-[#FF6417]/10 flex-shrink-0 w-full sm:w-auto"
+              className="border-[#38bdf8] text-[#FF6417] hover:bg-white text-black hover:bg-[#38bdf8]/10 flex-shrink-0 w-full sm:w-auto"
             >
               <Share2 className="h-4 w-4 mr-2" />
               {isSharing ? (t('enabling') || 'Enabling...') : (t('enableCollaboration') || 'Enable Collaboration')}
@@ -327,7 +327,7 @@ export const WorkspaceTab = memo(function WorkspaceTab() {
       {!currentOrganization.is_personal && (
         <div className="bg-[#FFF0E8] dark:bg-[#1A1A1A] rounded-lg p-5 border border-[#FFE0D0] dark:border-[#2A2A2A]">
           <div className="flex items-center gap-2 mb-4">
-            <Users className="h-5 w-5 text-[#FF6417] dark:text-[#FF8A4D]" />
+            <Users className="h-5 w-5 text-[#38bdf8]" />
             <h4 className="text-lg font-medium text-gray-900 dark:text-white">{t('collaborators') || 'Collaborators'}</h4>
           </div>
 
@@ -346,8 +346,8 @@ export const WorkspaceTab = memo(function WorkspaceTab() {
                   className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-[#2A2A2A] border border-[#FFE0D0] dark:border-[#3A3A3A]"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-[#FF6417]/10 dark:bg-[#FF8A4D]/10 flex items-center justify-center">
-                      <User className="h-4 w-4 text-[#FF6417] dark:text-[#FF8A4D]" />
+                    <div className="h-8 w-8 rounded-full bg-white text-black hover:bg-[#38bdf8]/10 dark:bg-[#FF8A4D]/10 flex items-center justify-center">
+                      <User className="h-4 w-4 text-[#38bdf8]" />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -370,7 +370,7 @@ export const WorkspaceTab = memo(function WorkspaceTab() {
                             'bg-white dark:bg-[#3A3A3A]',
                             'border-[#FFE0D0] dark:border-[#4A4A4A]',
                             'text-gray-900 dark:text-white',
-                            'focus:ring-2 focus:ring-[#FF6417]'
+                            'focus:ring-1 focus:ring-[#38bdf8]'
                           )}
                         >
                           <option value="admin">{t('admin')}</option>
@@ -402,7 +402,7 @@ export const WorkspaceTab = memo(function WorkspaceTab() {
       {isAdminOrOwner && !currentOrganization.is_personal && (
         <div className="bg-[#FFF0E8] dark:bg-[#1A1A1A] rounded-lg p-5 border border-[#FFE0D0] dark:border-[#2A2A2A]">
           <div className="flex items-center gap-2 mb-4">
-            <UserPlus className="h-5 w-5 text-[#FF6417] dark:text-[#FF8A4D]" />
+            <UserPlus className="h-5 w-5 text-[#38bdf8]" />
             <h4 className="text-lg font-medium text-gray-900 dark:text-white">{t('inviteCollaborator') || 'Invite Collaborator'}</h4>
           </div>
 
@@ -424,7 +424,7 @@ export const WorkspaceTab = memo(function WorkspaceTab() {
                   'bg-white dark:bg-[#2A2A2A]',
                   'border-[#FFE0D0] dark:border-[#3A3A3A]',
                   'text-gray-900 dark:text-white',
-                  'focus:ring-2 focus:ring-[#FF6417]'
+                  'focus:ring-1 focus:ring-[#38bdf8]'
                 )}
                 disabled={isInviting}
               >
@@ -435,7 +435,7 @@ export const WorkspaceTab = memo(function WorkspaceTab() {
               <Button
                 onClick={handleInvite}
                 disabled={isInviting || !inviteEmail.trim()}
-                className="bg-[#FF6417] hover:bg-[#E55A15] text-white"
+                className="bg-white text-black hover:bg-[#38bdf8] hover:bg-[#E55A15] text-white"
               >
                 {isInviting ? t('sending') : t('invite')}
               </Button>

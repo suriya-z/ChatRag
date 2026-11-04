@@ -115,12 +115,12 @@ export const SettingsModal = memo(function SettingsModal({ isOpen, onOpenChange 
   const dialogClasses = useMemo(() => cn(
     'fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-50',
     // Mobile: narrower width to prevent edge clipping, desktop: normal width
-    'p-0 gap-0 max-w-3xl w-[92vw] lg:w-[90vw] bg-[#FFF1E5] dark:bg-[#212121]',
+    'p-0 gap-0 max-w-3xl w-[92vw] lg:w-[90vw] bg-[#090a0f] border border-[#1a1c24] rounded-[4px]',
     'overflow-hidden',
     // Mobile: auto height that fits content, desktop: fixed height
     // Increased mobile max-height to 92vh to accommodate longer i18n translations
     'h-auto lg:h-[650px] max-h-[92vh] lg:max-h-[80vh]',
-    'border shadow-lg rounded-lg',
+    'border border-[#1a1c24] shadow-2xl rounded-[4px]',
     styles.settingsDialog,
     styles.accelerated
   ), []);
@@ -130,7 +130,7 @@ export const SettingsModal = memo(function SettingsModal({ isOpen, onOpenChange 
     // Absolute positioned in top-right on both mobile and desktop
     'absolute right-3 top-3 lg:right-4 lg:top-4 rounded-full p-2',
     'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-100',
-    'hover:bg-[#FF6417] dark:hover:bg-[#FF8A4D]',
+    'hover:bg-[#181b24] hover:text-[#38bdf8]',
     'hover:text-white dark:hover:text-white',
     'shadow-md transition-all duration-200 focus:outline-none cursor-pointer',
     'z-[100] w-8 h-8 flex items-center justify-center lg:w-7 lg:h-7',
@@ -186,7 +186,7 @@ export const SettingsModal = memo(function SettingsModal({ isOpen, onOpenChange 
                       // Mobile: flexible width with text wrapping
                       // Desktop: horizontal layout with full width
                       "flex items-center gap-2 lg:gap-3",
-                      "px-3 py-2 lg:px-4 lg:py-3 rounded-xl",
+                      "px-3 py-2 lg:px-4 lg:py-3 rounded-[4px]",
                       "lg:text-left lg:w-full min-h-[40px] lg:min-h-[44px]",
                       // Allow flex item to grow/shrink on mobile
                       "flex-1 lg:flex-none min-w-0",

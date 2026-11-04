@@ -192,10 +192,10 @@ export const GeneralTab = memo(function GeneralTab() {
                   <div className="relative">
                     {notificationSoundEnabled ? (
                       <>
-                        <Volume2 className="h-5 w-5 text-[#FF6417] dark:text-[#FF8A4D] transition-all" />
+                        <Volume2 className="h-5 w-5 text-[#38bdf8] transition-all" />
                         <span className="absolute -right-1 -top-1 flex h-3 w-3">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF6417] dark:bg-[#FF8A4D] opacity-30"></span>
-                          <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FF6417] dark:bg-[#FF8A4D]"></span>
+                          <span className="hidden absolute inline-flex h-full w-full rounded-full bg-[#38bdf8] opacity-30"></span>
+                          <span className="relative inline-flex rounded-full h-3 w-3 bg-[#38bdf8]"></span>
                         </span>
                       </>
                     ) : (
@@ -268,9 +268,9 @@ export const GeneralTab = memo(function GeneralTab() {
                     {isTestingSound && (
                       <span className="absolute inset-0 flex items-center justify-center bg-[#FFD0B5] dark:bg-[#3A3A3A] rounded-md z-20">
                         <span className="flex items-center space-x-1">
-                          <span className="h-1.5 w-1.5 bg-[#FF6417] dark:bg-[#FF8A4D] rounded-full animate-pulse"></span>
-                          <span className="h-1.5 w-1.5 bg-[#FF6417] dark:bg-[#FF8A4D] rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></span>
-                          <span className="h-1.5 w-1.5 bg-[#FF6417] dark:bg-[#FF8A4D] rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></span>
+                          <span className="h-1.5 w-1.5 bg-[#38bdf8] rounded-full animate-pulse"></span>
+                          <span className="h-1.5 w-1.5 bg-[#38bdf8] rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></span>
+                          <span className="h-1.5 w-1.5 bg-[#38bdf8] rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></span>
                         </span>
                       </span>
                     )}
@@ -322,9 +322,9 @@ export const GeneralTab = memo(function GeneralTab() {
               {isUploading && (
                 <span className="absolute inset-0 flex items-center justify-center bg-[#FFD0B5] dark:bg-[#3A3A3A] rounded-lg z-20">
                   <span className="flex items-center space-x-1">
-                    <span className="h-1.5 w-1.5 bg-[#FF6417] dark:bg-[#FF8A4D] rounded-full animate-pulse"></span>
-                    <span className="h-1.5 w-1.5 bg-[#FF6417] dark:bg-[#FF8A4D] rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></span>
-                    <span className="h-1.5 w-1.5 bg-[#FF6417] dark:bg-[#FF8A4D] rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></span>
+                    <span className="h-1.5 w-1.5 bg-[#38bdf8] rounded-full animate-pulse"></span>
+                    <span className="h-1.5 w-1.5 bg-[#38bdf8] rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></span>
+                    <span className="h-1.5 w-1.5 bg-[#38bdf8] rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></span>
                   </span>
                 </span>
               )}

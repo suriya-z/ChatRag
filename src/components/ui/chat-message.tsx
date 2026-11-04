@@ -320,24 +320,7 @@ const styles = `
   to { opacity: 1; }
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
 
-.animate-bounce-1 {
-  animation: bounce 0.6s infinite;
-}
-
-.animate-bounce-2 {
-  animation: bounce 0.6s infinite;
-  animation-delay: 0.2s;
-}
-
-.animate-bounce-3 {
-  animation: bounce 0.6s infinite;
-  animation-delay: 0.4s;
-}
 
 .animate-fadein {
   animation: fadein 0.5s ease-in-out;
@@ -885,17 +868,10 @@ const LoadingVideo = React.memo(function LoadingVideo({
             {progress ? `${Math.round(progress)}% complete` : 'Starting generation...'}
           </div>
 
-          {/* Animated thinking indicator */}
+          {/* Technical Telemetry Indicator */}
           <div className="flex items-center gap-2 pt-1">
-            <div className="animate-bounce-1">
-              <div className="h-2 w-2 rounded-full bg-blue-500 dark:bg-blue-400"></div>
-            </div>
-            <div className="animate-bounce-2">
-              <div className="h-2 w-2 rounded-full bg-yellow-500 dark:bg-yellow-400"></div>
-            </div>
-            <div className="animate-bounce-3">
-              <div className="h-2 w-2 rounded-full bg-orange-500 dark:bg-orange-400"></div>
-            </div>
+            <span className="w-1.5 h-1.5 rounded-[1px] bg-[#38bdf8] animate-pulse" />
+            <span className="font-mono text-xs text-[#94a3b8] uppercase tracking-wider">GENERATING // ACTIVE</span>
           </div>
 
           {status && (
@@ -4402,14 +4378,9 @@ ChatMessage = function ({
                       </>
                     ) : (
                       <>
-                        <div className="animate-bounce-1">
-                          <div className="h-2 w-2 rounded-full bg-blue-500 dark:bg-blue-400"></div>
-                        </div>
-                        <div className="animate-bounce-2">
-                          <div className="h-2 w-2 rounded-full bg-yellow-500 dark:bg-yellow-400"></div>
-                        </div>
-                        <div className="animate-bounce-3">
-                          <div className="h-2 w-2 rounded-full bg-orange-500 dark:bg-orange-400"></div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-[1px] bg-[#38bdf8] animate-pulse" />
+                          <span className="font-mono text-xs text-[#94a3b8] uppercase tracking-wider">RETRIEVING // INFERENCE ACTIVE</span>
                         </div>
                       </>
                     )}
@@ -4796,11 +4767,7 @@ ChatMessage = function ({
                               {/* Show bouncing dots only for active TTS fetching (audioState.isLoading) */}
                               {/* audioSettings.loading falls through to the default icon */}
                               {audioState.isLoading ? (
-                                <div className="flex items-center gap-1">
-                                  <div className="w-1 h-1 bg-current rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                  <div className="w-1 h-1 bg-current rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                  <div className="w-1 h-1 bg-current rounded-full animate-bounce"></div>
-                                </div>
+                                <Loader2 className="h-3.5 w-3.5 animate-spin text-[#38bdf8]" />
                               ) : (
                                 <AudioLines className={cn(
                                   "h-4 w-4",

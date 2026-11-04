@@ -131,7 +131,7 @@ export const AdminTab = memo(function AdminTab() {
         {!isAdmin ? (
           <div className="bg-[#FFF0E8] dark:bg-[#1A1A1A] rounded-lg p-5 border border-[#FFE0D0] dark:border-[#2A2A2A]">
             <div className="flex items-center gap-2 mb-4">
-              <Shield className="h-5 w-5 text-[#FF6417] dark:text-[#FF8A4D]" />
+              <Shield className="h-5 w-5 text-[#38bdf8]" />
               <h4 className="text-lg font-medium text-gray-900 dark:text-white">{t('adminVerification')}</h4>
             </div>
 
@@ -171,7 +171,7 @@ export const AdminTab = memo(function AdminTab() {
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-6 mb-4 border-b border-[#FFE0D0] dark:border-[#2A2A2A]">
               <div className="flex items-center gap-2">
-                <ShieldAlert className="h-5 w-5 text-[#FF6417] dark:text-[#FF8A4D]" />
+                <ShieldAlert className="h-5 w-5 text-[#38bdf8]" />
                 <div>
                   <h4 className="text-base font-medium text-gray-900 dark:text-white">{t('adminAuthenticated')}</h4>
                   <p className="text-sm text-gray-500 dark:text-gray-400">{t('adminAuthenticatedDesc')}</p>

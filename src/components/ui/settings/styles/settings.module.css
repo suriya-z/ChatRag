@@ -2,14 +2,14 @@
 
 /* Base dialog styles */
 .settingsDialog {
-  background-color: #FFF1E5 !important;
+  background-color: #090a0f !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   will-change: transform;
 }
 
 :global(.dark) .settingsDialog {
-  background-color: #212121 !important;
+  background-color: #090a0f !important;
 }
 
 /* Close button with optimized positioning */

@@ -49,7 +49,7 @@ export function ShareChatDialog({ chatId, open, onOpenChange }: ShareChatDialogP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={cn(
         "sm:max-w-md",
-        "bg-[#FFFAF5] dark:bg-[#212121]",
+        "bg-[#090a0f] border border-[#1a1c24]",
         "border border-[#E0D5C9] dark:border-[#3A3A3A]",
         "shadow-lg",
         "backdrop-blur-none"
@@ -62,7 +62,7 @@ export function ShareChatDialog({ chatId, open, onOpenChange }: ShareChatDialogP
             <Button
               onClick={handleShare}
               disabled={isLoading}
-              className="w-full bg-[#FF6417] hover:bg-[#E05A15] text-white dark:bg-[#2A2A2A] dark:hover:bg-[#1A1A1A]"
+              className="w-full bg-white text-black hover:bg-[#38bdf8] hover:text-black font-semibold rounded-[4px] uppercase text-xs font-mono tracking-wider"
             >
               {isLoading ? (
                 <>
@@ -87,7 +87,7 @@ export function ShareChatDialog({ chatId, open, onOpenChange }: ShareChatDialogP
                 size="icon"
                 variant="outline"
                 onClick={copyToClipboard}
-                className="bg-[#FF6417] hover:bg-[#E05A15] text-white dark:bg-[#2A2A2A] dark:hover:bg-[#1A1A1A]"
+                className="bg-white text-black hover:bg-[#38bdf8] hover:text-black font-semibold rounded-[4px] uppercase text-xs font-mono tracking-wider"
               >
                 {copied ? (
                   <Check className="h-4 w-4" />
