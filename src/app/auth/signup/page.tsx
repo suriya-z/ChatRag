@@ -1,56 +1,23 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { env } from '@/lib/env';
+import { Loader2, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-export default function SignUp() {
+function SignUpContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClientComponentClient();
 
-  // Get plan and checkout_id from URL params
   const plan = searchParams.get('plan');
   const checkoutId = searchParams.get('checkout_id');
-
-  // Add useEffect to detect the current theme from localStorage
-  useEffect(() => {
-    // Check localStorage for theme preference
-    const savedTheme = localStorage?.getItem('ui-theme');
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      setTheme(savedTheme);
-    } else {
-      // Check system preference if no saved theme
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(systemPrefersDark ? 'dark' : 'light');
-    }
-    
-    // Listen for theme changes
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.attributeName === 'class') {
-          const htmlElement = document.documentElement;
-          if (htmlElement.classList.contains('dark')) {
-            setTheme('dark');
-          } else if (htmlElement.classList.contains('light')) {
-            setTheme('light');
-          }
-        }
-      }
-    });
-    
-    observer.observe(document.documentElement, { attributes: true });
-    
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,104 +25,148 @@ export default function SignUp() {
     setError(null);
 
     try {
-      // Check if custom SMTP is enabled
       const customSmtpEnabled = env.NEXT_PUBLIC_CUSTOM_SMTP_ENABLED === 'true';
-      console.log(`SignUp Page: Custom SMTP ${customSmtpEnabled ? 'enabled' : 'disabled'}`);
-      
-      // Prepare options based on SMTP setting
       const options = {
         ...(customSmtpEnabled ? {
           emailRedirectTo: `${env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
         } : {}),
-        // Always include this metadata
         data: {
           plan_type: plan,
-          checkout_id: checkoutId
-        }
+          checkout_id: checkoutId,
+        },
       };
-      
-      const { data, error: signUpError } = await supabase.auth.signUp({
+
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options
+        options,
       });
 
       if (signUpError) throw signUpError;
-
-      // Redirect to confirmation page
       router.push('/auth/verify-email');
     } catch (err: any) {
-      setError(err.message || 'An error occurred during sign up');
+      setError(err.message || 'An error occurred during registration');
     } finally {
       setLoading(false);
     }
   };
 
-  // Determine colors based on theme
-  const bgColor = theme === 'dark' ? 'bg-[#1A1A1A]' : 'bg-[#FFF1E5]';
-  const cardBgColor = theme === 'dark' ? 'bg-zinc-800' : 'bg-white';
-  const cardBorderColor = theme === 'dark' ? 'border border-gray-700' : 'border border-gray-200';
-  const headingTextColor = theme === 'dark' ? 'text-zinc-100' : 'text-gray-900';
-  const subTextColor = theme === 'dark' ? 'text-zinc-400' : 'text-gray-600';
-  const labelColor = theme === 'dark' ? 'text-zinc-300' : 'text-gray-700';
-  const inputBgColor = theme === 'dark' ? 'bg-zinc-700' : 'bg-white';
-  const inputBorderColor = theme === 'dark' ? 'border-gray-600' : 'border-gray-300';
-  const inputTextColor = theme === 'dark' ? 'text-zinc-100' : 'text-gray-900';
-  const ringColor = theme === 'dark' ? 'focus:ring-orange-500' : 'focus:ring-blue-500';
-  const buttonBgColor = theme === 'dark' ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700';
-  const errorTextColor = theme === 'dark' ? 'text-red-400' : 'text-red-500';
-
   return (
-    <div className={`flex min-h-screen items-center justify-center p-4 ${bgColor}`}>
-      <div className={`w-full max-w-md ${cardBgColor} rounded-lg shadow-md p-8 ${cardBorderColor}`}>
-        <div className="text-center mb-8">
-          <h1 className={`text-2xl font-bold ${headingTextColor}`}>Complete Your Registration</h1>
-          <p className={subTextColor}>
-            Create your account to access {plan?.toUpperCase()} features
-          </p>
-        </div>
-        <form onSubmit={handleSignUp} className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="email" className={`block text-sm font-medium ${labelColor}`}>
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-              required
-              className={`w-full px-3 py-2 border ${inputBorderColor} rounded-md focus:outline-none focus:ring-2 ${ringColor} ${inputBgColor} ${inputTextColor}`}
-            />
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="password" className={`block text-sm font-medium ${labelColor}`}>
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-              required
-              className={`w-full px-3 py-2 border ${inputBorderColor} rounded-md focus:outline-none focus:ring-2 ${ringColor} ${inputBgColor} ${inputTextColor}`}
-            />
-          </div>
-          {error && (
-            <div className={`text-sm ${errorTextColor}`}>
-              {error}
+    <div className="flex items-center justify-center min-h-screen w-full bg-[#000000] p-4 select-none relative">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="w-full max-w-md"
+      >
+        <div className="bg-[#090a0f] border border-[#1a1c24] rounded-[4px] shadow-2xl p-6 sm:p-8">
+          <div className="flex items-center justify-between pb-4 mb-6 border-b border-[#1a1c24]">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#38bdf8] animate-pulse" />
+              <span className="font-mono text-[10px] uppercase tracking-widest text-[#94a3b8]">
+                CHATRAG // REGISTRATION GATE
+              </span>
             </div>
-          )}
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full ${buttonBgColor} text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 ${ringColor} focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            {loading ? 'Creating account...' : 'Create account'}
-          </button>
-        </form>
-      </div>
+            {plan && (
+              <span className="font-mono text-[10px] text-[#38bdf8] border border-[#38bdf8]/40 px-2 py-0.5 rounded-[2px] uppercase">
+                TIER: {plan}
+              </span>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <h1 className="text-xl font-bold tracking-tight text-white mb-1 font-sans">
+              COMPLETE REGISTRATION
+            </h1>
+            <p className="text-xs font-mono text-[#94a3b8] tracking-wide">
+              {plan ? `Provision workspace with ${plan.toUpperCase()} tier privileges` : 'Provision new verified operator workspace'}
+            </p>
+          </div>
+
+          <form onSubmit={handleSignUp} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-[10px] font-mono uppercase tracking-widest text-[#94a3b8] mb-1.5">
+                EMAIL IDENTIFIER
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                className="h-10 w-full bg-[#11131a] border border-[#1a1c24] rounded-[4px] px-3 text-white text-sm font-mono placeholder:text-[#475569] focus:outline-none focus:border-[#38bdf8] focus:ring-1 focus:ring-[#38bdf8] transition-colors"
+                placeholder="operator@domain.corp"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-[10px] font-mono uppercase tracking-widest text-[#94a3b8] mb-1.5">
+                SECURITY KEY
+              </label>
+              <input
+                id="password"
+                type="password"
+                required
+                minLength={8}
+                className="h-10 w-full bg-[#11131a] border border-[#1a1c24] rounded-[4px] px-3 text-white text-sm font-mono placeholder:text-[#475569] focus:outline-none focus:border-[#38bdf8] focus:ring-1 focus:ring-[#38bdf8] transition-colors"
+                placeholder="Minimum 8 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-xs font-mono text-rose-400 bg-rose-950/20 border border-rose-900/40 p-2.5 rounded-[4px]"
+              >
+                [ERROR]: {error}
+              </motion.div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-10 flex items-center justify-center bg-white text-black hover:bg-[#38bdf8] hover:text-black font-semibold rounded-[4px] text-xs font-mono uppercase tracking-wider transition-colors disabled:opacity-40 disabled:cursor-not-allowed mt-2"
+            >
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-black" />
+                  <span>PROVISIONING...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span>CONFIRM & INITIALIZE</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              )}
+            </button>
+
+            <div className="text-center pt-4 border-t border-[#1a1c24]/60">
+              <button
+                type="button"
+                onClick={() => router.push('/auth')}
+                className="text-xs font-mono text-[#94a3b8] hover:text-[#38bdf8] transition-colors uppercase tracking-wider"
+              >
+                [ RETURN TO AUTHENTICATION GATE ]
+              </button>
+            </div>
+          </form>
+        </div>
+      </motion.div>
     </div>
   );
-} 
+}
+
+export default function SignUp() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen w-full bg-[#000000] flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-[#38bdf8]" />
+      </div>
+    }>
+      <SignUpContent />
+    </Suspense>
+  );
+}
