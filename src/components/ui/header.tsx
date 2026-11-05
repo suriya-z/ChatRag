@@ -62,7 +62,7 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
   const mcpTriggerRef = useRef<HTMLButtonElement>(null);
   const { isAdmin } = useAdmin();
   const [headerLogoType, setHeaderLogoType] = useState<string>('text');
-  const [headerLogoText, setHeaderLogoText] = useState<string>('ChatRAG');
+  const [headerLogoText, setHeaderLogoText] = useState<string>('Pulsar');
   const [headerLogoUrl, setHeaderLogoUrl] = useState<string | null>(null);
   const [sidebarWidth, setSidebarWidth] = useState(256); // Default sidebar width
 
@@ -155,7 +155,7 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
     const savedLogoUrl = localStorage.getItem('HEADER_LOGO_URL');
 
     if (savedLogoType) setHeaderLogoType(savedLogoType);
-    if (savedLogoText) setHeaderLogoText(savedLogoText);
+    if (savedLogoText && savedLogoText !== 'ChatRAG') { setHeaderLogoText(savedLogoText); } else { setHeaderLogoText('Pulsar'); localStorage.setItem('HEADER_LOGO_TEXT', 'Pulsar'); }
     if (savedLogoUrl) setHeaderLogoUrl(savedLogoUrl);
 
     // Then fetch latest from server
@@ -332,7 +332,7 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                 <button
                   onClick={onToggleSidebar}
                   className={cn(
-                    "flex items-center justify-center w-9 h-9 text-gray-700 dark:text-gray-200 rounded-[4px] transition-colors group relative backdrop-blur-md",
+                    "flex items-center justify-center w-9 h-9 text-zinc-100 rounded-[4px] transition-colors group relative backdrop-blur-md",
                     "bg-[#121318]/70 border border-white/[0.08] text-zinc-200 hover:text-white hover:bg-[#181a22] hover:border-white/[0.16] rounded-lg shadow-sm transition-all"
                   )}
                 >
@@ -351,7 +351,7 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                     onNewChat();
                   }}
                   className={cn(
-                    "flex items-center justify-center w-9 h-9 text-gray-700 dark:text-gray-200 rounded-[4px] transition-colors group relative backdrop-blur-md",
+                    "flex items-center justify-center w-9 h-9 text-zinc-100 rounded-[4px] transition-colors group relative backdrop-blur-md",
                     "bg-[#121318]/70 border border-white/[0.08] text-zinc-200 hover:text-white hover:bg-[#181a22] hover:border-white/[0.16] rounded-lg shadow-sm transition-all"
                   )}
                 >
@@ -376,10 +376,10 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                             : "hover:bg-[#181b24] hover:text-white bg-transparent"
                         )}
                       >
-                        <span className="font-medium text-sm truncate max-w-[140px] md:max-w-none text-gray-700 dark:text-gray-200">
+                        <span className="font-medium text-sm truncate max-w-[140px] md:max-w-none text-zinc-100">
                           {headerLogoText}
                         </span>
-                        <ChevronDown className="h-3 w-3 ml-2 opacity-60 flex-shrink-0 text-gray-700 dark:text-gray-200" />
+                        <ChevronDown className="h-3 w-3 ml-2 opacity-60 flex-shrink-0 text-zinc-100" />
                       </button>
                     </DropdownMenuTrigger>
                   </PortalTooltip>
@@ -434,10 +434,10 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                           MozAppearance: 'none'
                         }}
                       >
-                        <span className="font-medium text-sm truncate max-w-[140px] md:max-w-none text-gray-700 dark:text-gray-200">
+                        <span className="font-medium text-sm truncate max-w-[140px] md:max-w-none text-zinc-100">
                           {headerLogoText}
                         </span>
-                        <ChevronDown className="h-3 w-3 ml-2 opacity-60 flex-shrink-0 text-gray-700 dark:text-gray-200" />
+                        <ChevronDown className="h-3 w-3 ml-2 opacity-60 flex-shrink-0 text-zinc-100" />
                       </button>
                     </DropdownMenuTrigger>
                   </PortalTooltip>
@@ -489,7 +489,7 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                     onProcessingComplete={handlePermanentDocProcessingComplete}
                     onProcessingError={handlePermanentDocProcessingError}
                     className={cn(
-                      "flex items-center justify-center w-9 h-9 text-gray-700 dark:text-gray-200 bg-transparent hover:bg-[#FFE0D0] dark:bg-transparent dark:hover:bg-[#424242] transition-colors group relative backdrop-blur-md"
+                      "flex items-center justify-center w-9 h-9 text-zinc-100 bg-transparent hover:bg-[#FFE0D0] dark:bg-transparent dark:hover:bg-[#424242] transition-colors group relative backdrop-blur-md"
                     )}
                   />
                   <PortalTooltip content={t('useIncognitoChat')}>
@@ -500,7 +500,7 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                       }}
                       onClick={handleGhostModeToggle}
                       className={cn(
-                        "flex items-center justify-center w-10 h-10 rounded-[4px] text-gray-700 dark:text-gray-200 transition-colors group relative backdrop-blur-md",
+                        "flex items-center justify-center w-10 h-10 rounded-[4px] text-zinc-100 transition-colors group relative backdrop-blur-md",
                         isGhostMode
                           ? "bg-purple-500/20 hover:bg-purple-500/30 dark:bg-purple-600/20 dark:hover:bg-purple-600/30 text-purple-600 dark:text-purple-400"
                           : "bg-transparent hover:bg-[#FFE0D0] dark:bg-transparent dark:hover:bg-[#424242]"
@@ -534,7 +534,7 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
             <button
               onClick={onToggleSidebar}
               className={cn(
-                "flex items-center justify-center w-10 h-10 text-gray-700 dark:text-gray-200 rounded-[4px] transition-colors group relative backdrop-blur-md",
+                "flex items-center justify-center w-10 h-10 text-zinc-100 rounded-[4px] transition-colors group relative backdrop-blur-md",
                 "bg-[#121318]/70 border border-white/[0.08] text-zinc-200 hover:text-white hover:bg-[#181a22] hover:border-white/[0.16] rounded-lg shadow-sm transition-all"
               )}
             >
@@ -557,10 +557,10 @@ export function Header({ onNewChat, onToggleSidebar, isSidebarOpen }: HeaderProp
                         : "hover:bg-[#181b24] hover:text-white bg-transparent"
                     )}
                   >
-                    <span className="font-medium text-sm truncate max-w-[140px] text-gray-700 dark:text-gray-200">
+                    <span className="font-medium text-sm truncate max-w-[140px] text-zinc-100">
                       {headerLogoText}
                     </span>
-                    <ChevronDown className="h-3 w-3 ml-2 opacity-60 flex-shrink-0 text-gray-700 dark:text-gray-200" />
+                    <ChevronDown className="h-3 w-3 ml-2 opacity-60 flex-shrink-0 text-zinc-100" />
                   </button>
                 </DropdownMenuTrigger>
               </PortalTooltip>

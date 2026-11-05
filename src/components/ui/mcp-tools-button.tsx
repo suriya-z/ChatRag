@@ -219,7 +219,7 @@ export function MCPToolsButton({
   // Create server display info with proper icons and names
   const getServerDisplayInfo = useCallback((serverId: string) => {
     const serverMap: Record<string, { name: string; icon: string; color: string }> = {
-      'zapier': { name: 'Zapier', icon: '⚡', color: 'text-purple-600 dark:text-purple-400' },
+      'zapier': { name: 'Zapier', icon: '⚡', color: 'text-zinc-400 group-hover:text-white transition-colors' },
       'coingecko-mcp': { name: 'CoinGecko MCP', icon: '🦎', color: 'text-green-600 dark:text-green-400' },
       'brave-search': { name: 'Brave Search', icon: '🔍', color: 'text-orange-600 dark:text-orange-400' },
       'supabase': { name: 'Supabase', icon: '🗄️', color: 'text-emerald-600 dark:text-emerald-400' },
@@ -315,7 +315,7 @@ export function MCPToolsButton({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <div className="relative mt-1.5">
         <CollapsibleButton
-          icon={<Hammer className="h-5 w-5 text-purple-600 dark:text-purple-400" />}
+          icon={<Hammer className="h-5 w-5 text-zinc-400 group-hover:text-white transition-colors" />}
           text={t('mcpToolsButton')}
           onClick={() => setIsOpen(true)}
           isActive={isOpen || isActive}

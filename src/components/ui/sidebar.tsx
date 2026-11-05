@@ -1058,7 +1058,7 @@ export function Sidebar({ isOpen, onClose, onNewChat, onSelectChat, userEmail, o
   }, []);
 
   // Initialize sidebar button configuration
-  const [sidebarButtonText, setSidebarButtonText] = useState<string>('ChatRAG');
+  const [sidebarButtonText, setSidebarButtonText] = useState<string>('Pulsar');
   const [sidebarButtonUrl, setSidebarButtonUrl] = useState<string>('https://www.chatrag.ai/');
 
   useEffect(() => {
@@ -1066,7 +1066,7 @@ export function Sidebar({ isOpen, onClose, onNewChat, onSelectChat, userEmail, o
     const savedButtonText = localStorage.getItem('SIDEBAR_BUTTON_TEXT');
     const savedButtonUrl = localStorage.getItem('SIDEBAR_BUTTON_URL');
 
-    if (savedButtonText) setSidebarButtonText(savedButtonText);
+    if (savedButtonText && savedButtonText !== 'ChatRAG') { setSidebarButtonText(savedButtonText); } else { setSidebarButtonText('Pulsar'); localStorage.setItem('SIDEBAR_BUTTON_TEXT', 'Pulsar'); }
     if (savedButtonUrl) setSidebarButtonUrl(savedButtonUrl);
 
     // Then fetch latest from server

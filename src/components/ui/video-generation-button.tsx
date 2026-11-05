@@ -565,7 +565,7 @@ export function VideoGenerationButton({
           disabled={disabled}
           className={cn(
             "relative inline-flex h-9 items-center justify-center rounded-xl transition-colors border-[0.5px] overflow-hidden mr-0.25",
-            "bg-[#FF6417] border-[#FF6417] dark:bg-[#212121] dark:border-[#212121] hover:bg-[#E55000] dark:hover:bg-[#1A1A1A]",
+            "bg-zinc-800/90 border border-white/[0.22] text-white hover:bg-zinc-700/90",
             disabled && "opacity-50 cursor-not-allowed"
           )}
         >
@@ -595,12 +595,12 @@ export function VideoGenerationButton({
           disabled={disabled}
           className={cn(
             "relative inline-flex h-9 items-center justify-center rounded-xl transition-colors border-[0.5px] overflow-hidden mr-0.25",
-            "bg-transparent border-[#D4C0B6] dark:border-gray-600 hover:bg-[#FFE0D0] dark:bg-transparent dark:hover:bg-[#424242]",
+            "bg-white/[0.04] border border-white/[0.08] text-zinc-400 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.18]",
             disabled && "opacity-50 cursor-not-allowed"
           )}
         >
           <div className="flex items-center px-3 gap-1">
-            <Video className="h-5 w-5 text-green-600 dark:text-green-400" />
+            <Video className="h-5 w-5 text-zinc-400 group-hover:text-white transition-colors" />
 
             <span className="text-sm font-medium whitespace-nowrap text-gray-700 dark:text-[#9E9E9E]">
               {useContext ? String(t('videoWithContext')) : String(t('generateVideo'))}
@@ -610,7 +610,7 @@ export function VideoGenerationButton({
       ) : (
         // Use CollapsibleButton for all other states
         <CollapsibleButton
-          icon={<Video className="h-5 w-5 text-green-600 dark:text-green-400" />}
+          icon={<Video className="h-5 w-5 text-zinc-400 group-hover:text-white transition-colors" />}
           text={useContext ? String(t('videoWithContext')) : String(t('generateVideo'))}
           onClick={handleButtonClick}
           isActive={false}

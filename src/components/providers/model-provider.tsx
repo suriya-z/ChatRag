@@ -251,7 +251,8 @@ export function ModelProvider({ children }: { children: React.ReactNode }) {
     };
 
     // More frequent checks for model updates (every 5 seconds)
-    const modelUpdateIntervalId = setInterval(checkForModelUpdates, 5000);
+    // 5s polling removed to avoid infinite refresh and dev overlay contention
+    const modelUpdateIntervalId = null;
 
     // Refresh when tab becomes visible
     const handleVisibilityChange = () => {
@@ -264,7 +265,7 @@ export function ModelProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       clearInterval(intervalId);
-      clearInterval(modelUpdateIntervalId);
+      if (modelUpdateIntervalId) if (modelUpdateIntervalId) clearInterval(modelUpdateIntervalId);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);

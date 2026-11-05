@@ -60,11 +60,10 @@ export function WhatsAppConnectionButton() {
 
   // Poll for config changes every 5 seconds to catch updates from config UI
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchWhatsAppConfig();
-    }, 5000); // Check every 5 seconds
+    // Polling disabled
+    const interval = null; // Check every 5 seconds
 
-    return () => clearInterval(interval);
+    return () => { if (interval) clearInterval(interval); };
   }, []);
 
   // Listen for custom event when config is saved

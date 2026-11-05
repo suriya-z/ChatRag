@@ -323,7 +323,7 @@ export const env = envConfig.getEnv();
 
 // Helper function to get the application name
 export function getAppName(): string {
-  return process.env.NEXT_PUBLIC_APP_NAME || env.NEXT_PUBLIC_APP_NAME || 'ChatRAG';
+  return process.env.NEXT_PUBLIC_APP_NAME || env.NEXT_PUBLIC_APP_NAME || 'Pulsar';
 }
 
 // Helper function to get the site title (falls back to app name if not set)

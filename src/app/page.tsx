@@ -4630,85 +4630,10 @@ export default function Home() {
                   </div>
                 )}
                 {/* Container for welcome text and chat - positioned slightly higher */}
-                <div className="flex-1 flex flex-col items-center justify-center -mt-16 mobile-welcome-container">
+                <div className="flex-1 flex flex-col items-center justify-center -mt-6 sm:-mt-8 mobile-welcome-container">
                   <div className="w-full max-w-[52rem] flex flex-col items-center px-4 lg:px-0">
-                    {/* Welcome text */}
-                    <div className="flex items-center justify-center mb-8">
-                      <h1
-                        className="text-2xl lg:text-4xl font-semibold text-gray-700 dark:text-gray-200 text-center px-4 welcome-text"
-                        style={(() => {
-                          if (welcomeTextGradient === 'none') {
-                            return {};
-                          }
-
-                          // Preset gradients that work well in both light and dark modes
-                          const presets: Record<string, string> = {
-                            sunset: 'linear-gradient(to right, #FF6B6B, #FFE66D)',
-                            ocean: 'linear-gradient(to right, #4A90E2, #9B59B6)',
-                            aurora: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
-                            neon: 'linear-gradient(to right, #00FFF0, #FF00FF)',
-                            solar: 'linear-gradient(to right, #FDB813, #FF6B6B)',
-                            chatbuttons: 'linear-gradient(to right, #3B82F6, #EAB308, #EA580C, #EF4444, #A855F7)'
-                          };
-
-                          const gradientCSS = presets[welcomeTextGradient];
-
-                          if (gradientCSS) {
-                            return {
-                              background: gradientCSS,
-                              WebkitBackgroundClip: 'text',
-                              WebkitTextFillColor: 'transparent',
-                              backgroundClip: 'text',
-                              color: 'transparent'
-                            };
-                          }
-
-                          return {};
-                        })()}
-                      >
-                        {(() => {
-                          // If in default mode, use the translation system
-                          if (welcomeTextMode === 'default') {
-                            return t('mainPrompt');
-                          }
-
-                          // If using welcome messages array
-                          if (welcomeTextMode === 'dynamic' && selectedWelcomeMessage) {
-                            const currentLang = language || 'en';
-                            let message = selectedWelcomeMessage;
-
-                            // Check for translation
-                            if (welcomeMessagesTranslations[currentLang]) {
-                              const messageIndex = welcomeMessages.indexOf(selectedWelcomeMessage);
-                              if (messageIndex !== -1 && welcomeMessagesTranslations[currentLang][messageIndex]) {
-                                message = welcomeMessagesTranslations[currentLang][messageIndex];
-                              }
-                            }
-
-                            // Replace {Username} placeholder
-                            const displayName = getUserDisplayName();
-                            return message.replace(/{Username}/g, displayName);
-                          }
-
-                          // If in custom mode, check for translations
-                          const currentLang = language || 'en';
-
-                          // Special case: if custom text is the default "What can I help with?", 
-                          // use the translation system's mainPrompt key
-                          if (welcomeText === 'What can I help with?') {
-                            return t('mainPrompt');
-                          }
-
-                          // Check for custom translations
-                          if (welcomeTextTranslations[currentLang]) {
-                            return welcomeTextTranslations[currentLang];
-                          }
-
-                          // Fallback to the custom text or translations in English
-                          return welcomeTextTranslations['en'] || welcomeText;
-                        })()}
-                      </h1>
-                    </div>
+                    {/* Pulsar Kinetic Hero Core */}
+                    <PulsarWaveHero />
 
                     {/* Chat input - centered like ChatGPT, hidden on mobile in initial view */}
                     <div className="w-full max-w-[52rem] mx-auto px-4 hidden sm:block">
@@ -4779,7 +4704,6 @@ export default function Home() {
 
                         return (
                           <>
-                            <PulsarWaveHero />
                             <SuggestionButtons onSuggestionClick={handleSuggestionClick} />
                           </>
                         );

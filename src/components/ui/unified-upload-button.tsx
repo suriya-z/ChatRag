@@ -142,11 +142,11 @@ export function UnifiedUploadButton({ disabled, onTempDocUpload, onProcessingSta
             type="button"
             disabled={disabled}
             className={cn(
-              "dropdown-trigger inline-flex h-9 w-9 items-center justify-center rounded-tl-xl rounded-tr-xl rounded-bl-3xl rounded-br-xl bg-transparent border-[0.5px] border-[#D4C0B6] dark:border-gray-600 p-2 hover:bg-[#FFE0D0] dark:hover:bg-[#424242] transition-colors group relative mr-0.5",
+              "dropdown-trigger inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.08] p-2 hover:bg-white/[0.08] hover:border-white/[0.18] transition-all group relative mr-0.5 text-zinc-400 hover:text-white",
               disabled && "opacity-50 cursor-not-allowed"
             )}
           >
-            <Plus className="h-5 w-5 text-gray-700 dark:text-gray-300 transform translate-x-[1px] -translate-y-[1px]" />
+            <Plus className="h-5 w-5 text-zinc-400 group-hover:text-white transition-colors" />
             <div className="pointer-events-none absolute 
               sm:left-1/2 sm:-translate-x-1/2
               max-[639px]:left-0 max-[639px]:translate-x-0

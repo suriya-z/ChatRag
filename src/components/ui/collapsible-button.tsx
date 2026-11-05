@@ -41,9 +41,7 @@ export function CollapsibleButton({
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
         "relative inline-flex h-9 items-center justify-center rounded-xl transition-colors group border-[0.5px] mr-0.25",
-        isActive
-          ? "bg-[#FF6417] border-[#FF6417] dark:bg-[#212121] dark:border-[#212121] hover:bg-[#E55000] dark:hover:bg-[#1A1A1A] hover:border-[#E55000] dark:hover:border-[#1A1A1A]"
-          : "bg-transparent border-[#D4C0B6] dark:border-gray-600 hover:bg-[#FFE0D0] dark:bg-transparent dark:hover:bg-[#424242]",
+        isActive ? "bg-zinc-800/90 border-white/[0.22] text-white shadow-[0_0_16px_rgba(255,255,255,0.06)] hover:bg-zinc-700/90" : "bg-white/[0.04] border-white/[0.08] text-zinc-400 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.18]",
         disabled && "opacity-50 cursor-not-allowed",
         className
       )}
@@ -60,7 +58,7 @@ export function CollapsibleButton({
         >
           <span className={cn(
             "flex items-center justify-center",
-            isActive ? "text-[#E6E6E6]" : ""
+            isActive ? "text-white" : "text-zinc-400 group-hover:text-white"
           )}>
             {icon}
           </span>
@@ -78,7 +76,7 @@ export function CollapsibleButton({
         >
           <span className={cn(
             "text-sm font-medium whitespace-nowrap pr-3",
-            isActive ? "text-[#E6E6E6]" : "text-gray-700 dark:text-[#9E9E9E]"
+            isActive ? "text-white font-medium" : "text-zinc-300 group-hover:text-white"
           )}>
             {text}
           </span>
