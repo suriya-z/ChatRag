@@ -1083,17 +1083,18 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         
         .suggestion-button:hover {
           background: rgba(28, 30, 38, 0.9) !important;
-          border-color: rgba(56, 189, 248, 0.45) !important;
+          border-color: rgba(255, 255, 255, 0.22) !important;
+          background: rgba(22, 23, 29, 0.95) !important;
           color: #ffffff !important;
           transform: translateY(-1.5px);
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.15);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
         }
         
         .suggestion-button.active {
           background: rgba(28, 30, 38, 0.95) !important;
-          border-color: #38bdf8 !important;
+          border-color: #ffffff !important;
           color: #ffffff !important;
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
           z-index: 30;
         }
         
@@ -1125,10 +1126,11 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         @media (max-width: 639px) {
           .suggestion-button:hover {
           background: rgba(28, 30, 38, 0.9) !important;
-          border-color: rgba(56, 189, 248, 0.45) !important;
+          border-color: rgba(255, 255, 255, 0.22) !important;
+          background: rgba(22, 23, 29, 0.95) !important;
           color: #ffffff !important;
           transform: translateY(-1.5px);
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.15);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
         }
         }
         
@@ -1136,9 +1138,9 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         @media (max-width: 639px) {
           .suggestion-button.active {
           background: rgba(28, 30, 38, 0.95) !important;
-          border-color: #38bdf8 !important;
+          border-color: #ffffff !important;
           color: #ffffff !important;
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
           z-index: 30;
         }
           
@@ -1171,17 +1173,18 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         
         html.dark .suggestion-button:hover {
           background: rgba(28, 30, 38, 0.9) !important;
-          border-color: rgba(56, 189, 248, 0.45) !important;
+          border-color: rgba(255, 255, 255, 0.22) !important;
+          background: rgba(22, 23, 29, 0.95) !important;
           color: #ffffff !important;
           transform: translateY(-1.5px);
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.15);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
         }
         
         html.dark .suggestion-button.active {
           background: rgba(28, 30, 38, 0.95) !important;
-          border-color: #38bdf8 !important;
+          border-color: #ffffff !important;
           color: #ffffff !important;
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
           z-index: 30;
         }
 
@@ -1213,9 +1216,9 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         @media (max-width: 639px) {
           .dark .suggestion-button.active {
           background: rgba(28, 30, 38, 0.95) !important;
-          border-color: #38bdf8 !important;
+          border-color: #ffffff !important;
           color: #ffffff !important;
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
           z-index: 30;
         }
         }
@@ -1344,8 +1347,8 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         }
         
         html.dark .suggestion-dropdown-item:hover {
-          background-color: rgba(56, 189, 248, 0.08) !important;
-          color: #38bdf8 !important;
+          background-color: rgba(255, 255, 255, 0.12) !important;
+          color: #ffffff !important;
         }
         
         .suggestion-dropdown-item:active {
@@ -1416,17 +1419,18 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         
         [data-theme="dark"] .suggestion-button:hover {
           background: rgba(28, 30, 38, 0.9) !important;
-          border-color: rgba(56, 189, 248, 0.45) !important;
+          border-color: rgba(255, 255, 255, 0.22) !important;
+          background: rgba(22, 23, 29, 0.95) !important;
           color: #ffffff !important;
           transform: translateY(-1.5px);
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.15);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
         }
         
         [data-theme="dark"] .suggestion-button.active {
           background: rgba(28, 30, 38, 0.95) !important;
-          border-color: #38bdf8 !important;
+          border-color: #ffffff !important;
           color: #ffffff !important;
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
           z-index: 30;
         }
 
@@ -1507,17 +1511,18 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         
         .dark .suggestion-button:hover {
           background: rgba(28, 30, 38, 0.9) !important;
-          border-color: rgba(56, 189, 248, 0.45) !important;
+          border-color: rgba(255, 255, 255, 0.22) !important;
+          background: rgba(22, 23, 29, 0.95) !important;
           color: #ffffff !important;
           transform: translateY(-1.5px);
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.15);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
         }
         
         .dark .suggestion-button.active {
           background: rgba(28, 30, 38, 0.95) !important;
-          border-color: #38bdf8 !important;
+          border-color: #ffffff !important;
           color: #ffffff !important;
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
           z-index: 30;
         }
 
@@ -1549,9 +1554,9 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
         @media (max-width: 639px) {
           .dark .suggestion-button.active {
           background: rgba(28, 30, 38, 0.95) !important;
-          border-color: #38bdf8 !important;
+          border-color: #ffffff !important;
           color: #ffffff !important;
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
           z-index: 30;
         }
         }
@@ -1610,17 +1615,18 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
           
           :root:not(.light) .suggestion-button:hover {
           background: rgba(28, 30, 38, 0.9) !important;
-          border-color: rgba(56, 189, 248, 0.45) !important;
+          border-color: rgba(255, 255, 255, 0.22) !important;
+          background: rgba(22, 23, 29, 0.95) !important;
           color: #ffffff !important;
           transform: translateY(-1.5px);
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.15);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
         }
           
           :root:not(.light) .suggestion-button.active {
           background: rgba(28, 30, 38, 0.95) !important;
-          border-color: #38bdf8 !important;
+          border-color: #ffffff !important;
           color: #ffffff !important;
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
           z-index: 30;
         }
           
@@ -1659,10 +1665,11 @@ export function SuggestionButtonsClient({ suggestionGroups, onSuggestionClick }:
           html.dark .suggestion-button:hover,
           .dark .suggestion-button:hover {
           background: rgba(28, 30, 38, 0.9) !important;
-          border-color: rgba(56, 189, 248, 0.45) !important;
+          border-color: rgba(255, 255, 255, 0.22) !important;
+          background: rgba(22, 23, 29, 0.95) !important;
           color: #ffffff !important;
           transform: translateY(-1.5px);
-          box-shadow: 0 4px 16px rgba(56, 189, 248, 0.15);
+          box-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
         }
         }
 

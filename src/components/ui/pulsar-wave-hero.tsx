@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
 
 interface PulsarWaveHeroProps {
   title?: string;
@@ -29,8 +28,12 @@ export function PulsarWaveHero({
 
     let displayWidth = canvas.offsetWidth;
     let displayHeight = canvas.offsetHeight;
-    let targetDistort = 0.5;
-    let currentDistort = 0.5;
+    
+    // 3D Gravitational tilt physics
+    let targetTiltX = 0;
+    let targetTiltY = 0;
+    let currentTiltX = 0;
+    let currentTiltY = 0;
 
     const handleResize = () => {
       if (!canvas) return;
@@ -43,48 +46,87 @@ export function PulsarWaveHero({
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
-      targetDistort = Math.max(0.15, Math.min(0.85, (e.clientX - rect.left) / rect.width));
+      const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const normY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+      targetTiltX = Math.max(-1, Math.min(1, normX));
+      targetTiltY = Math.max(-1, Math.min(1, normY));
+    };
+
+    const handleMouseLeave = () => {
+      targetTiltX = 0;
+      targetTiltY = 0;
     };
 
     window.addEventListener('resize', handleResize);
-    window.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mouseleave', handleMouseLeave);
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const linesCount = 14;
     let t = 0;
     let animId: number;
 
     const render = () => {
       ctx.clearRect(0, 0, displayWidth, displayHeight);
       
-      // Smooth interpolation for mouse interaction
-      currentDistort += (targetDistort - currentDistort) * 0.05;
+      // Smooth damped spring inertia
+      currentTiltX += (targetTiltX - currentTiltX) * 0.06;
+      currentTiltY += (targetTiltY - currentTiltY) * 0.06;
       
-      if (!prefersReduced) t += 0.015;
+      if (!prefersReduced) t += 0.012;
 
-      for (let i = 0; i < linesCount; i++) {
-        const progress = i / (linesCount - 1);
-        const yBase = (displayHeight / (linesCount + 1)) * (i + 1);
+      const centerX = displayWidth / 2 + currentTiltX * 40;
+      const centerY = displayHeight / 2 + currentTiltY * 20;
+
+      // Draw mathematical orbital lattice
+      const rings = 7;
+      for (let r = 0; r < rings; r++) {
+        const radiusX = (displayWidth * 0.38) * ((r + 1) / rings);
+        const radiusY = (displayHeight * 0.34) * ((r + 1) / rings);
+        const rotation = (r % 2 === 0 ? 1 : -1) * (t * 0.25 + r * 0.4);
         
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(rotation * 0.2 + currentTiltX * 0.15);
+
         ctx.beginPath();
-        // Delicate gradient opacity for Hermes elegance
-        const isCenter = Math.abs(i - 6) <= 2;
-        const alpha = isCenter ? 0.45 : 0.15 + (1 - Math.abs(progress - 0.5) * 2) * 0.2;
-        ctx.strokeStyle = isCenter ? `rgba(56, 189, 248, ${alpha})` : `rgba(255, 255, 255, ${alpha})`;
-        ctx.lineWidth = isCenter ? 1.25 : 1;
-
-        for (let x = 0; x <= displayWidth; x += 4) {
-          const normX = x / displayWidth;
-          const dist = Math.abs(normX - currentDistort);
-          const envelope = Math.max(0, 1 - dist * 2.8);
-          const wave = Math.sin(x * 0.02 + t + i * 0.35) * Math.cos(x * 0.012 - t * 0.8);
-          const yOffset = wave * envelope * 24;
-
-          if (x === 0) ctx.moveTo(x, yBase - yOffset);
-          else ctx.lineTo(x, yBase - yOffset);
-        }
+        ctx.ellipse(0, 0, radiusX, radiusY * (0.45 + r * 0.08), 0, 0, Math.PI * 2);
+        
+        const isCore = r === 2 || r === 3;
+        const alpha = isCore ? 0.35 : 0.07 + (r / rings) * 0.12;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.lineWidth = isCore ? 1.25 : 0.75;
         ctx.stroke();
+
+        // High-density nodal markers along the orbits
+        if (!prefersReduced && r >= 2) {
+          const nodeAngle = t * (0.8 + r * 0.2) + (r * Math.PI) / 3;
+          const nodeX = Math.cos(nodeAngle) * radiusX;
+          const nodeY = Math.sin(nodeAngle) * (radiusY * (0.45 + r * 0.08));
+          
+          ctx.beginPath();
+          ctx.arc(nodeX, nodeY, isCore ? 1.75 : 1.2, 0, Math.PI * 2);
+          ctx.fillStyle = isCore ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.5)';
+          ctx.fill();
+
+          // Delicate light dispersion filament
+          if (isCore) {
+            ctx.beginPath();
+            ctx.arc(nodeX, nodeY, 4, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.fill();
+          }
+        }
+
+        ctx.restore();
       }
+
+      // Horizontal acoustic horizon line
+      ctx.beginPath();
+      ctx.moveTo(0, centerY);
+      ctx.lineTo(displayWidth, centerY);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
 
       if (!prefersReduced) {
         animId = requestAnimationFrame(render);
@@ -95,50 +137,40 @@ export function PulsarWaveHero({
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handleMouseMove);
+      if (canvas) {
+        canvas.removeEventListener('mousemove', handleMouseMove);
+        canvas.removeEventListener('mouseleave', handleMouseLeave);
+      }
       if (animId) cancelAnimationFrame(animId);
     };
   }, []);
 
   return (
-    <div className={`w-full max-w-2xl mx-auto flex flex-col items-center select-none ${className}`}>
-      {/* Hermes Status Badge */}
-      <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-md mb-5 shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
-      >
-        <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
-        <span className="text-xs text-zinc-300 font-medium">Hermes Ready</span>
-        <span className="text-zinc-600">•</span>
-        <span className="text-[11px] text-zinc-400">Knowledge Engine</span>
-      </motion.div>
-
-      {/* Hero Typography */}
+    <div className={`w-full max-w-3xl mx-auto flex flex-col items-center select-none pt-4 pb-2 ${className}`}>
+      {/* Editorial Monumental Typography */}
       <motion.div 
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-        className="text-center mb-6"
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="text-center mb-6 px-4"
       >
-        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-2.5 font-sans">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-[-0.035em] text-white mb-3 font-sans antialiased text-balance">
           {title}
         </h1>
-        <p className="text-sm text-zinc-400 max-w-[440px] text-balance mx-auto leading-relaxed">
+        <p className="text-sm sm:text-base text-zinc-400 max-w-lg text-balance mx-auto leading-relaxed font-normal">
           {subtitle}
         </p>
       </motion.div>
 
-      {/* Fluid Ambient Waveform Canvas */}
+      {/* Kinetic Gravitational Lattice Core */}
       <motion.div 
-        initial={{ opacity: 0, scale: 0.98 }}
+        initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full h-28 relative overflow-hidden"
+        transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full h-36 relative overflow-hidden my-1"
         style={{
-          maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
+          maskImage: 'radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 70% 80% at 50% 50%, black 30%, transparent 100%)'
         }}
       >
         <canvas ref={canvasRef} className="w-full h-full block cursor-crosshair" />

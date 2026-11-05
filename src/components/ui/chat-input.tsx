@@ -3227,7 +3227,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
         <button
           className={cn(
             "inline-flex h-9 w-9 items-center justify-center rounded-lg transition-all",
-            "bg-white text-zinc-950 hover:bg-[#38bdf8] hover:text-black font-medium shadow-sm",
+            "bg-white text-zinc-950 hover:bg-zinc-200 active:bg-zinc-300 font-medium shadow-sm",
             "group relative focus:outline-none"
           )}
           onClick={(e) => {
@@ -3267,8 +3267,8 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
               isRecording
                 ? "bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 animate-pulse"
                 : isTranscribing
-                  ? "bg-[#FFF0E8] dark:bg-[#2A2A2A]"
-                  : "bg-[#FFF0E8] dark:bg-[#2A2A2A] hover:bg-[#FFE0D0] dark:hover:bg-[#333333]",
+                  ? "bg-zinc-800/80 text-zinc-300"
+                  : "bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700/80 text-zinc-200",
               "disabled:opacity-50 disabled:cursor-not-allowed"
             )}
             disabled={isProcessingDoc}
@@ -3308,7 +3308,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
             ? "bg-rose-600 hover:bg-rose-500 text-white"
             : isDisabled || !input.trim()
               ? "bg-zinc-800/40 text-zinc-500 border border-white/[0.06]"
-              : "bg-white text-zinc-950 hover:bg-[#38bdf8] hover:text-black font-medium shadow-sm",
+              : "bg-white text-zinc-950 hover:bg-zinc-200 active:bg-zinc-300 font-medium shadow-sm",
           "disabled:opacity-50 disabled:cursor-not-allowed"
         )}
         disabled={!parentIsLoading && (isDisabled || !input.trim())}
@@ -4589,70 +4589,14 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(function Ch
             onSubmit={handleFormSubmit}
             onClick={handleFormClick}
             className={cn(
-              'relative rounded-xl p-1.5 w-full sm:max-w-full lg:max-w-[52rem] border border-white/[0.08] bg-[#0f1015]/90 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.5)] focus-within:border-[#38bdf8]/40 focus-within:shadow-[0_4px_24px_rgba(56,189,248,0.12)] transition-all',
+              'relative rounded-2xl p-2 w-full sm:max-w-full lg:max-w-[52rem] border border-white/[0.08] bg-[#0c0d12]/95 backdrop-blur-2xl shadow-[0_24px_64px_-16px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.02)] focus-within:border-zinc-500/40 focus-within:ring-1 focus-within:ring-white/[0.08] transition-all duration-300',
               'sm:mb-8',
               (isProcessingDoc && !isVoiceModeActive) && 'opacity-70',
               'z-20'
             )}
           >
-            {/* Animated Gradient Border - SVG Implementation */}
-            <div
-              ref={containerRef}
-              className="absolute -inset-[1px] pointer-events-none z-30"
-              style={{
-                '--perimeter': perimeter,
-                overflow: 'visible',
-              } as React.CSSProperties}
-            >
-              {(perimeter > 0 && borderEnabled) && (
-                <svg
-                  className="w-full h-full"
-                  style={{
-                    overflow: 'visible',
-                    filter: `
-                      drop-shadow(0 0 1.5px rgba(56,189,248,0.8))
-                      drop-shadow(0 0 3px rgba(56,189,248,0.5))
-                      drop-shadow(0 0 5px rgba(56,189,248,0.25))
-                    `,
-                    opacity: 0.85
-                  }}
-                >
-                  {/* Primary comet */}
-                  <rect
-                    x="1.25" y="1.25"
-                    width="calc(100% - 2.5px)" height="calc(100% - 2.5px)"
-                    rx="12" ry="12"
-                    fill="none"
-                    stroke="#38bdf8"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    style={{
-                      strokeDasharray: `220 ${Math.max(0, perimeter - 220)}`,
-                      animation: 'svg-travel 14s linear infinite',
-                    }}
-                  />
-
-                  {/* Secondary comet (opposite side) */}
-                  <rect
-                    x="1.25" y="1.25"
-                    width="calc(100% - 2.5px)" height="calc(100% - 2.5px)"
-                    rx="12" ry="12"
-                    fill="none"
-                    stroke="#38bdf8"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    style={{
-                      strokeDasharray: `160 ${Math.max(0, perimeter - 160)}`,
-                      strokeDashoffset: `calc(var(--perimeter) * -0.5px)`, // Start halfway, using pixels
-                      animation: 'svg-travel 14s linear infinite',
-                    }}
-                  />
-                </svg>
-              )}
-            </div>
-
-            {/* Background Layer - 80% opacity for aesthetic */}
-            <div className="absolute inset-0 rounded-xl bg-[#0f1015]/90 border border-white/[0.08] z-10" />
+                        {/* Milled Monolith Background */}
+            <div className="absolute inset-0 rounded-2xl bg-[#0c0d12]/95 border border-white/[0.08] z-10 pointer-events-none" />
             <div className={cn("relative px-2 sm:px-1 flex flex-col z-20", isLongInput && "max-h-[400px]")}>
 
               {/* Document preview - Minimal design */}

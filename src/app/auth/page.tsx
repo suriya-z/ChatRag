@@ -53,13 +53,13 @@ export default function AuthPage() {
       <div 
         className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[720px] h-[480px] rounded-full opacity-35 blur-[120px]"
         style={{
-          background: 'radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(120, 119, 198, 0.15) 50%, transparent 80%)'
+          background: 'radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, rgba(39, 39, 42, 0.15) 50%, transparent 80%)'
         }}
       />
       <div 
         className="pointer-events-none absolute -bottom-40 right-1/4 w-[480px] h-[360px] rounded-full opacity-20 blur-[100px]"
         style={{
-          background: 'radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, transparent 70%)'
+          background: 'radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 70%)'
         }}
       />
 
@@ -78,27 +78,30 @@ export default function AuthPage() {
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-[420px] z-10"
       >
-        <div className="relative rounded-2xl bg-[#0f1015]/85 backdrop-blur-xl border border-white/[0.08] shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_24px_60px_-12px_rgba(0,0,0,0.85)] p-8 sm:p-9">
+        <div className="relative rounded-2xl bg-[#0b0c10]/95 backdrop-blur-2xl border border-white/[0.08] shadow-[0_32px_80px_-20px_rgba(0,0,0,0.95),0_0_0_1px_rgba(255,255,255,0.02)] p-8 sm:p-9">
           
           {/* Hermes Agent Badge & Icon */}
           <div className="flex flex-col items-center text-center mb-7">
             <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1, duration: 0.35 }}
-              className="relative mb-4"
+              transition={{ delay: 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="relative mb-5"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-b from-white/[0.12] to-white/[0.03] border border-white/[0.12] flex items-center justify-center shadow-[0_4px_20px_rgba(56,189,248,0.2)]">
-                <Sparkles className="w-5 h-5 text-[#38bdf8]" />
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-b from-zinc-800/90 to-zinc-950 border border-white/[0.12] flex items-center justify-center shadow-[0_12px_28px_-8px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)]">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                  <circle cx="12" cy="12" r="3" fill="currentColor" />
+                  <path d="M12 2v3m0 14v3M2 12h3m14 0h3" strokeLinecap="round" />
+                  <circle cx="12" cy="12" r="8" strokeOpacity="0.4" strokeDasharray="3 3" />
+                </svg>
               </div>
-              <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-[#10b981] border-2 border-[#0f1015]" />
             </motion.div>
 
             <h1 className="text-2xl font-semibold tracking-tight text-white mb-1.5 font-sans">
               {isLogin ? 'Welcome back' : 'Create an account'}
             </h1>
             <p className="text-sm text-zinc-400 max-w-[280px]">
-              {isLogin ? 'Sign in to continue to ChatRAG' : 'Get started with intelligent retrieval'}
+              {isLogin ? 'Sign in to your intelligence workspace' : 'Create your intelligence workspace'}
             </p>
           </div>
 
@@ -114,7 +117,7 @@ export default function AuthPage() {
                 type="email"
                 autoComplete="email"
                 required
-                className="h-11 w-full bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3.5 text-zinc-100 text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-2 focus:ring-[#38bdf8]/15 transition-all"
+                className="h-11 w-full bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3.5 text-zinc-100 text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-white/20 focus:border-zinc-400 transition-all"
                 placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -151,7 +154,7 @@ export default function AuthPage() {
                 type={showPassword ? 'text' : 'password'}
                 autoComplete={isLogin ? 'current-password' : 'new-password'}
                 required
-                className="h-11 w-full bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3.5 text-zinc-100 text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-2 focus:ring-[#38bdf8]/15 transition-all"
+                className="h-11 w-full bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3.5 text-zinc-100 text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-white/20 focus:border-zinc-400 transition-all"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -166,7 +169,7 @@ export default function AuthPage() {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-4 w-4 rounded bg-zinc-900 border-zinc-700 text-[#38bdf8] focus:ring-[#38bdf8]/20 focus:ring-offset-0 cursor-pointer accent-[#38bdf8]"
+                  className="h-4 w-4 rounded bg-zinc-900 border-zinc-700 text-white focus:ring-1 focus:ring-white/20 cursor-pointer accent-white"
                 />
                 <span className="text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">
                   Remember me
@@ -275,9 +278,9 @@ export default function AuthPage() {
                 className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors"
               >
                 {isLogin ? (
-                  <>Don&apos;t have an account? <span className="text-[#38bdf8] font-medium hover:underline ml-1">Sign up</span></>
+                  <>Don&apos;t have an account? <span className="text-zinc-200 font-medium hover:underline ml-1">Sign up</span></>
                 ) : (
-                  <>Already have an account? <span className="text-[#38bdf8] font-medium hover:underline ml-1">Sign in</span></>
+                  <>Already have an account? <span className="text-zinc-200 font-medium hover:underline ml-1">Sign in</span></>
                 )}
               </button>
             </div>

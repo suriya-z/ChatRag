@@ -57,7 +57,7 @@ function SignUpContent() {
       <div 
         className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[720px] h-[480px] rounded-full opacity-35 blur-[120px]"
         style={{
-          background: 'radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(120, 119, 198, 0.15) 50%, transparent 80%)'
+          background: 'radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, rgba(39, 39, 42, 0.15) 50%, transparent 80%)'
         }}
       />
 
@@ -67,10 +67,10 @@ function SignUpContent() {
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-[420px] z-10"
       >
-        <div className="relative rounded-2xl bg-[#0f1015]/85 backdrop-blur-xl border border-white/[0.08] shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_24px_60px_-12px_rgba(0,0,0,0.85)] p-8 sm:p-9">
+        <div className="relative rounded-2xl bg-[#0b0c10]/95 backdrop-blur-2xl border border-white/[0.08] shadow-[0_32px_80px_-20px_rgba(0,0,0,0.95),0_0_0_1px_rgba(255,255,255,0.02)] p-8 sm:p-9">
           <div className="flex flex-col items-center text-center mb-7">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-b from-white/[0.12] to-white/[0.03] border border-white/[0.12] flex items-center justify-center shadow-[0_4px_20px_rgba(56,189,248,0.2)] mb-4">
-              <Sparkles className="w-5 h-5 text-[#38bdf8]" />
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
             <h1 className="text-2xl font-semibold tracking-tight text-white mb-1.5 font-sans">
               Create an account
@@ -89,7 +89,7 @@ function SignUpContent() {
                 id="email"
                 type="email"
                 required
-                className="h-11 w-full bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3.5 text-zinc-100 text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-2 focus:ring-[#38bdf8]/15 transition-all"
+                className="h-11 w-full bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3.5 text-zinc-100 text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-white/20 focus:border-zinc-400 transition-all"
                 placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -105,7 +105,7 @@ function SignUpContent() {
                 type="password"
                 required
                 minLength={8}
-                className="h-11 w-full bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3.5 text-zinc-100 text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-2 focus:ring-[#38bdf8]/15 transition-all"
+                className="h-11 w-full bg-zinc-900/60 border border-zinc-800/80 rounded-lg px-3.5 text-zinc-100 text-sm placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-white/20 focus:border-zinc-400 transition-all"
                 placeholder="At least 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -158,7 +158,7 @@ export default function SignUp() {
   return (
     <Suspense fallback={
       <div className="min-h-screen w-full bg-[#070709] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-[#38bdf8]" />
+        <Loader2 className="w-6 h-6 animate-spin text-white" />
       </div>
     }>
       <SignUpContent />
