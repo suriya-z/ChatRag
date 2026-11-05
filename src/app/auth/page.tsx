@@ -267,6 +267,29 @@ export default function AuthPage() {
               </motion.button>
             </div>
 
+            {/* Instant Demo Access Button */}
+            <div className="pt-1">
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.985 }}
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('chatrag_mock_user', JSON.stringify({
+                      id: 'demo-lead-operator',
+                      email: 'lead.operator@pulsar.internal',
+                      user_metadata: { name: 'Lead Operator' }
+                    }));
+                  }
+                  router.push('/');
+                  router.refresh();
+                }}
+                className="w-full h-10 flex items-center justify-center gap-2 rounded-lg bg-zinc-900/70 hover:bg-zinc-800/90 border border-white/[0.08] hover:border-white/[0.22] text-zinc-300 hover:text-white transition-all text-xs font-medium"
+              >
+                <span>Enter Demo Workspace</span>
+                <span className="text-[10px] text-zinc-500 font-mono tracking-wider">• INSTANT PREVIEW</span>
+              </motion.button>
+            </div>
+
             {/* Toggle Login / Register */}
             <div className="text-center pt-5 border-t border-white/[0.06]">
               <button

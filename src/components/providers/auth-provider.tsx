@@ -28,33 +28,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Debug: Auth enabled status
     
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      // Debug: Initial session check completed
-      // Debug: Session existence check
-      
-      if (session?.user) {
-        // Debug: User authenticated
-        setUser(session.user as AuthUser);
-        
-        // If on auth page, redirect to home
-        if (window.location.pathname.startsWith('/auth') && 
-            !window.location.pathname.includes('/callback')) {
-          // Debug: Redirecting from auth page to home
-          router.push('/');
-        }
-      } else {
-        // Debug: No authenticated user found initially
-        setUser(null);
-        
-        // If auth is enabled and not on auth page, redirect to auth
-        if (isAuthEnabled && 
-            !window.location.pathname.startsWith('/auth')) {
-          // Debug: Redirecting to auth page
-          router.push('/auth');
+      // Check for demo / mock session in localStorage first
+      if (typeof window !== 'undefined') {
+        const storedMock = localStorage.getItem('chatrag_mock_user');
+        if (storedMock) {
+          try {
+            const parsed = JSON.parse(storedMock);
+            setUser(parsed as AuthUser);
+            if (window.location.pathname.startsWith('/auth') && 
+                !window.location.pathname.includes('/callback')) {
+              router.push('/');
+            }
+            setLoading(false);
+            return;
+          } catch {
+            localStorage.removeItem('chatrag_mock_user');
+          }
         }
       }
-      
-      setLoading(false);
+
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          setUser(session.user as AuthUser);
+          
+          if (window.location.pathname.startsWith('/auth') && 
+              !window.location.pathname.includes('/callback')) {
+            router.push('/');
+          }
+        } else {
+          setUser(null);
+          
+          if (isAuthEnabled && 
+              !window.location.pathname.startsWith('/auth')) {
+            router.push('/auth');
+          }
+        }
+      } catch (err) {
+        console.error('AuthProvider session check:', err);
+        setUser(null);
+        if (isAuthEnabled && !window.location.pathname.startsWith('/auth')) {
+          router.push('/auth');
+        }
+      } finally {
+        setLoading(false);
+      }
     }
 
     checkSession().catch(error => {
@@ -114,6 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       // Proceed with normal user logout
+      if (typeof window !== 'undefined') { localStorage.removeItem('chatrag_mock_user'); }
       await supabase.auth.signOut();
       setUser(null);
       // Debug: Signed out successfully
@@ -137,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   if (loading) {
     // Return a minimal loading indicator with theme-aware styling
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FFF1E5] dark:bg-[#1A1A1A]">
+      <div className="flex min-h-screen items-center justify-center bg-[#070709]">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-gray-100"></div>
       </div>
     );
