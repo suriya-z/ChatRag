@@ -26,6 +26,7 @@ if (aiLogoHost) {
 }
 
 const nextConfig = {
+  devIndicators: false,
   // React Compiler is now a top-level option in Next.js 16
   reactCompiler: true,
   turbopack: {

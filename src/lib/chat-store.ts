@@ -257,7 +257,11 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        if (response.status === 401) {
+          set({ chats: [], filteredChats: [], isLoading: false });
+          return [];
+        }
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || 'Failed to fetch chats');
       }
 
@@ -289,7 +293,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       // Return the fetched data so other components can use it if needed
       return chats;
     } catch (error: any) {
-      console.error("chat-store: Error in fetchChats:", error);
+      if (!String(error?.message).toLowerCase().includes("unauthorized")) { console.error("chat-store: Error in fetchChats:", error); }
       set({ error: error.message });
     } finally {
       set({ isLoading: false });
@@ -304,7 +308,11 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        if (response.status === 401) {
+          set({ folders: [], isLoading: false });
+          return [];
+        }
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || 'Failed to fetch folders');
       }
 
@@ -316,7 +324,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
       return folders;
     } catch (error: any) {
-      console.error("chat-store: Error in fetchFolders:", error);
+      if (!String(error?.message).toLowerCase().includes("unauthorized")) { console.error("chat-store: Error in fetchFolders:", error); }
       set({ error: error.message });
     } finally {
       set({ isLoading: false });

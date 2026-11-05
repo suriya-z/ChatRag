@@ -167,7 +167,18 @@ export const useOrganizationStore = create<OrganizationState>()(
           });
 
           if (!response.ok) {
-            const error = await response.json();
+            if (response.status === 401) {
+              set({
+                isPersonalMode: true,
+                currentOrganization: null,
+                personalOrganizations: [],
+                teamOrganizations: [],
+                allOrganizations: [],
+                isLoading: false,
+              });
+              return;
+            }
+            const error = await response.json().catch(() => ({}));
             throw new Error(error.error || 'Failed to fetch organizations');
           }
 

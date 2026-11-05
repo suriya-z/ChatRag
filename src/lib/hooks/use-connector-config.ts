@@ -54,7 +54,8 @@ export function useConnectorConfig(): UseConnectorConfigReturn {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
-      console.error('Error fetching connector config:', err);
+      // Silent fallback for offline dev
+      if (process.env.NODE_ENV !== 'development') { console.error('Error fetching connector config:', err); }
     } finally {
       setLoading(false);
     }

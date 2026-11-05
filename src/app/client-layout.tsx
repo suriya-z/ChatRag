@@ -382,21 +382,7 @@ export default function ClientLayout({
                             <MobileToolsProvider>
                               <DynamicTitle />
                               <NotificationSoundListener />
-                            {/* Debug helper - this lets us verify the NotificationSoundListener is actually in the DOM */}
-                            <script
-                              dangerouslySetInnerHTML={{
-                                __html: `
-                                  setTimeout(() => {
-                                    const soundComponent = document.querySelector('div[class*="NotificationSound"]');
-                                    if (soundComponent) {
-                                      console.log('NotificationSoundListener found in DOM');
-                                    } else {
-                                      console.warn('NotificationSoundListener NOT found in DOM - notifications may not work');
-                                    }
-                                  }, 3000);
-                                `,
-                              }}
-                            />
+
                             <Toaster />
                             <div className="group/root" data-state="active">
                               <SidebarWrapper 

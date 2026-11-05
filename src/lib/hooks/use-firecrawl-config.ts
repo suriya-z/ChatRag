@@ -34,7 +34,8 @@ export function useFirecrawlConfig(): UseFirecrawlConfigReturn {
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Unknown error';
             setError(message);
-            console.error('Error fetching firecrawl config:', err);
+            // Silent dev fallback
+            if (process.env.NODE_ENV !== 'development') { console.error('Error fetching firecrawl config:', err); }
         } finally {
             setLoading(false);
         }
@@ -42,11 +43,6 @@ export function useFirecrawlConfig(): UseFirecrawlConfigReturn {
 
     useEffect(() => {
         fetchConfig();
-
-        // Poll for changes every 2 seconds to keep in sync with config UI changes
-        const intervalId = setInterval(fetchConfig, 2000);
-
-        return () => clearInterval(intervalId);
     }, [fetchConfig]);
 
     return {
