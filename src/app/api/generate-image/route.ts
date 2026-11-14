@@ -6,26 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
 import OpenAI from 'openai';
 import { fal } from '@fal-ai/client';
 import Replicate from 'replicate';
+import { getActiveImageProvider } from '@/lib/generation-job';
 
-// Get provider configuration
-const IMAGE_GENERATION_PROVIDER = process.env.IMAGE_GENERATION_PROVIDER || 'fal';
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const FAL_API_KEY = process.env.FAL_API_KEY;
 const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
-
-// Backward compatibility flags
-const USE_OPENAI_IMAGE = process.env.USE_OPENAI_IMAGE === 'true';
-const USE_REPLICATE_PROVIDER = process.env.USE_REPLICATE_PROVIDER === 'true';
-
-// Determine actual provider based on configuration
-function getActiveProvider(): string {
-  // Check backward compatibility flags first
-  if (USE_OPENAI_IMAGE) return 'openai';
-  if (USE_REPLICATE_PROVIDER) return 'replicate';
-
-  // Use the new provider variable (defaults to fal)
-  return IMAGE_GENERATION_PROVIDER;
-}
 
 // OpenAI configuration for GPT-Image-1
 const OPENAI_IMAGE_QUALITY = process.env.OPENAI_IMAGE_QUALITY || 'auto';
@@ -47,7 +32,7 @@ if (FAL_API_KEY) {
 const replicateClient = REPLICATE_API_TOKEN ? new Replicate({ auth: REPLICATE_API_TOKEN }) : null;
 
 // Log provider configuration
-const activeProvider = getActiveProvider();
+const activeProvider = getActiveImageProvider();
 console.log(`Image generation provider: ${activeProvider}`);
 
 // Initialize Supabase admin client for storage operations

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ToolExecutionStateService } from '@/lib/tool-execution-state';
+import { readToolApprovalState } from '@/lib/process-slots';
 
 /**
  * Transform tool parameters for better compatibility with MCP clients
@@ -113,13 +114,13 @@ export async function GET(req: NextRequest) {
       // Get by tool call ID
       let state = await ToolExecutionStateService.getByToolCallId(tool_call_id);
       
-      // 🎯 CRITICAL FIX: If no persistent state exists, check global toolApprovalState
+      // If no persistent state exists, check the approval slot.
       if (!state) {
         console.log(`[API] No persistent state found for ${tool_call_id}, checking global state...`);
         
-        const global = globalThis as any;
-        if (global.toolApprovalState && global.toolApprovalState[tool_call_id]) {
-          const globalToolCall = global.toolApprovalState[tool_call_id].toolCall;
+        const approvalState = readToolApprovalState();
+        if (approvalState && approvalState[tool_call_id]) {
+          const globalToolCall = approvalState[tool_call_id].toolCall;
           console.log(`[API] Found global state for ${tool_call_id}:`, globalToolCall);
           
           // Create persistent state from global state

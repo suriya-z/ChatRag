@@ -22,6 +22,7 @@ import { isMultiTenant } from '@/lib/deployment-mode';
 
 import type { Chat } from '@/lib/supabase';
 import type { ExtendedMessage, APIMessage, ContentPart, DocumentContent } from '@/types/chat';
+import { handleChatStreamEvent } from '@/lib/chat-stream-reducer';
 import { toAPIMessage, toDBMessages, updateMessages, appendMessage, toExtendedMessages, fromUIMessage } from '@/types/chat';
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { createChat, updateChat } from '@/lib/chat-store';
@@ -1755,8 +1756,7 @@ export default function Home() {
       // Handle streaming response
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
-      let accumulator = ''; // Initialize accumulator for metadata extraction
-      let fullStreamedContent = '';
+      const streamState = { accumulator: '', fullStreamedContent: '' };
 
       // Reset the streaming content ref for this new message
       streamingContentRef.current = '';
@@ -1948,318 +1948,17 @@ export default function Home() {
           commitStreamingMessage();
         };
 
-        const handleSseEvent = (event: any) => {
-          accumulator += JSON.stringify(event) + '\n';
-
-          switch (event.type) {
-            case 'text-start': {
-              fullStreamedContent = '';
-              updateStreamingText('');
-              break;
-            }
-            case 'text-delta': {
-              if (typeof event.delta === 'string') {
-                fullStreamedContent += event.delta;
-                updateStreamingText(fullStreamedContent);
-                handleDocumentReference(fullStreamedContent);
-              }
-              break;
-            }
-            case 'text-end': {
-              if (typeof event.text === 'string') {
-                fullStreamedContent += event.text;
-                updateStreamingText(fullStreamedContent);
-                handleDocumentReference(fullStreamedContent);
-              }
-              break;
-            }
-            case 'generated_image': {
-              // 🔧 FIX: Handle generated_image events from image editing/generation
-              console.log('[Stream] Received generated_image event:', event);
-              if (event.generated_images && Array.isArray(event.generated_images)) {
-                // Add the generated image to the streaming message content
-                if (Array.isArray(streamingMessage.content)) {
-                  streamingMessage.content.push({
-                    type: 'generated_image',
-                    generated_images: event.generated_images,
-                    aspectRatio: event.aspectRatio || 'auto',
-                    sourceImageUrl: event.sourceImageUrl
-                  });
-                } else {
-                  // Convert string content to array format with text and image
-                  streamingMessage.content = [
-                    { type: 'text', text: streamingMessage.content || fullStreamedContent },
-                    {
-                      type: 'generated_image',
-                      generated_images: event.generated_images,
-                      aspectRatio: event.aspectRatio || 'auto',
-                      sourceImageUrl: event.sourceImageUrl
-                    }
-                  ];
-                }
-                commitStreamingMessage();
-                console.log('[Stream] Added generated image to message content');
-              }
-              break;
-            }
-            case 'source_images': {
-              // [FIX] Handle source_images events from backend's createUIMessageStream
-              console.log('[Stream] Received source_images event:', event);
-              if (event.source_images && Array.isArray(event.source_images) && event.source_images.length > 0) {
-                // Add source images to the streaming message content
-                const sourceImagesPart: ContentPart = {
-                  type: 'source_images',
-                  source_images: event.source_images
-                };
-
-                if (Array.isArray(streamingMessage.content)) {
-                  // Check if source_images part already exists
-                  const existingPart = streamingMessage.content.find((part: ContentPart) => part.type === 'source_images');
-                  if (existingPart) {
-                    existingPart.source_images = event.source_images;
-                  } else {
-                    // [FIX] Insert at BEGINNING so image stays on top while text streams below
-                    streamingMessage.content.unshift(sourceImagesPart);
-                  }
-                } else {
-                  // [FIX] Put source_images FIRST, then text
-                  streamingMessage.content = [
-                    sourceImagesPart,
-                    { type: 'text', text: streamingContentRef.current || '' }
-                  ];
-                }
-
-                commitStreamingMessage();
-                console.log('[Stream] Added source_images to message content:', event.source_images.length, 'images');
-              }
-              break;
-            }
-            case 'metadata':
-            case 'response-metadata': {
-              // Handle usedDocuments for document references
-              if (event.metadata?.usedDocuments) {
-                applyDocumentReferencesFromMetadata(event.metadata.usedDocuments);
-              }
-              if (event.metadata?.documentSources) {
-                applyDocumentReferencesFromMetadata(event.metadata.documentSources);
-              }
-              // [FIX] Also extract source images from usedDocuments with image_url
-              if (event.usedDocuments && Array.isArray(event.usedDocuments)) {
-                const imagesFromDocs = event.usedDocuments
-                  .filter((doc: any) => doc.image_url)
-                  .map((doc: any) => ({
-                    name: doc.name || doc.filename || 'Source Image',
-                    size: 0,
-                    type: 'image/jpeg',
-                    url: doc.image_url
-                  }));
-                if (imagesFromDocs.length > 0) {
-                  console.log('[Stream] Extracted images from metadata usedDocuments:', imagesFromDocs.length);
-                  const sourceImagesPart: ContentPart = {
-                    type: 'source_images',
-                    source_images: imagesFromDocs
-                  };
-                  if (Array.isArray(streamingMessage.content)) {
-                    const existingPart = streamingMessage.content.find((part: ContentPart) => part.type === 'source_images');
-                    if (!existingPart) {
-                      streamingMessage.content.push(sourceImagesPart);
-                      commitStreamingMessage();
-                    }
-                  }
-                }
-              }
-
-              const webSearchMeta = event.metadata?.webSearch;
-              if (webSearchMeta) {
-                const resultsPayload = Array.isArray(webSearchMeta)
-                  ? webSearchMeta
-                  : Array.isArray((webSearchMeta as any).results)
-                    ? (webSearchMeta as any).results
-                    : Array.isArray((webSearchMeta as any).items)
-                      ? (webSearchMeta as any).items
-                      : Array.isArray((webSearchMeta as any).results?.results)
-                        ? (webSearchMeta as any).results.results
-                        : Array.isArray((webSearchMeta as any).results?.items)
-                          ? (webSearchMeta as any).results.items
-                          : Array.isArray((webSearchMeta as any).results)
-                            ? (webSearchMeta as any).results
-                            : [];
-
-                if (resultsPayload.length > 0) {
-                  if (process.env.NODE_ENV === 'development') {
-                    console.log('[Stream] webSearch metadata results:', {
-                      count: resultsPayload.length,
-                      toolCallId: (webSearchMeta as any).toolCallId
-                    });
-                  }
-                  const toolCallId = (webSearchMeta as any).toolCallId || `webSearch-${Date.now()}`;
-                  const toolResultPart: ContentPart = {
-                    type: 'tool-result',
-                    toolName: 'webSearch',
-                    toolCallId,
-                    output: resultsPayload
-                  };
-
-                  if (Array.isArray(streamingMessage.content)) {
-                    const existingPart = streamingMessage.content.find(
-                      (part: ContentPart) =>
-                        (part.type === 'tool-result' || part.type === 'tool_result') &&
-                        part.toolCallId === toolCallId
-                    );
-                    if (existingPart) {
-                      Object.assign(existingPart, toolResultPart);
-                    } else {
-                      streamingMessage.content.push(toolResultPart);
-                    }
-                  } else {
-                    streamingMessage.content = [
-                      { type: 'text', text: streamingContentRef.current || '' },
-                      toolResultPart
-                    ];
-                  }
-
-                  commitStreamingMessage();
-                }
-              }
-              break;
-            }
-            case 'tool-result': {
-              if (process.env.NODE_ENV === 'development') {
-                const toolName = (event as any).toolName;
-                const toolCallId = (event as any).toolCallId;
-                const result = (event as any).result;
-                const output = (event as any).output;
-                const outputValue = output && typeof output === 'object' && 'value' in output ? (output as any).value : output;
-                const resultKeys = result && typeof result === 'object' ? Object.keys(result as object) : [];
-                const resultCount = Array.isArray(result) ? result.length : Array.isArray(result?.results) ? result.results.length : undefined;
-                const outputKeys = output && typeof output === 'object' ? Object.keys(output as object) : [];
-                const outputValueKeys = outputValue && typeof outputValue === 'object' ? Object.keys(outputValue as object) : [];
-                const outputCount = Array.isArray(outputValue)
-                  ? outputValue.length
-                  : Array.isArray((outputValue as any)?.results)
-                    ? (outputValue as any).results.length
-                    : Array.isArray((outputValue as any)?.items)
-                      ? (outputValue as any).items.length
-                      : undefined;
-                console.log('[Stream] tool-result event:', {
-                  toolName,
-                  toolCallId,
-                  resultKeys,
-                  resultCount,
-                  outputKeys,
-                  outputValueKeys,
-                  outputCount
-                });
-              }
-              const toolResultPart: ContentPart = {
-                type: 'tool-result',
-                toolName: (event as any).toolName,
-                toolCallId: (event as any).toolCallId,
-                result: (event as any).result,
-                output: (event as any).output,
-                isError: (event as any).isError
-              };
-
-              if (Array.isArray(streamingMessage.content)) {
-                const existingPart = streamingMessage.content.find(
-                  (part: ContentPart) =>
-                    (part.type === 'tool-result' || part.type === 'tool_result') &&
-                    part.toolCallId === toolResultPart.toolCallId
-                );
-                if (existingPart) {
-                  Object.assign(existingPart, toolResultPart);
-                } else {
-                  streamingMessage.content.push(toolResultPart);
-                }
-              } else {
-                streamingMessage.content = [
-                  { type: 'text', text: streamingContentRef.current || '' },
-                  toolResultPart
-                ];
-              }
-              commitStreamingMessage();
-
-              if (event.result?.usedDocuments) {
-                applyDocumentReferencesFromMetadata(event.result.usedDocuments);
-              } else if (event.output?.usedDocuments) {
-                applyDocumentReferencesFromMetadata(event.output.usedDocuments);
-              } else if (event.output?.value?.usedDocuments) {
-                applyDocumentReferencesFromMetadata(event.output.value.usedDocuments);
-              }
-              break;
-            }
-            case 'tool-input-available': {
-              const toolCallId = (event as any).toolCallId;
-              const toolName = (event as any).toolName;
-              if (toolCallId && toolName) {
-                toolCallNameById.set(toolCallId, toolName);
-              }
-              break;
-            }
-            case 'tool-output-available': {
-              const toolCallId = (event as any).toolCallId;
-              const toolName = toolCallId ? toolCallNameById.get(toolCallId) : undefined;
-              if (process.env.NODE_ENV === 'development') {
-                const output = (event as any).output;
-                const outputCount = Array.isArray(output)
-                  ? output.length
-                  : Array.isArray(output?.results)
-                    ? output.results.length
-                    : Array.isArray(output?.items)
-                      ? output.items.length
-                      : undefined;
-                console.log('[Stream] tool-output-available:', { toolCallId, toolName, outputCount });
-              }
-              const toolResultPart: ContentPart = {
-                type: 'tool-result',
-                toolName,
-                toolCallId,
-                output: (event as any).output
-              };
-
-              if (Array.isArray(streamingMessage.content)) {
-                const existingPart = streamingMessage.content.find(
-                  (part: ContentPart) =>
-                    (part.type === 'tool-result' || part.type === 'tool_result') &&
-                    part.toolCallId === toolCallId
-                );
-                if (existingPart) {
-                  Object.assign(existingPart, toolResultPart);
-                } else {
-                  streamingMessage.content.push(toolResultPart);
-                }
-              } else {
-                streamingMessage.content = [
-                  { type: 'text', text: streamingContentRef.current || '' },
-                  toolResultPart
-                ];
-              }
-              commitStreamingMessage();
-              break;
-            }
-            case 'error': {
-              console.error('Stream error event:', event);
-              break;
-            }
-            case 'finish':
-            case 'step-finish':
-            case 'message-annotations':
-            case 'tool-call':
-            case 'tool-call-streaming-start':
-            case 'tool-call-delta': {
-              // Known event types that don't require handling in this context
-              // Silently ignore to avoid console noise
-              break;
-            }
-            default: {
-              // Only log truly unknown event types
-              const knownButUnhandled = ['finish', 'step-finish', 'message-annotations', 'tool-call', 'tool-call-streaming-start', 'tool-call-delta'];
-              if (process.env.NODE_ENV === 'development' && !knownButUnhandled.includes(event.type)) {
-                console.log('[Stream] Unknown SSE event type:', event.type, event);
-              }
-              break;
-            }
-          }
+        const onChatStreamEvent = (event: any) => {
+          handleChatStreamEvent(event, {
+            streamState,
+            streamingMessage,
+            streamingContentRef,
+            toolCallNameById,
+            updateStreamingText,
+            handleDocumentReference,
+            commitStreamingMessage,
+            applyDocumentReferencesFromMetadata
+          });
         };
 
         // Start reading the stream
@@ -2300,7 +1999,7 @@ export default function Home() {
                   if (isGeneratingImage && dataString.includes('generated_image')) {
                     console.log('Image generation event detected:', event);
                   }
-                  handleSseEvent(event);
+                  onChatStreamEvent(event);
                 } catch (error) {
                   console.error('Failed to parse SSE event:', dataString, error);
                 }
@@ -2317,7 +2016,7 @@ export default function Home() {
         // After stream completes, manually trigger the onFinish logic
         // since we're not using the useChat hook's built-in streaming
         console.log('Manual stream complete - triggering onFinish logic');
-        console.log('Accumulator content:', accumulator);
+        console.log('Accumulator content:', streamState.accumulator);
         console.log('Is generating image:', isGeneratingImage);
 
         // Check if accumulator contains generated_image metadata
@@ -2331,7 +2030,7 @@ export default function Home() {
 
         let dataPayload = null;
         for (const pattern of patterns) {
-          const match = accumulator.match(pattern);
+          const match = streamState.accumulator.match(pattern);
           if (match && match[1]) {
             dataPayload = match[1];
             console.log('Found data payload with pattern:', pattern);
@@ -2356,7 +2055,7 @@ export default function Home() {
         }
 
         // Create the final message from the streamed content
-        let finalContent = streamingContentRef.current || fullStreamedContent;
+        let finalContent = streamingContentRef.current || streamState.fullStreamedContent;
 
         // Clean up any metadata patterns that might have been included at the end
         // Remove e:{ and d:{ patterns that contain finishReason, usage, etc.

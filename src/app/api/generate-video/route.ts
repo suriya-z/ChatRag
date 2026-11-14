@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Replicate from 'replicate';
 import { fal } from '@fal-ai/client';
 import OpenAI from 'openai';
+import { retrieveContextText } from '@/lib/enhanced-rag-retrieval';
 
 // Verify API keys are available
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -202,57 +203,6 @@ async function ensureFolderExists(folderPath: string): Promise<boolean> {
     console.error('Error initializing storage:', error.message || error);
   }
 })();
-
-/**
- * Retrieve relevant document context for the prompt
- */
-async function getDocumentContext(prompt: string): Promise<string> {
-  console.log('Getting document context for prompt:', prompt);
-  try {
-    // Check if embeddings module is available
-    let getQueryEmbedding;
-    try {
-      getQueryEmbedding = require('@/lib/document-processor').getQueryEmbedding;
-    } catch (error) {
-      console.log('No embedding module found, skipping context retrieval');
-      return '';
-    }
-
-    // Create embedding for the prompt
-    const embedding = await getQueryEmbedding(prompt);
-
-    if (!embedding) {
-      console.log('No embedding created for prompt, using no context');
-      return '';
-    }
-
-    // Get relevant documents from vector database
-    const { data: chunks, error } = await supabaseAdmin.rpc('match_document_chunks', {
-      query_embedding: embedding,
-      similarity_threshold: 0.3,
-      match_count: 10
-    });
-
-    if (error) {
-      console.error('Error retrieving document chunks:', error);
-      return '';
-    }
-
-    if (!chunks || chunks.length === 0) {
-      console.log('No relevant document chunks found');
-      return '';
-    }
-
-    console.log(`Found ${chunks.length} relevant chunks from documents`);
-
-    // Combine content from chunks
-    const contextText = chunks.map((chunk: { content: string }) => chunk.content).join(' ');
-    return contextText;
-  } catch (error) {
-    console.error('Error getting document context:', error);
-    return '';
-  }
-}
 
 /**
  * Use LLM to rewrite the user's prompt with exact facts from RAG context.
@@ -454,7 +404,7 @@ export async function POST(req: NextRequest) {
 
     if (useContext) {
       try {
-        const context = await getDocumentContext(prompt);
+        const context = await retrieveContextText(prompt);
 
         if (context) {
           console.log('Adding document context to prompt');
