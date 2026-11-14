@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import { logger } from './logger';
+import modelCatalog from './model-catalog.json';
 
 /**
  * Environment Configuration Singleton
@@ -199,30 +200,9 @@ class EnvironmentConfig {
 
       // AI Model Provider configuration
       NEXT_PUBLIC_AI_PROVIDER: process.env.NEXT_PUBLIC_AI_PROVIDER || 'openrouter',
-      NEXT_PUBLIC_OPENAI_MODELS: process.env.NEXT_PUBLIC_OPENAI_MODELS || JSON.stringify([
-        { id: 'gpt-4.1-mini', displayName: 'GPT-4.1 Mini' },
-        { id: 'gpt-4.1', displayName: 'GPT-4.1' },
-        { id: 'o3', displayName: 'o3' },
-        { id: 'o4-mini', displayName: 'o4 Mini' }
-      ]),
-      NEXT_PUBLIC_OPENROUTER_MODELS: process.env.NEXT_PUBLIC_OPENROUTER_MODELS || JSON.stringify([
-        { id: 'anthropic/claude-sonnet-4.5', displayName: 'Claude Sonnet 4.5', isDefault: true },
-        { id: 'openai/gpt-4.1-mini', displayName: 'GPT-4.1 Mini' },
-        { id: 'openai/gpt-4.1', displayName: 'GPT-4.1' },
-        { id: 'anthropic/claude-opus-4.1', displayName: 'Claude Opus 4.1' },
-        { id: 'google/gemini-2.5-flash-lite', displayName: 'Gemini 2.5 Flash Lite' },
-        { id: 'google/gemini-2.5-flash', displayName: 'Gemini 2.5 Flash' },
-        { id: 'meta-llama/llama-4-maverick', displayName: 'Llama 4 Maverick', isOpenSource: true },
-        { id: 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free', displayName: 'Venice: Uncensored', isFree: true, isOpenSource: true, isUncensored: true }
-      ]),
-      NEXT_PUBLIC_GROQ_MODELS: process.env.NEXT_PUBLIC_GROQ_MODELS || JSON.stringify([
-        { id: 'llama3-8b-8192', displayName: 'Llama 3 8B', isOpenSource: true },
-        { id: 'llama3-70b-8192', displayName: 'Llama 3 70B', isOpenSource: true },
-        { id: 'mixtral-8x7b-32768', displayName: 'Mixtral 8x7B', isOpenSource: true },
-        { id: 'gemma-7b-it', displayName: 'Gemma 7B', isOpenSource: true },
-        { id: 'llama3-groq-70b-8192-tool-use-preview', displayName: 'Llama 3 Groq 70B Tool Use', isOpenSource: true },
-        { id: 'deepseek-r1-distill-llama-70b', displayName: 'DeepSeek R1 Distill Llama 70B', isOpenSource: true, supportsReasoning: true, reasoningMethod: 'both' }
-      ]),
+      NEXT_PUBLIC_OPENAI_MODELS: process.env.NEXT_PUBLIC_OPENAI_MODELS || JSON.stringify(modelCatalog.openai),
+      NEXT_PUBLIC_OPENROUTER_MODELS: process.env.NEXT_PUBLIC_OPENROUTER_MODELS || JSON.stringify(modelCatalog.openrouter),
+      NEXT_PUBLIC_GROQ_MODELS: process.env.NEXT_PUBLIC_GROQ_MODELS || JSON.stringify(modelCatalog.groq),
 
       // ElevenLabs configuration
       ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY || '',

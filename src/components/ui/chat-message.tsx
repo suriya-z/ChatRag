@@ -35,6 +35,7 @@ import { useTheme } from '@/components/theme-provider';
 import { onAudioStateChange, stopAudioPlayback, textToSpeech, getCachedAudioBlob, isAudioCached, generateAudioFilename } from '@/lib/audio-utils';
 import { useUserSettingsStore } from '@/lib/user-settings-store';
 import { env } from '@/lib/env';
+import { extractApprovalNeededToolCall } from '@/lib/approval-text';
 import { useTextSize } from '@/components/providers/text-size-provider';
 import { useFont } from '@/components/providers/font-provider';
 import { Markdown } from '@/components/ui/markdown';
@@ -171,105 +172,6 @@ function stripJsonArtifacts(text: string): string {
   }
 
   return text;
-}
-
-// Function to extract tool call information from approval string
-function extractApprovalNeededToolCall(text: string): ToolCallPart | null {
-  // Check for our special format __REQUIRES_APPROVAL__:toolCallId:toolName
-  if (!text || typeof text !== 'string') return null;
-
-  // Debug: Checking text for approval needed tool call
-
-  // 🔧 CRITICAL FIX: Handle multiple concatenated approval requests
-  // Pattern to match individual approval segments
-  const approvalPattern = /__REQUIRES_APPROVAL__:([^:,\s\}"]+):([^:,\s\}"]+)/g;
-
-  // Add logging to help debug the issue
-  // Debug: Checking for pattern match in text
-
-  // Find the first match (we'll only process the first one for now)
-  const match = approvalPattern.exec(text);
-  approvalPattern.lastIndex = 0; // Reset the regex state
-
-  if (match) {
-    const [_, toolCallId, rawToolName] = match;
-
-    // 🔧 CRITICAL FIX: Remove __REQUIRES_APPROVAL__ suffix from tool name if present
-    const toolName = rawToolName.replace(/__REQUIRES_APPROVAL__$/, '');
-
-    // Debug: Detected tool requiring approval
-    // Debug: Cleaned tool name from raw approval text
-    console.log('[extractApprovalNeededToolCall] Extracted approval format:', {
-      toolCallId,
-      toolName,
-      rawToolName
-    });
-
-    // Create a complete ToolCallPart object with proper structure
-    // Include default args based on tool type to ensure proper rendering
-    let args: any = {};
-
-    // Add default args based on tool type
-    if (toolName.includes('gmail_find_email')) {
-      args = { query: 'recent emails', maxResults: 5 };
-    } else if (toolName.includes('gmail_create_draft')) {
-      args = { to: '', subject: '', body: '' };
-    } else if (toolName.includes('gmail_send_email')) {
-      args = { to: '', subject: '', body: '' };
-    } else if (toolName.includes('calendar')) {
-      args = { query: 'upcoming events' };
-    }
-
-    return {
-      type: 'tool-call',
-      toolCallId,
-      toolName,
-      args, // Now includes proper default args structure
-    } as ToolCallPart;
-  }
-
-  // Fallback patterns for direct error messages
-  const errorPattern = /Tool execution failed: Error executing tool ([^:]+): This tool requires explicit user approval/;
-  const errorMatch = text.match(errorPattern);
-
-  if (errorMatch) {
-    // Extract tool name from direct error message
-    const rawToolName = errorMatch[1];
-    const toolName = rawToolName.replace(/__REQUIRES_APPROVAL__$/, '');
-    // Generate a toolCallId if not available
-    const toolCallId = `auto-${Date.now()}`;
-
-    // Debug: Detected tool requiring approval from error message
-
-    return {
-      type: 'tool-call',
-      toolCallId,
-      toolName,
-      args: {}, // No args available from the error message
-    };
-  }
-
-  // Additional pattern to match common error strings we see in the logs
-  const directToolErrorPattern = /Error executing tool ([^:]+):/;
-  const directToolMatch = text.match(directToolErrorPattern);
-
-  if (directToolMatch) {
-    const rawToolName = directToolMatch[1];
-    const toolName = rawToolName.replace(/__REQUIRES_APPROVAL__$/, '');
-    const toolCallId = `auto-${Date.now()}`;
-
-    // Debug: Detected tool from direct error message
-
-    return {
-      type: 'tool-call',
-      toolCallId,
-      toolName,
-      args: {},
-    };
-  }
-
-  // Debug: Failed to extract tool call from text
-  return null;
 }
 
 // Add the styles string

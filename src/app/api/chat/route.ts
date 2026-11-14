@@ -5,15 +5,12 @@ import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { getQueryEmbedding } from '@/lib/document-processor';
 import { searchSimilarChunks, getSupabaseAdmin } from '@/lib/supabase';
 import { env, getAppName } from '@/lib/env';
-// Import enhanced RAG modules for dual-mode support
-import { comprehensiveRetrieval, aggregateChunks, requiresComprehensiveRetrieval } from '@/lib/retrieval-strategies';
-import { optimizedSearch } from '@/lib/optimized-search';
 // Remove direct OpenRouter client import if using AI SDK provider
 // import { getOpenRouterClient } from '@/lib/openrouter';
 import { ContentPart, APIMessage, ExtendedMessage, fromAPIMessages, toMessage } from '@/types/chat';
 import { ReasoningConfig, REASONING_MODELS } from '@/lib/types';
 // Import enhanced RAG functionality
-import { enhanceQueryWithReasoning, intelligentSearch, createEnhancedRAGPrompt } from '@/lib/thinking-rag-enhancer';
+import { createEnhancedRAGPrompt } from '@/lib/thinking-rag-enhancer';
 import { enhancedRetrieveChunks } from '@/lib/enhanced-rag-retrieval';
 // Import URL extraction utilities
 import { formatURLsForContext, type ExtractedURL } from '@/lib/url-extractor';
@@ -30,7 +27,9 @@ import { classifyQuery, shouldSkipMcp } from '@/lib/query-classifier';
 import { getCachedTools, setCachedTools, getCachedConnection, setCachedConnection } from '@/lib/mcp-cache';
 // Import UniversalMcpClient for YOLO mode execution
 import { UniversalMcpClient } from '@/lib/mcp/universal-client';
-import { ToolExecutionStateService } from '@/lib/tool-execution-state';
+import { executeToolOrRequestApproval } from '@/lib/mcp/tool-invocation';
+import { ensureMcpImageContext, ensureToolApprovalState, type ToolApprovalMap } from '@/lib/process-slots';
+import { analyzeEmailIntent } from '@/lib/email-intent';
 import { SystemPromptManager, SystemPromptTemplate } from '@/lib/system-prompt-manager';
 import { Language } from '@/translations';
 import { isMultiTenant } from '@/lib/deployment-mode';
@@ -86,56 +85,6 @@ console.log('API ROUTE: Environment check -', {
   OPENROUTER_API_KEY_LENGTH: env.OPENROUTER_API_KEY ? env.OPENROUTER_API_KEY.length : 0,
   OPENROUTER_API_KEY_START: env.OPENROUTER_API_KEY ? env.OPENROUTER_API_KEY.substring(0, 7) : 'n/a'
 });
-
-// 🔄 GMAIL INTENT ANALYSIS: Determine if user wants to send vs draft
-function analyzeEmailIntent(userMessage: string): { shouldSend: boolean; confidence: number; reasoningText: string } {
-  const message = userMessage.toLowerCase();
-
-  // Strong send indicators
-  const sendKeywords = ['send', 'email', 'immediately', 'now', 'dispatch', 'transmit', 'deliver'];
-  const strongSendPhrases = ['send an email', 'send email', 'email to', 'send and email'];
-
-  // Draft indicators
-  const draftKeywords = ['draft', 'prepare', 'create draft', 'make a draft', 'compose draft'];
-
-  let sendScore = 0;
-  let draftScore = 0;
-  let reasoning = '';
-
-  // Check for strong send phrases first (higher weight)
-  for (const phrase of strongSendPhrases) {
-    if (message.includes(phrase)) {
-      sendScore += 3;
-      reasoning += `Strong send phrase: "${phrase}". `;
-      break; // Only count one strong phrase
-    }
-  }
-
-  // Check for send keywords
-  const sendMatches = sendKeywords.filter(keyword => message.includes(keyword));
-  if (sendMatches.length > 0) {
-    sendScore += sendMatches.length * 2;
-    reasoning += `Send keywords: ${sendMatches.join(', ')}. `;
-  }
-
-  // Check for draft keywords
-  const draftMatches = draftKeywords.filter(keyword => message.includes(keyword));
-  if (draftMatches.length > 0) {
-    draftScore += draftMatches.length * 2;
-    reasoning += `Draft keywords: ${draftMatches.join(', ')}. `;
-  }
-
-  // Calculate confidence and decision
-  const totalScore = sendScore + draftScore;
-  const shouldSend = sendScore > draftScore;
-  const confidence = totalScore > 0 ? Math.max(sendScore, draftScore) / (totalScore + 2) : 0.1;
-
-  return {
-    shouldSend,
-    confidence: Math.min(confidence, 0.95), // Cap at 95%
-    reasoningText: reasoning.trim() || 'No clear indicators found'
-  };
-}
 
 // Initialize AI providers based on configuration
 const AI_PROVIDER = env.NEXT_PUBLIC_AI_PROVIDER as 'openai' | 'openrouter' | 'groq';
@@ -682,23 +631,7 @@ const summarizeGmailFindEmail = (data: any): string => {
   }
 };
 
-// Update the interface to include an optional result
-interface ToolApprovalState {
-  [toolCallId: string]: {
-    approved: boolean;
-    toolCall: any;
-    result: any; // Add result field to store pre-fetched result
-  };
-}
-
-// Initialize global state containers if not already present
-if (typeof (globalThis as any).toolApprovalState === 'undefined') {
-  console.log('API ROUTE: Initializing global toolApprovalState');
-  (globalThis as any).toolApprovalState = {};
-} else {
-  console.log('API ROUTE: Global toolApprovalState already exists with keys:',
-    Object.keys((globalThis as any).toolApprovalState).length);
-}
+// Approval entries live in one process slot. See src/lib/process-slots.ts.
 
 if (typeof (globalThis as any).persistentMcpClient === 'undefined') {
   console.log('API ROUTE: Initializing global persistentMcpClient');
@@ -709,7 +642,7 @@ if (typeof (globalThis as any).persistentMcpClient === 'undefined') {
 }
 
 // Use the global state containers when needed
-const toolApprovalState: ToolApprovalState = (globalThis as any).toolApprovalState;
+const toolApprovalState: ToolApprovalMap = ensureToolApprovalState();
 let persistentMcpClient: any = (globalThis as any).persistentMcpClient;
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -1595,20 +1528,13 @@ export async function POST(req: Request) {
             }
           }
 
-          // Store image URL globally for MCP tool use
-          if (!globalThis.mcpImageContext) {
-            globalThis.mcpImageContext = {};
-          }
-
-          // Store the final image URL (preferably downloadable URL, not Base64)
-          globalThis.mcpImageContext[sessionId] = {
+          const imageContext = ensureMcpImageContext();
+          imageContext[sessionId] = {
             imageUrl: finalImageUrl,
             downloadableUrls: downloadableUrls || [finalImageUrl],
             extractedAt: Date.now()
           };
-
-          // Also store with the image URL as backup for cross-session retrieval
-          globalThis.mcpImageContext[finalImageUrl] = {
+          imageContext[finalImageUrl] = {
             imageUrl: finalImageUrl,
             downloadableUrls: downloadableUrls || [finalImageUrl],
             extractedAt: Date.now()
@@ -1616,7 +1542,7 @@ export async function POST(req: Request) {
 
           console.log('API ROUTE: Stored image URL for MCP tools:', finalImageUrl);
           console.log('API ROUTE: Stored downloadable URLs:', downloadableUrls || [finalImageUrl]);
-          console.log('API ROUTE: Image storage keys:', Object.keys(globalThis.mcpImageContext));
+          console.log('API ROUTE: Image storage keys:', Object.keys(imageContext));
         }
       }
 
@@ -3128,55 +3054,16 @@ DO NOT jump straight to "I'll create a draft" without first presenting the data!
                   console.log(`[CACHED TOOL] Generated toolCallId: ${toolCallId}`);
                 }
 
-                // Check if YOLO mode is enabled
-                const yoloModeEnabled = env.NEXT_PUBLIC_MCP_YOLO_MODE_ENABLED === 'true';
-                console.log(`[CACHED TOOL] YOLO mode enabled: ${yoloModeEnabled}`);
-
-                if (yoloModeEnabled) {
-                  // Auto-approve and execute immediately
-                  console.log(`[CACHED TOOL] Auto-approving tool ${toolName} due to YOLO mode`);
-
-                  // Create tool execution state with 'running' status
-                  if (sessionId) {
-                    await ToolExecutionStateService.upsert({
-                      chat_id: sessionId,
-                      message_id: messagesForModel.length,
-                      tool_call_id: toolCallId,
-                      tool_name: toolName,
-                      tool_params: params,
-                      status: 'running'
-                    });
-                  }
-
-                  try {
-                    // Get universal client and execute the tool
-                    const universalClient = UniversalMcpClient.getInstance();
-                    const result = await universalClient.executeAnyTool(toolName, params);
-
-                    // Update to completed status
-                    if (sessionId) {
-                      await ToolExecutionStateService.markCompleted(toolCallId, result);
-                    }
-
-                    return result;
-                  } catch (error) {
-                    // Update to error status
-                    if (sessionId) {
-                      await ToolExecutionStateService.markError(toolCallId, error instanceof Error ? error.message : 'Unknown error');
-                    }
-                    throw error;
-                  }
-                } else {
-                  // Throw an error with proper metadata for approval UI
-                  const approvalError = new Error('This tool requires explicit user approval before execution.');
-                  // Add properties to the error object that will be used by the error handler
-                  Object.assign(approvalError, {
-                    toolCallId: toolCallId,
-                    toolName: toolName,
-                    toolArgs: params
-                  });
-                  throw approvalError;
-                }
+                return await executeToolOrRequestApproval({
+                  toolName,
+                  params,
+                  toolCallId,
+                  sessionId,
+                  messageIndex: messagesForModel.length,
+                  logLabel: 'CACHED TOOL',
+                  yoloEnabled: env.NEXT_PUBLIC_MCP_YOLO_MODE_ENABLED === 'true',
+                  execute: (name, args) => UniversalMcpClient.getInstance().executeAnyTool(name, args)
+                });
               }
             });
           });
@@ -3224,54 +3111,16 @@ DO NOT jump straight to "I'll create a draft" without first presenting the data!
                       console.log(`[MCP TOOL] Generated toolCallId: ${toolCallId}`);
                     }
 
-                    // Check if YOLO mode is enabled
-                    const yoloModeEnabled = env.NEXT_PUBLIC_MCP_YOLO_MODE_ENABLED === 'true';
-                    console.log(`[MCP TOOL] YOLO mode enabled: ${yoloModeEnabled}`);
-
-                    if (yoloModeEnabled) {
-                      // Auto-approve and execute immediately
-                      console.log(`[MCP TOOL] Auto-approving tool ${mcpTool.name} due to YOLO mode`);
-
-                      // Create tool execution state with 'running' status
-                      if (sessionId) {
-                        await ToolExecutionStateService.upsert({
-                          chat_id: sessionId,
-                          message_id: messagesForModel.length,
-                          tool_call_id: toolCallId,
-                          tool_name: mcpTool.name,
-                          tool_params: params,
-                          status: 'running'
-                        });
-                      }
-
-                      try {
-                        // Execute the tool directly
-                        const result = await universalClient.executeAnyTool(mcpTool.name, params);
-
-                        // Update to completed status
-                        if (sessionId) {
-                          await ToolExecutionStateService.markCompleted(toolCallId, result);
-                        }
-
-                        return result;
-                      } catch (error) {
-                        // Update to error status
-                        if (sessionId) {
-                          await ToolExecutionStateService.markError(toolCallId, error instanceof Error ? error.message : 'Unknown error');
-                        }
-                        throw error;
-                      }
-                    } else {
-                      // Throw an error with proper metadata for approval UI
-                      const approvalError = new Error('This tool requires explicit user approval before execution.');
-                      // Add properties to the error object that will be used by the error handler
-                      Object.assign(approvalError, {
-                        toolCallId: toolCallId,
-                        toolName: mcpTool.name,
-                        toolArgs: params
-                      });
-                      throw approvalError;
-                    }
+                    return await executeToolOrRequestApproval({
+                      toolName: mcpTool.name,
+                      params,
+                      toolCallId,
+                      sessionId,
+                      messageIndex: messagesForModel.length,
+                      logLabel: 'MCP TOOL',
+                      yoloEnabled: env.NEXT_PUBLIC_MCP_YOLO_MODE_ENABLED === 'true',
+                      execute: (name, args) => universalClient.executeAnyTool(name, args)
+                    });
                   }
                 };
               }
@@ -3448,7 +3297,7 @@ DO NOT jump straight to "I'll create a draft" without first presenting the data!
                   };
 
                   // Update the global approval state, not just the local variable
-                  (globalThis as any).toolApprovalState[toolCallId] = {
+                  toolApprovalState[toolCallId] = {
                     approved: false,
                     executed: false, // Add execution tracking flag
                     toolCall: {
@@ -3461,61 +3310,20 @@ DO NOT jump straight to "I'll create a draft" without first presenting the data!
 
                   // 🎯 CRITICAL DEBUG: Log parameter storage
                   console.log(`[PARAM DEBUG] Tool ${toolName} invoked with params:`, transformedParams);
-                  console.log(`[PARAM DEBUG] Global state keys:`, Object.keys((globalThis as any).toolApprovalState));
-                  console.log(`[PARAM DEBUG] Stored approval state:`, (globalThis as any).toolApprovalState[toolCallId]);
+                  console.log(`[PARAM DEBUG] Global state keys:`, Object.keys(toolApprovalState));
+                  console.log(`[PARAM DEBUG] Stored approval state:`, toolApprovalState[toolCallId]);
 
-                  // Check if YOLO mode is enabled
-                  const yoloModeEnabled = env.NEXT_PUBLIC_MCP_YOLO_MODE_ENABLED === 'true';
-                  console.log(`[ENHANCED TOOL] YOLO mode enabled: ${yoloModeEnabled}`);
-
-                  if (yoloModeEnabled) {
-                    // Auto-approve and execute immediately
-                    console.log(`[ENHANCED TOOL] Auto-approving tool ${toolName} due to YOLO mode`);
-
-                    // Use the existing toolCallId from meta
-                    const actualToolCallId = toolCallId;
-
-                    // Create tool execution state with 'running' status
-                    if (sessionId) {
-                      await ToolExecutionStateService.upsert({
-                        chat_id: sessionId,
-                        message_id: messagesForModel.length,
-                        tool_call_id: actualToolCallId,
-                        tool_name: toolName,
-                        tool_params: transformedParams,
-                        status: 'running'
-                      });
-                    }
-
-                    try {
-                      // Get universal client and execute the tool
-                      const universalClient = UniversalMcpClient.getInstance();
-                      const result = await universalClient.executeAnyTool(toolName, transformedParams);
-
-                      // Update to completed status
-                      if (sessionId) {
-                        await ToolExecutionStateService.markCompleted(actualToolCallId, result);
-                      }
-
-                      return result;
-                    } catch (error) {
-                      // Update to error status
-                      if (sessionId) {
-                        await ToolExecutionStateService.markError(actualToolCallId, error instanceof Error ? error.message : 'Unknown error');
-                      }
-                      throw error;
-                    }
-                  } else {
-                    // Throw the specific error that the stream handler expects
-                    const approvalError = new Error(`This tool requires explicit user approval before execution. Please ask the user to approve this action.`);
-                    // Add properties to the error object that will be used by the error handler
-                    Object.assign(approvalError, {
-                      toolCallId: toolCallId,
-                      toolName: toolName,
-                      toolArgs: transformedParams // Use transformed parameters in error too
-                    });
-                    throw approvalError;
-                  }
+                  return await executeToolOrRequestApproval({
+                    toolName,
+                    params: transformedParams,
+                    toolCallId,
+                    sessionId,
+                    messageIndex: messagesForModel.length,
+                    logLabel: 'ENHANCED TOOL',
+                    yoloEnabled: env.NEXT_PUBLIC_MCP_YOLO_MODE_ENABLED === 'true',
+                    approvalMessage: 'This tool requires explicit user approval before execution. Please ask the user to approve this action.',
+                    execute: (name, args) => UniversalMcpClient.getInstance().executeAnyTool(name, args)
+                  });
                 }
               });
             });
@@ -4161,7 +3969,7 @@ DO NOT jump straight to "I'll create a draft" without first presenting the data!
             if (!toolApprovalState[call.toolCallId]) {
               console.log(`API ROUTE: Adding tool call to approval state: ${call.toolCallId} (${call.toolName})`);
               // Update the global approval state, not just the local variable
-              (globalThis as any).toolApprovalState[call.toolCallId] = {
+              toolApprovalState[call.toolCallId] = {
                 approved: false, // Always start unapproved
                 executed: false, // Add execution tracking flag
                 toolCall: {
@@ -4174,7 +3982,7 @@ DO NOT jump straight to "I'll create a draft" without first presenting the data!
 
               // 🎯 CRITICAL DEBUG: Log tool call parameter storage
               console.log(`[PARAM DEBUG] Tool call ${call.toolName} stored with args:`, call.args);
-              console.log(`[PARAM DEBUG] Final approval state for ${call.toolCallId}:`, (globalThis as any).toolApprovalState[call.toolCallId]);
+              console.log(`[PARAM DEBUG] Final approval state for ${call.toolCallId}:`, toolApprovalState[call.toolCallId]);
               console.log('API ROUTE: Requiring explicit approval for call:', call.toolCallId);
             }
           });
@@ -4248,7 +4056,7 @@ DO NOT jump straight to "I'll create a draft" without first presenting the data!
           setTimeout(() => {
             console.log('API ROUTE: Cleanup timer triggered, checking if MCP client needs to be closed');
             // Check if there are any pending tool calls that haven't been processed
-            const pendingToolCalls = Object.values((globalThis as any).toolApprovalState)
+            const pendingToolCalls = Object.values(toolApprovalState)
               .filter((state: any) => !state.executed && state.result === null);
 
             if (pendingToolCalls.length === 0 && (globalThis as any).persistentMcpClient) {

@@ -5,14 +5,13 @@ const path = require('path');
 const REPO_ROOT = path.resolve(__dirname, '..');
 const ENV_PATH = path.join(REPO_ROOT, '.env.local');
 
-// Default model configurations
-const DEFAULT_OPENAI_MODELS = '[{"id":"gpt-4.1-mini","displayName":"GPT-4.1 Mini"},{"id":"gpt-4.1","displayName":"GPT-4.1"},{"id":"o3","displayName":"o3"},{"id":"o4-mini","displayName":"o4 Mini"}]';
-
-const DEFAULT_OPENROUTER_MODELS = '[{"id":"anthropic/claude-sonnet-4.5","displayName":"Claude Sonnet 4.5","isDefault":true},{"id":"openai/gpt-5.2-chat","displayName":"GPT-5.2"},{"id":"openai/gpt-4.1-mini","displayName":"GPT-4.1 Mini"},{"id":"openai/gpt-4.1","displayName":"GPT-4.1"},{"id":"anthropic/claude-opus-4.1","displayName":"Claude Opus 4.1"},{"id":"google/gemini-2.5-flash-lite","displayName":"Gemini 2.5 Flash Lite"},{"id":"google/gemini-2.5-flash","displayName":"Gemini 2.5 Flash"},{"id":"meta-llama/llama-4-maverick","displayName":"Llama 4 Maverick","isOpenSource":true},{"id":"cognitivecomputations/dolphin-mistral-24b-venice-edition:free","displayName":"Venice: Uncensored","isFree":true,"isOpenSource":true,"isUncensored":true}]';
-
-// Groq free tier has strict rate limits - only Llama 3.3 70B works reliably with RAG contexts
-// Users with paid Groq tiers can add more models: llama-3.1-8b-instant, mixtral-8x7b-32768, gemma2-9b-it
-const DEFAULT_GROQ_MODELS = '[{"id":"llama-3.3-70b-versatile","displayName":"Llama 3.3 70B"}]';
+// Default model configurations. One catalog: src/lib/model-catalog.json
+const modelCatalog = require('../src/lib/model-catalog.json');
+const DEFAULT_OPENAI_MODELS = JSON.stringify(modelCatalog.openai);
+const DEFAULT_OPENROUTER_MODELS = JSON.stringify(modelCatalog.openrouter);
+// Groq free tier has strict rate limits - only Llama 3.3 70B works reliably with RAG contexts.
+// Users with paid Groq tiers can add more models in the config UI.
+const DEFAULT_GROQ_MODELS = JSON.stringify(modelCatalog.groq);
 
 // Default RAG system prompt components (pre and post context)
 // The system assembles: PRE_CONTEXT + {{context}} + POST_CONTEXT

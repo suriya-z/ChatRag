@@ -13,6 +13,7 @@
     "db:setup": "bash scripts/setup-database.sh",
     "reprocess-docs": "node scripts/reprocess-documents.js",
     "test-rag": "node scripts/test-rag-system.js",
+    "test:architecture": "node scripts/check-architecture-symptoms.mjs && node --experimental-strip-types --test src/lib/email-intent.test.ts src/lib/approval-text.test.ts src/lib/chat-stream-reducer.test.ts src/lib/generation-job.test.ts",
     "db:push": "echo 'Use Supabase dashboard to manage schema'",
     "db:seed": "echo 'No seed script configured yet'"
   },

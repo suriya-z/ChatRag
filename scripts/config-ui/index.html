@@ -15437,6 +15437,17 @@ When messaging:
         // =========== End Suggestions Configuration Management ===========
 
         // =========== AI Model Configuration Management ===========
+
+        async function loadModelCatalog() {
+            try {
+                const response = await fetch('/model-catalog.json');
+                if (response.ok) return await response.json();
+            } catch (error) {
+                console.warn('Model catalog unavailable', error);
+            }
+            return null;
+        }
+
         let modelConfig = {
             provider: 'openrouter',
             openaiModels: [],
@@ -15454,6 +15465,7 @@ When messaging:
         });
 
         async function initModelConfiguration() {
+            const catalog = (await loadModelCatalog()) || { openai: [], openrouter: [], groq: [] };
             try {
                 // Load current configuration - use relative URL to work on any port
                 const response = await fetch('../api/config/models');
@@ -15463,28 +15475,9 @@ When messaging:
 
                     // Get defaults from the config manager if available
                     const defaultProvider = window.configManager?.config?.NEXT_PUBLIC_AI_PROVIDER || 'openrouter';
-                    const defaultOpenAIModels = window.configManager?.config?.NEXT_PUBLIC_OPENAI_MODELS || JSON.stringify([
-                        { id: 'gpt-4.1-mini', displayName: 'GPT-4.1 Mini' },
-                        { id: 'gpt-4.1', displayName: 'GPT-4.1' },
-                        { id: 'o3', displayName: 'o3' },
-                        { id: 'o4-mini', displayName: 'o4 Mini' }
-                    ]);
-                    const defaultOpenRouterModels = window.configManager?.config?.NEXT_PUBLIC_OPENROUTER_MODELS || JSON.stringify([
-                        { id: 'anthropic/claude-sonnet-4.5', displayName: 'Claude Sonnet 4.5', isDefault: true },
-                        { id: 'openai/gpt-4.1-mini', displayName: 'GPT-4.1 Mini' },
-                        { id: 'openai/gpt-4.1', displayName: 'GPT-4.1' },
-                        { id: 'anthropic/claude-opus-4.1', displayName: 'Claude Opus 4.1' },
-                        { id: 'google/gemini-2.5-flash-lite', displayName: 'Gemini 2.5 Flash Lite' },
-                        { id: 'google/gemini-2.5-flash', displayName: 'Gemini 2.5 Flash' },
-                        { id: 'meta-llama/llama-4-maverick', displayName: 'Llama 4 Maverick', isOpenSource: true },
-                        { id: 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free', displayName: 'Venice: Uncensored', isFree: true, isOpenSource: true, isUncensored: true }
-                    ]);
-                    const defaultGroqModels = window.configManager?.config?.NEXT_PUBLIC_GROQ_MODELS || JSON.stringify([
-                        { id: 'llama-3.3-70b-versatile', displayName: 'Llama 3.3 70B Versatile' },
-                        { id: 'openai/gpt-oss-120b', displayName: 'GPT-OSS 120B' },
-                        { id: 'groq/compound', displayName: 'Groq Compound' },
-                        { id: 'moonshotai/kimi-k2-instruct-0905', displayName: 'Kimi K2 Instruct' }
-                    ]);
+                    const defaultOpenAIModels = window.configManager?.config?.NEXT_PUBLIC_OPENAI_MODELS || JSON.stringify(catalog.openai);
+                    const defaultOpenRouterModels = window.configManager?.config?.NEXT_PUBLIC_OPENROUTER_MODELS || JSON.stringify(catalog.openrouter);
+                    const defaultGroqModels = window.configManager?.config?.NEXT_PUBLIC_GROQ_MODELS || JSON.stringify(catalog.groq);
 
                     // Safe JSON parsing helper
                     const safeJsonParse = (value, fallback = []) => {
@@ -15504,28 +15497,9 @@ When messaging:
 
                     modelConfig = {
                         provider: defaultProvider,
-                        openaiModels: safeJsonParse(defaultOpenAIModels, [
-                            { id: 'gpt-4.1-mini', displayName: 'GPT-4.1 Mini' },
-                            { id: 'gpt-4.1', displayName: 'GPT-4.1' },
-                            { id: 'o3', displayName: 'o3' },
-                            { id: 'o4-mini', displayName: 'o4 Mini' }
-                        ]),
-                        openrouterModels: safeJsonParse(defaultOpenRouterModels, [
-                            { id: 'anthropic/claude-sonnet-4.5', displayName: 'Claude Sonnet 4.5', isDefault: true },
-                            { id: 'openai/gpt-4.1-mini', displayName: 'GPT-4.1 Mini' },
-                            { id: 'openai/gpt-4.1', displayName: 'GPT-4.1' },
-                            { id: 'anthropic/claude-opus-4.1', displayName: 'Claude Opus 4.1' },
-                            { id: 'google/gemini-2.5-flash-lite', displayName: 'Gemini 2.5 Flash Lite' },
-                            { id: 'google/gemini-2.5-flash', displayName: 'Gemini 2.5 Flash' },
-                            { id: 'meta-llama/llama-4-maverick', displayName: 'Llama 4 Maverick', isOpenSource: true },
-                            { id: 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free', displayName: 'Venice: Uncensored', isFree: true, isOpenSource: true, isUncensored: true }
-                        ]),
-                        groqModels: safeJsonParse(defaultGroqModels, [
-                            { id: 'llama-3.3-70b-versatile', displayName: 'Llama 3.3 70B Versatile' },
-                            { id: 'openai/gpt-oss-120b', displayName: 'GPT-OSS 120B' },
-                            { id: 'groq/compound', displayName: 'Groq Compound' },
-                            { id: 'moonshotai/kimi-k2-instruct-0905', displayName: 'Kimi K2 Instruct' }
-                        ])
+                        openaiModels: safeJsonParse(defaultOpenAIModels, catalog.openai),
+                        openrouterModels: safeJsonParse(defaultOpenRouterModels, catalog.openrouter),
+                        groqModels: safeJsonParse(defaultGroqModels, catalog.groq)
                     };
                 } else {
                     modelConfig = await response.json();
@@ -15563,28 +15537,9 @@ When messaging:
                 // Use defaults on error
                 modelConfig = {
                     provider: 'openrouter',
-                    openaiModels: [
-                        { id: 'gpt-4.1-mini', displayName: 'GPT-4.1 Mini' },
-                        { id: 'gpt-4.1', displayName: 'GPT-4.1' },
-                        { id: 'o3', displayName: 'o3' },
-                        { id: 'o4-mini', displayName: 'o4 Mini' }
-                    ],
-                    openrouterModels: [
-                        { id: 'anthropic/claude-sonnet-4.5', displayName: 'Claude Sonnet 4.5', isDefault: true },
-                        { id: 'openai/gpt-4.1-mini', displayName: 'GPT-4.1 Mini' },
-                        { id: 'openai/gpt-4.1', displayName: 'GPT-4.1' },
-                        { id: 'anthropic/claude-opus-4.1', displayName: 'Claude Opus 4.1' },
-                        { id: 'google/gemini-2.5-flash-lite', displayName: 'Gemini 2.5 Flash Lite' },
-                        { id: 'google/gemini-2.5-flash', displayName: 'Gemini 2.5 Flash' },
-                        { id: 'meta-llama/llama-4-maverick', displayName: 'Llama 4 Maverick', isOpenSource: true },
-                        { id: 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free', displayName: 'Venice: Uncensored', isFree: true, isOpenSource: true, isUncensored: true }
-                    ],
-                    groqModels: [
-                        { id: 'llama-3.3-70b-versatile', displayName: 'Llama 3.3 70B Versatile' },
-                        { id: 'openai/gpt-oss-120b', displayName: 'GPT-OSS 120B' },
-                        { id: 'groq/compound', displayName: 'Groq Compound' },
-                        { id: 'moonshotai/kimi-k2-instruct-0905', displayName: 'Kimi K2 Instruct' }
-                    ]
+                    openaiModels: catalog.openai,
+                    openrouterModels: catalog.openrouter,
+                    groqModels: catalog.groq
                 };
 
                 renderModels();

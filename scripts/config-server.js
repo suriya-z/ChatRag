@@ -145,6 +145,9 @@ if (!fs.existsSync(path.join(configUiDir, 'index.html'))) {
 
 // Serve static files from the config-ui directory
 app.use(express.static(configUiDir));
+app.get('/model-catalog.json', (_req, res) => {
+  res.sendFile(path.join(REPO_ROOT, 'src/lib/model-catalog.json'));
+});
 app.use(express.json());
 
 // Also serve static files from the public directory
@@ -166,10 +169,11 @@ Context:
 
 Based on the context provided, offer comprehensive and helpful answers. If specific information is missing, suggest how the user might rephrase their question or what additional information would be helpful.`;
 
-// Default model configurations
-const DEFAULT_OPENAI_MODELS = '[{"id":"gpt-4.1-mini","displayName":"GPT-4.1 Mini"},{"id":"gpt-4.1","displayName":"GPT-4.1"},{"id":"o3","displayName":"o3"},{"id":"o4-mini","displayName":"o4 Mini"}]';
-
-const DEFAULT_OPENROUTER_MODELS = '[{"id":"anthropic/claude-sonnet-4.5","displayName":"Claude Sonnet 4.5","isDefault":true},{"id":"openai/gpt-5.2-chat","displayName":"GPT-5.2"},{"id":"openai/gpt-5-mini","displayName":"GPT-5 Mini"},{"id":"openai/gpt-5","displayName":"GPT-5"},{"id":"anthropic/claude-opus-4.1","displayName":"Claude Opus 4.1"},{"id":"google/gemini-2.5-flash-lite","displayName":"Gemini 2.5 Flash Lite"},{"id":"google/gemini-2.5-flash","displayName":"Gemini 2.5 Flash"},{"id":"meta-llama/llama-4-maverick","displayName":"Llama 4 Maverick","isOpenSource":true},{"id":"cognitivecomputations/dolphin-mistral-24b-venice-edition:free","displayName":"Venice: Uncensored","isFree":true,"isOpenSource":true,"isUncensored":true}]';
+// Default model configurations. One catalog: src/lib/model-catalog.json
+const modelCatalog = require('../src/lib/model-catalog.json');
+const DEFAULT_OPENAI_MODELS = JSON.stringify(modelCatalog.openai);
+const DEFAULT_OPENROUTER_MODELS = JSON.stringify(modelCatalog.openrouter);
+const DEFAULT_GROQ_MODELS = JSON.stringify(modelCatalog.groq);
 
 // API endpoint to get current .env values
 app.get('/api/config', (req, res) => {
@@ -272,6 +276,7 @@ ${fullValues.NEXT_PUBLIC_AI_PROVIDER !== undefined ? `NEXT_PUBLIC_AI_PROVIDER=${
 # Available Models Configuration (JSON format)
 ${fullValues.NEXT_PUBLIC_OPENAI_MODELS !== undefined ? `NEXT_PUBLIC_OPENAI_MODELS=${fullValues.NEXT_PUBLIC_OPENAI_MODELS}` : `NEXT_PUBLIC_OPENAI_MODELS=${DEFAULT_OPENAI_MODELS}`}
 ${fullValues.NEXT_PUBLIC_OPENROUTER_MODELS !== undefined ? `NEXT_PUBLIC_OPENROUTER_MODELS=${fullValues.NEXT_PUBLIC_OPENROUTER_MODELS}` : `NEXT_PUBLIC_OPENROUTER_MODELS=${DEFAULT_OPENROUTER_MODELS}`}
+${fullValues.NEXT_PUBLIC_GROQ_MODELS !== undefined ? `NEXT_PUBLIC_GROQ_MODELS=${fullValues.NEXT_PUBLIC_GROQ_MODELS}` : `NEXT_PUBLIC_GROQ_MODELS=${DEFAULT_GROQ_MODELS}`}
 
 # Custom Token Limits
 ${fullValues.USE_CUSTOM_TOKEN_LIMIT !== undefined ? `USE_CUSTOM_TOKEN_LIMIT=${fullValues.USE_CUSTOM_TOKEN_LIMIT}` : 'USE_CUSTOM_TOKEN_LIMIT=false'}
@@ -1156,6 +1161,7 @@ NEXT_PUBLIC_AI_PROVIDER=${getEnvValue('NEXT_PUBLIC_AI_PROVIDER') || 'openrouter'
 # Available Models Configuration (JSON format)
 NEXT_PUBLIC_OPENAI_MODELS=${getEnvValue('NEXT_PUBLIC_OPENAI_MODELS') || DEFAULT_OPENAI_MODELS}
 NEXT_PUBLIC_OPENROUTER_MODELS=${getEnvValue('NEXT_PUBLIC_OPENROUTER_MODELS') || DEFAULT_OPENROUTER_MODELS}
+NEXT_PUBLIC_GROQ_MODELS=${getEnvValue('NEXT_PUBLIC_GROQ_MODELS') || DEFAULT_GROQ_MODELS}
 
 # LlamaCloud - Used for document processing
 LLAMA_CLOUD_API_KEY=${getEnvValue('LLAMA_CLOUD_API_KEY') || ''}
@@ -1370,6 +1376,7 @@ NEXT_PUBLIC_AI_PROVIDER=${getEnvValue('NEXT_PUBLIC_AI_PROVIDER') || 'openrouter'
 # Available Models Configuration (JSON format)
 NEXT_PUBLIC_OPENAI_MODELS=${getEnvValue('NEXT_PUBLIC_OPENAI_MODELS') || DEFAULT_OPENAI_MODELS}
 NEXT_PUBLIC_OPENROUTER_MODELS=${getEnvValue('NEXT_PUBLIC_OPENROUTER_MODELS') || DEFAULT_OPENROUTER_MODELS}
+NEXT_PUBLIC_GROQ_MODELS=${getEnvValue('NEXT_PUBLIC_GROQ_MODELS') || DEFAULT_GROQ_MODELS}
 
 # Custom Token Limits
 USE_CUSTOM_TOKEN_LIMIT=${getEnvValue('USE_CUSTOM_TOKEN_LIMIT') || 'false'}

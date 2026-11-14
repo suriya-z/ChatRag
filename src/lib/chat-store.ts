@@ -7,6 +7,7 @@ import { generateChatTitleFromToolCall, isToolApprovalRequest, extractToolCallIn
 import { v4 as uuidv4 } from 'uuid';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { isInGhostMode } from './ghost-mode-store';
+import { readToolApprovalState } from './process-slots';
 
 import type { supabase as SupabaseClient } from './supabase';
 import type { ContentPart } from '@/types/chat';
@@ -150,7 +151,7 @@ function generateTitleWithToolCallSupport(
 
     if (toolCallInfo) {
       // Try to get tool call data from global state first (for complete args)
-      const globalToolState = (globalThis as any).toolApprovalState;
+      const globalToolState = readToolApprovalState();
       if (globalToolState && globalToolState[toolCallInfo.toolCallId]) {
         const storedToolCall = globalToolState[toolCallInfo.toolCallId].toolCall;
         if (storedToolCall) {

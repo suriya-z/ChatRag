@@ -2,6 +2,8 @@ import { CoreTool, tool } from 'ai';
 import { z } from 'zod/v3';
 import { universalMcpDiscovery } from './universal-discovery';
 import { smartMcpRouter } from './smart-router';
+import { sessionTools } from './session-tool-cache';
+import { ensureToolApprovalState } from '@/lib/process-slots';
 
 /**
  * Production-Ready Universal MCP Router
@@ -45,12 +47,7 @@ const DEFAULT_PRODUCTION_CONFIG: ProductionRouterConfig = {
 const toolCache = new Map<string, { tools: any[], timestamp: number }>();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-// Session-based tool persistence using global cache for serverless environment
-const global_cache = globalThis as any;
-if (!global_cache.sessionTools) {
-  global_cache.sessionTools = new Map<string, { tools: any[], timestamp: number }>();
-}
-const sessionTools = global_cache.sessionTools as Map<string, { tools: any[], timestamp: number }>;
+// Session tools live in one process slot. See session-tool-cache.ts.
 
 export class ProductionMcpRouter {
   private config: ProductionRouterConfig;
@@ -69,15 +66,13 @@ export class ProductionMcpRouter {
   async getCachedTools(servers: any[], sessionId?: string): Promise<any[]> {
     // Debug logging for cache operations
     this.log(`[Production Router] getCachedTools called with sessionId: ${sessionId || 'none'}`);
-    this.log(`[Production Router] Global cache identity: ${global_cache === globalThis}`);
-    this.log(`[Production Router] Global sessionTools Map identity: ${global_cache.sessionTools === sessionTools}`);
-    this.log(`[Production Router] Current sessionTools size: ${sessionTools.size}`);
-    this.log(`[Production Router] Current sessionTools keys: ${Array.from(sessionTools.keys()).join(', ')}`);
+    this.log(`[Production Router] Current sessionTools() size: ${sessionTools().size}`);
+    this.log(`[Production Router] Current sessionTools() keys: ${Array.from(sessionTools().keys()).join(', ')}`);
     this.log(`[Production Router] Current toolCache keys: ${Array.from(toolCache.keys()).length} entries`);
     
     // Check session-specific tools first
-    if (sessionId && sessionTools.has(sessionId)) {
-      const cached = sessionTools.get(sessionId)!;
+    if (sessionId && sessionTools().has(sessionId)) {
+      const cached = sessionTools().get(sessionId)!;
       // Check if cache is still valid (15 minute TTL)
       if (Date.now() - cached.timestamp < 15 * 60 * 1000) {
         this.log(`[Production Router] ✓ Found session tools for ${sessionId}: ${cached.tools.length} tools`);
@@ -85,7 +80,7 @@ export class ProductionMcpRouter {
         return cached.tools;
       } else {
         this.log(`[Production Router] Session tools expired for ${sessionId}`);
-        sessionTools.delete(sessionId);
+        sessionTools().delete(sessionId);
       }
     } else if (sessionId) {
       this.log(`[Production Router] ✗ No session tools found for ${sessionId}`);
@@ -115,9 +110,9 @@ export class ProductionMcpRouter {
     // Update caches
     toolCache.set(cacheKey, { tools: toolsArray, timestamp: Date.now() });
     if (sessionId) {
-      sessionTools.set(sessionId, { tools: toolsArray, timestamp: Date.now() });
+      sessionTools().set(sessionId, { tools: toolsArray, timestamp: Date.now() });
       this.log(`[Production Router] Cached ${toolsArray.length} tools for session ${sessionId}`);
-      this.log(`[Production Router] Global cache now has ${sessionTools.size} sessions`);
+      this.log(`[Production Router] Global cache now has ${sessionTools().size} sessions`);
     }
     
     return toolsArray;
@@ -127,9 +122,9 @@ export class ProductionMcpRouter {
    * Clear session tools when needed
    */
   clearSessionTools(sessionId: string): void {
-    if (sessionTools.has(sessionId)) {
+    if (sessionTools().has(sessionId)) {
       this.log(`[Production Router] Clearing tools for session ${sessionId}`);
-      sessionTools.delete(sessionId);
+      sessionTools().delete(sessionId);
     }
   }
 
@@ -139,7 +134,7 @@ export class ProductionMcpRouter {
   clearAllCaches(): void {
     this.log('[Production Router] Clearing all tool caches');
     toolCache.clear();
-    sessionTools.clear();
+    sessionTools().clear();
   }
 
   /**
@@ -184,17 +179,17 @@ export class ProductionMcpRouter {
           // Debug: Show what's being cached
           this.log(`[Production Router] About to cache tools in getEnhancedMcpTools for session ${sessionId}`);
           this.log(`[Production Router] Tools to cache: ${toolsArray.map(t => t.name).join(', ')}`);
-          this.log(`[Production Router] Global cache before set: ${global_cache.sessionTools.size} entries`);
+          this.log(`[Production Router] Global cache before set: ${sessionTools().size} entries`);
           
-          sessionTools.set(sessionId, { tools: toolsArray, timestamp: Date.now() });
+          sessionTools().set(sessionId, { tools: toolsArray, timestamp: Date.now() });
           
           // Verify cache was set
-          const cached = sessionTools.get(sessionId);
+          const cached = sessionTools().get(sessionId);
           this.log(`[Production Router] ✓ Cached ${toolsArray.length} tools for session ${sessionId}`);
           this.log(`[Production Router] Verification - cached tools: ${cached ? cached.tools.length : 0}`);
-          this.log(`[Production Router] Current session cache keys: ${Array.from(sessionTools.keys()).join(', ')}`);
-          this.log(`[Production Router] Global cache now has ${sessionTools.size} sessions`);
-          this.log(`[Production Router] Global cache after set: ${global_cache.sessionTools.size} entries`);
+          this.log(`[Production Router] Current session cache keys: ${Array.from(sessionTools().keys()).join(', ')}`);
+          this.log(`[Production Router] Global cache now has ${sessionTools().size} sessions`);
+          this.log(`[Production Router] Global cache after set: ${sessionTools().size} entries`);
         } else {
           this.log(`[Production Router] Not caching tools - sessionId: ${sessionId || 'none'}`);
         }
@@ -950,13 +945,8 @@ export class ProductionMcpRouter {
     
     this.log(`[Production Router] Tool ${toolName} requires approval, storing for later execution`);
     
-    // Store in global approval state (chat API pattern)
-    const globalThis = global as any;
-    if (!globalThis.toolApprovalState) {
-      globalThis.toolApprovalState = {};
-    }
-    
-    globalThis.toolApprovalState[toolCallId] = {
+    const approvals = ensureToolApprovalState();
+    approvals[toolCallId] = {
       approved: false,
       executed: false,
       toolCall: {

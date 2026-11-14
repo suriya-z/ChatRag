@@ -5,6 +5,8 @@ import { devLog } from '@/lib/dev-logger';
 import { formatToolResultUniversally } from '@/lib/universal-tool-formatter';
 import { findImagesWithFallback } from '@/lib/mcp/image-context-manager';
 import { isUrlMcpCompatible } from '@/lib/mcp/url-validator';
+import { analyzeEmailIntent } from '@/lib/email-intent';
+import { ensureToolApprovalState, readMcpImageContext } from '@/lib/process-slots';
 
 // Global cache for Gmail data chaining
 const global_cache = globalThis as any;
@@ -204,12 +206,12 @@ async function transformToolParameters(toolName: string, originalParams: any): P
             console.log(`🔧 [TRANSFORM] ❌ Enhanced lookup failed, trying global context fallback`);
             
             // Final fallback: Try global context
-            if ((globalThis as any).mcpImageContext) {
-              const availableKeys = Object.keys((globalThis as any).mcpImageContext);
+            if (readMcpImageContext()) {
+              const availableKeys = Object.keys(readMcpImageContext());
               console.log(`🔧 [TRANSFORM] Global context fallback - trying ${availableKeys.length} keys`);
               
               for (const key of availableKeys) {
-                const context = (globalThis as any).mcpImageContext[key];
+                const context = readMcpImageContext()[key];
                 if (context && context.downloadableUrls && context.downloadableUrls.length > 0) {
                   imageUrls = context.downloadableUrls;
                   injectionSource = 'global_context_fallback';
@@ -448,8 +450,8 @@ async function transformToolParameters(toolName: string, originalParams: any): P
       }
       
       // Fallback to global context if Enhanced Image Context Manager failed
-      if (!optimizedParams.attachment_url && (globalThis as any).mcpImageContext) {
-        const imageContext = (globalThis as any).mcpImageContext[sessionIdFromMetadata];
+      if (!optimizedParams.attachment_url && readMcpImageContext()) {
+        const imageContext = readMcpImageContext()[sessionIdFromMetadata];
         
         if (imageContext && imageContext.imageUrl) {
           devLog.verbose('📧 [GMAIL TRANSFORM] ✅ Found image URL from global context:', imageContext.imageUrl);
@@ -468,10 +470,10 @@ async function transformToolParameters(toolName: string, originalParams: any): P
       }
       
       // 🚨 EMERGENCY FALLBACK: Check all available image contexts as last resort
-      if (!optimizedParams.attachment_url && (globalThis as any).mcpImageContext) {
+      if (!optimizedParams.attachment_url && readMcpImageContext()) {
         devLog.verbose('📧 [GMAIL TRANSFORM] ⚠️ No session-specific image found, checking all available contexts');
         
-        const allContexts = Object.values((globalThis as any).mcpImageContext);
+        const allContexts = Object.values(readMcpImageContext());
         for (const ctx of allContexts) {
           if (ctx && typeof ctx === 'object' && (ctx as any).imageUrl) {
             devLog.verbose('📧 [GMAIL TRANSFORM] 🚨 Emergency fallback: Using available image URL:', (ctx as any).imageUrl);
@@ -919,55 +921,6 @@ async function transformToolParameters(toolName: string, originalParams: any): P
   return optimizedParams;
 }
 
-function analyzeEmailIntent(userMessage: string): { shouldSend: boolean; confidence: number; reasoningText: string } {
-  const message = userMessage.toLowerCase();
-  
-  // Strong send indicators
-  const sendKeywords = ['send', 'email', 'immediately', 'now', 'dispatch', 'transmit', 'deliver'];
-  const strongSendPhrases = ['send an email', 'send email', 'email to', 'send and email'];
-  
-  // Draft indicators
-  const draftKeywords = ['draft', 'prepare', 'create draft', 'make a draft', 'compose draft'];
-  
-  let sendScore = 0;
-  let draftScore = 0;
-  let reasoning = '';
-  
-  // Check for strong send phrases first (higher weight)
-  for (const phrase of strongSendPhrases) {
-    if (message.includes(phrase)) {
-      sendScore += 3;
-      reasoning += `Strong send phrase: "${phrase}". `;
-      break; // Only count one strong phrase
-    }
-  }
-  
-  // Check for send keywords
-  const sendMatches = sendKeywords.filter(keyword => message.includes(keyword));
-  if (sendMatches.length > 0) {
-    sendScore += sendMatches.length * 2;
-    reasoning += `Send keywords: ${sendMatches.join(', ')}. `;
-  }
-  
-  // Check for draft keywords
-  const draftMatches = draftKeywords.filter(keyword => message.includes(keyword));
-  if (draftMatches.length > 0) {
-    draftScore += draftMatches.length * 2;
-    reasoning += `Draft keywords: ${draftMatches.join(', ')}. `;
-  }
-  
-  // Calculate confidence and decision
-  const totalScore = sendScore + draftScore;
-  const shouldSend = sendScore > draftScore;
-  const confidence = totalScore > 0 ? Math.max(sendScore, draftScore) / (totalScore + 2) : 0.1;
-  
-  return {
-    shouldSend,
-    confidence: Math.min(confidence, 0.95), // Cap at 95%
-    reasoningText: reasoning.trim() || 'No clear indicators found'
-  };
-}
-
 function analyzeCalendarIntent(userMessage: string): { 
   operation: 'find' | 'create' | 'update' | 'delete'; 
   timeScope: 'today' | 'tomorrow' | 'week' | 'month' | 'next' | 'specific';
@@ -1102,19 +1055,9 @@ export async function POST(req: NextRequest) {
     
     console.log(`API APPROVE: Tool ${toolCallId}, action=${action}`);
     
-    // Get access to the global toolApprovalState from the chat route
-    const global = globalThis as any;
-    
-    // Make sure global state exists
-    if (!global.toolApprovalState) {
-      global.toolApprovalState = {};
-      console.log('API APPROVE: Created empty toolApprovalState');
-    } else {
-      console.log('API APPROVE: Using existing toolApprovalState with keys:', Object.keys(global.toolApprovalState));
-    }
-    
-    const toolApprovalState = global.toolApprovalState;
-    const persistentMcpClient = global.persistentMcpClient;
+    const toolApprovalState = ensureToolApprovalState();
+    console.log('API APPROVE: Using toolApprovalState keys:', Object.keys(toolApprovalState));
+    const persistentMcpClient = (globalThis as any).persistentMcpClient;
     
     // Log MCP client status
     console.log('API APPROVE: MCP client availability:', !!persistentMcpClient);
@@ -1151,10 +1094,10 @@ export async function POST(req: NextRequest) {
           let paramsWithImages = { ...toolCall.params };
           
           console.log(`🔍 [CONTEXT DEBUG] Searching for image context with sessionId: ${effectiveSessionId}`);
-          console.log(`🔍 [CONTEXT DEBUG] Available global context keys:`, (globalThis as any).mcpImageContext ? Object.keys((globalThis as any).mcpImageContext) : 'none');
+          console.log(`🔍 [CONTEXT DEBUG] Available global context keys:`, readMcpImageContext() ? Object.keys(readMcpImageContext()) : 'none');
           
-          if ((globalThis as any).mcpImageContext && (globalThis as any).mcpImageContext[effectiveSessionId]) {
-            const imageContext = (globalThis as any).mcpImageContext[effectiveSessionId];
+          if (readMcpImageContext() && readMcpImageContext()[effectiveSessionId]) {
+            const imageContext = readMcpImageContext()[effectiveSessionId];
             console.log(`🔍 [CONTEXT DEBUG] Found image context for session ${effectiveSessionId}:`, {
               hasAttachedImages: !!imageContext.attachedImages,
               attachedImagesCount: imageContext.attachedImages?.length || 0,
@@ -1217,10 +1160,10 @@ export async function POST(req: NextRequest) {
         let globalParamsWithImages = { ...globalParams };
         
         console.log(`🔍 [CONTEXT DEBUG] Update: Searching for image context with sessionId: ${effectiveSessionId}`);
-        console.log(`🔍 [CONTEXT DEBUG] Update: Available global context keys:`, (globalThis as any).mcpImageContext ? Object.keys((globalThis as any).mcpImageContext) : 'none');
+        console.log(`🔍 [CONTEXT DEBUG] Update: Available global context keys:`, readMcpImageContext() ? Object.keys(readMcpImageContext()) : 'none');
         
-        if ((globalThis as any).mcpImageContext && (globalThis as any).mcpImageContext[effectiveSessionId]) {
-          const imageContext = (globalThis as any).mcpImageContext[effectiveSessionId];
+        if (readMcpImageContext() && readMcpImageContext()[effectiveSessionId]) {
+          const imageContext = readMcpImageContext()[effectiveSessionId];
           console.log(`🔍 [CONTEXT DEBUG] Update: Found image context for session ${effectiveSessionId}:`, {
             hasAttachedImages: !!imageContext.attachedImages,
             attachedImagesCount: imageContext.attachedImages?.length || 0,
@@ -1322,10 +1265,10 @@ export async function POST(req: NextRequest) {
         let storedParamsWithImages = { ...storedToolCall.params };
         
         console.log(`🔍 [CONTEXT DEBUG] Execute: Searching for image context with sessionId: ${effectiveSessionId}`);
-        console.log(`🔍 [CONTEXT DEBUG] Execute: Available global context keys:`, (globalThis as any).mcpImageContext ? Object.keys((globalThis as any).mcpImageContext) : 'none');
+        console.log(`🔍 [CONTEXT DEBUG] Execute: Available global context keys:`, readMcpImageContext() ? Object.keys(readMcpImageContext()) : 'none');
         
-        if ((globalThis as any).mcpImageContext && (globalThis as any).mcpImageContext[effectiveSessionId]) {
-          const imageContext = (globalThis as any).mcpImageContext[effectiveSessionId];
+        if (readMcpImageContext() && readMcpImageContext()[effectiveSessionId]) {
+          const imageContext = readMcpImageContext()[effectiveSessionId];
           console.log(`🔍 [CONTEXT DEBUG] Execute: Found image context for session ${effectiveSessionId}:`, {
             hasAttachedImages: !!imageContext.attachedImages,
             attachedImagesCount: imageContext.attachedImages?.length || 0,
@@ -2205,8 +2148,8 @@ export async function POST(req: NextRequest) {
                   console.log('🔍 [GMAIL DEBUG] Original params:', JSON.stringify(optimizedParams, null, 2));
                   console.log('🔍 [GMAIL DEBUG] Session ID from body:', sessionId);
                   console.log('🔍 [GMAIL DEBUG] Session ID from metadata:', metadataSessionId);
-                  console.log('🔍 [GMAIL DEBUG] Available image contexts:', Object.keys((globalThis as any).mcpImageContext || {}));
-                  console.log('🔍 [GMAIL DEBUG] Global image context data:', JSON.stringify((globalThis as any).mcpImageContext, null, 2));
+                  console.log('🔍 [GMAIL DEBUG] Available image contexts:', Object.keys(readMcpImageContext() || {}));
+                  console.log('🔍 [GMAIL DEBUG] Global image context data:', JSON.stringify(readMcpImageContext(), null, 2));
                   console.log('🔍 [GMAIL DEBUG] Body object keys:', Object.keys(body || {}));
                   console.log('🔍 [GMAIL DEBUG] ToolCall meta:', JSON.stringify(toolCall.meta, null, 2));
                   
@@ -2241,10 +2184,10 @@ export async function POST(req: NextRequest) {
                   }
                   
                   // Method 2: Fallback to global context (legacy support)
-                  if (!imageUrl && (globalThis as any).mcpImageContext) {
+                  if (!imageUrl && readMcpImageContext()) {
                     console.log('🔍 [GMAIL DEBUG] Checking global context fallback...');
-                    const imageContext = (globalThis as any).mcpImageContext[sessionId] || 
-                                       (globalThis as any).mcpImageContext[metadataSessionId];
+                    const imageContext = readMcpImageContext()[sessionId] || 
+                                       readMcpImageContext()[metadataSessionId];
                     
                     console.log('🔍 [GMAIL DEBUG] Global context for session:', imageContext);
                     
@@ -2266,10 +2209,10 @@ export async function POST(req: NextRequest) {
                   }
                   
                   // Method 3: Emergency fallback - check all available image contexts
-                  if (!imageUrl && (globalThis as any).mcpImageContext) {
+                  if (!imageUrl && readMcpImageContext()) {
                     console.log('🔍 [GMAIL DEBUG] ⚠️ Emergency fallback: No session-specific image found, checking all available contexts');
                     
-                    const allContexts = Object.values((globalThis as any).mcpImageContext);
+                    const allContexts = Object.values(readMcpImageContext());
                     console.log('🔍 [GMAIL DEBUG] Emergency fallback: Found', allContexts.length, 'contexts to check');
                     
                     for (const ctx of allContexts) {
@@ -2501,8 +2444,8 @@ export async function POST(req: NextRequest) {
             console.log(`🔍 [${toolType} DEBUG] Original params:`, JSON.stringify(paramsToUse, null, 2));
             console.log(`🔍 [${toolType} DEBUG] Session ID from body:`, sessionId);
             console.log(`🔍 [${toolType} DEBUG] Session ID from metadata:`, metadataSessionId);
-            console.log(`🔍 [${toolType} DEBUG] Available image contexts:`, Object.keys((globalThis as any).mcpImageContext || {}));
-            console.log(`🔍 [${toolType} DEBUG] Global image context data:`, JSON.stringify((globalThis as any).mcpImageContext, null, 2));
+            console.log(`🔍 [${toolType} DEBUG] Available image contexts:`, Object.keys(readMcpImageContext() || {}));
+            console.log(`🔍 [${toolType} DEBUG] Global image context data:`, JSON.stringify(readMcpImageContext(), null, 2));
             
             let imageUrl = null;
             
@@ -2534,9 +2477,9 @@ export async function POST(req: NextRequest) {
             }
             
             // Method 2: Fallback to global context (legacy support)
-            if (!imageUrl && (globalThis as any).mcpImageContext) {
-              const imageContext = (globalThis as any).mcpImageContext[sessionId] || 
-                                 (globalThis as any).mcpImageContext[metadataSessionId];
+            if (!imageUrl && readMcpImageContext()) {
+              const imageContext = readMcpImageContext()[sessionId] || 
+                                 readMcpImageContext()[metadataSessionId];
               
               if (imageContext && (imageContext as any).imageUrl) {
                 console.log(`🔍 [${toolType} DEBUG] ✅ Found image URL from global context:`, (imageContext as any).imageUrl);
@@ -2552,7 +2495,7 @@ export async function POST(req: NextRequest) {
               // If still no image URL, try to find by checking if any stored URL is valid
               if (!imageUrl) {
                 console.log('🖼️ [IMAGE INJECTION] No direct session match, checking for any valid image URLs...');
-                const allContexts = Object.values((globalThis as any).mcpImageContext);
+                const allContexts = Object.values(readMcpImageContext());
                 for (const ctx of allContexts) {
                   if (ctx && typeof ctx === 'object' && (ctx as any).imageUrl) {
                     console.log('🖼️ [IMAGE INJECTION] Found candidate image URL:', (ctx as any).imageUrl);
@@ -2589,10 +2532,10 @@ export async function POST(req: NextRequest) {
               console.log(`🔍 [${toolType} DEBUG] ✅ Updated params with image URL:`, JSON.stringify(paramsToUse, null, 2));
               
               // Clean up the stored image context after use
-              if ((globalThis as any).mcpImageContext) {
-                delete (globalThis as any).mcpImageContext[sessionId];
-                delete (globalThis as any).mcpImageContext[metadataSessionId];
-                delete (globalThis as any).mcpImageContext[imageUrl];
+              if (readMcpImageContext()) {
+                delete readMcpImageContext()[sessionId];
+                delete readMcpImageContext()[metadataSessionId];
+                delete readMcpImageContext()[imageUrl];
               }
               console.log(`🔍 [${toolType} DEBUG] ✅ Cleaned up stored image context`);
             } else {
@@ -2712,7 +2655,7 @@ export async function POST(req: NextRequest) {
             
             // Try to get image URL from global context
             const sessionId = body.sessionId || toolCall.meta?.sessionId;
-            const globalImageContext = (globalThis as any).mcpImageContext;
+            const globalImageContext = readMcpImageContext();
             
             if (globalImageContext && sessionId) {
               const imageContext = globalImageContext[sessionId];
@@ -3088,9 +3031,9 @@ export async function POST(req: NextRequest) {
         toolApprovalState[toolCallId].result = result;
         console.log(`API APPROVE: Tool execution successful, result:`, result);
 
-        if (global.toolApprovalState) {
-          global.toolApprovalState[toolCallId].executed = true;
-          global.toolApprovalState[toolCallId].result = result;
+        if (toolApprovalState[toolCallId]) {
+          toolApprovalState[toolCallId].executed = true;
+          toolApprovalState[toolCallId].result = result;
         }
         
         // GMAIL_FIX_PLAN.md: Phase 2, Step 1: Verify cache population during find_email

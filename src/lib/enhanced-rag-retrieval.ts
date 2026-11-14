@@ -518,3 +518,15 @@ async function postProcessResults(
 
   return results;
 }
+
+/** Joined chunk text for callers that only need a context string, such as video prompts. */
+export async function retrieveContextText(prompt: string): Promise<string> {
+  try {
+    const result = await enhancedRetrieveChunks(prompt);
+    if (!result.chunks?.length) return '';
+    return result.chunks.map((chunk) => chunk.content).join(' ');
+  } catch (error) {
+    console.error('Error getting document context:', error);
+    return '';
+  }
+}
