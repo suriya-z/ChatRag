@@ -170,9 +170,10 @@ export async function GET(request: NextRequest) {
       )
     });
   } catch (error) {
-    // Graceful fallback when database is offline/unreachable
+    console.error("Error listing documents:", error);
     return NextResponse.json({
-      documents: []
-    });
+      error: "Failed to list documents",
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 });
   }
 }

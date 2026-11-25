@@ -44,6 +44,8 @@ NEXT_PUBLIC_3D_GENERATION_ENABLED=true
 NEXT_PUBLIC_MCP_TOOLS_LIST_ENABLED=true
 NEXT_PUBLIC_MCP_SYSTEM_ENABLED=true
 NEXT_PUBLIC_SHOW_SOURCES_ENABLED=true
+# Show the "Enter Demo Workspace" login bypass outside development
+NEXT_PUBLIC_DEMO_MODE=false
 
 # -----------------------------
 # WHATSAPP INTEGRATION
@@ -58,6 +60,8 @@ KOYEB_BAILEYS_URL=
 KOYEB_API_KEY=
 WHATSAPP_WEBHOOK_URL=
 WHATSAPP_WEBHOOK_SECRET=
+# Shared key for server-to-server calls (voice agent, WhatsApp -> /api/chat when auth is enabled)
+CHATRAG_INTERNAL_API_KEY=
 WHATSAPP_ENABLE_MCP=false
 WHATSAPP_ENABLE_WEB_SEARCH=false
 WHATSAPP_DEFAULT_MODEL=openai/gpt-4o-mini

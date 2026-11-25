@@ -5,12 +5,14 @@ import { motion } from 'framer-motion';
 
 interface PulsarWaveHeroProps {
   title?: string;
+  titleStyle?: React.CSSProperties;
   subtitle?: string;
   className?: string;
 }
 
 export function PulsarWaveHero({
   title = "Where should we begin?",
+  titleStyle,
   subtitle = "Autonomous research, document intelligence, and real-time synthesis.",
   className = ""
 }: PulsarWaveHeroProps) {
@@ -154,7 +156,7 @@ export function PulsarWaveHero({
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="text-center mb-6 px-4"
       >
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-[-0.035em] text-white mb-3 font-sans antialiased text-balance">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-[-0.035em] text-white mb-3 font-sans antialiased text-balance" style={titleStyle}>
           {title}
         </h1>
         <p className="text-sm sm:text-base text-zinc-400 max-w-lg text-balance mx-auto leading-relaxed font-normal">

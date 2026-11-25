@@ -371,7 +371,8 @@ export class WhatsAppWebhookHandler {
       const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(env.CHATRAG_INTERNAL_API_KEY ? { 'x-api-key': env.CHATRAG_INTERNAL_API_KEY } : {})
         },
         body: JSON.stringify({
           messages: messagesToSend, // Always send single message for fresh context

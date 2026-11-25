@@ -24,6 +24,7 @@ import { ReadableStream } from 'stream/web';
 // import { enhanceModelWithMcpTools } from '@/lib/mcp/ai-sdk-integration';
 import { NextRequest, NextResponse } from 'next/server';
 import { withValidation } from '@/lib/api-middleware';
+import { isChatRequestAuthorized } from '@/lib/chat-auth';
 import { openai, createOpenAI } from '@ai-sdk/openai';
 // Import performance optimizations
 import { classifyQuery, shouldSkipMcp } from '@/lib/query-classifier';
@@ -1158,6 +1159,22 @@ function cleanMalformedDocumentCalls(text: string): string {
 
 export async function POST(req: Request) {
   console.log('API ROUTE: Starting POST request handler');
+
+  const authEnabled = process.env.NEXT_PUBLIC_AUTH_ENABLED === 'true';
+  if (authEnabled) {
+    const { createClient: createAuthClient } = await import('@/lib/supabase/server');
+    const authClient = await createAuthClient();
+    const { data: authData } = await authClient.auth.getUser();
+    const authorized = isChatRequestAuthorized({
+      authEnabled,
+      userId: authData?.user?.id ?? null,
+      apiKey: req.headers.get('x-api-key'),
+      internalApiKey: env.CHATRAG_INTERNAL_API_KEY,
+    });
+    if (!authorized) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+  }
 
   try {
     const { messages: rawMessages, data, imageStorage }: {

@@ -177,12 +177,8 @@ export async function GET(request: NextRequest) {
 
     return Response.json(response);
   } catch (error) {
-    // Return default offline connector configuration gracefully
-    return Response.json({
-      feature_enabled: false,
-      show_on_dashboard: false,
-      providers: []
-    });
+    console.error('Error fetching connector config:', error);
+    return Response.json({ error: 'Failed to fetch connector configuration' }, { status: 500 });
   }
 }
 

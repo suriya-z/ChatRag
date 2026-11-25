@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import type { AuthUser } from '@/lib/supabase-auth';
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { isDemoLoginAllowed, DEMO_USER_STORAGE_KEY } from '@/lib/demo-mode';
 
 type AuthContextType = {
   user: AuthUser | null;
@@ -29,8 +30,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     const checkSession = async () => {
       // Check for demo / mock session in localStorage first
-      if (typeof window !== 'undefined') {
-        const storedMock = localStorage.getItem('chatrag_mock_user');
+      if (typeof window !== 'undefined' && isDemoLoginAllowed()) {
+        const storedMock = localStorage.getItem(DEMO_USER_STORAGE_KEY);
         if (storedMock) {
           try {
             const parsed = JSON.parse(storedMock);
@@ -42,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setLoading(false);
             return;
           } catch {
-            localStorage.removeItem('chatrag_mock_user');
+            localStorage.removeItem(DEMO_USER_STORAGE_KEY);
           }
         }
       }
@@ -133,7 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       // Proceed with normal user logout
-      if (typeof window !== 'undefined') { localStorage.removeItem('chatrag_mock_user'); }
+      if (typeof window !== 'undefined') { localStorage.removeItem(DEMO_USER_STORAGE_KEY); }
       await supabase.auth.signOut();
       setUser(null);
       // Debug: Signed out successfully

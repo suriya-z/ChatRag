@@ -1,6 +1,7 @@
 'use client';
 
 import { PulsarWaveHero } from '@/components/ui/pulsar-wave-hero';
+import { resolveWelcomeText, getWelcomeTextGradientStyle } from '@/lib/welcome-text';
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
@@ -4633,7 +4634,20 @@ export default function Home() {
                 <div className="flex-1 flex flex-col items-center justify-center -mt-6 sm:-mt-8 mobile-welcome-container">
                   <div className="w-full max-w-[52rem] flex flex-col items-center px-4 lg:px-0">
                     {/* Pulsar Kinetic Hero Core */}
-                    <PulsarWaveHero />
+                    <PulsarWaveHero
+                      title={resolveWelcomeText({
+                        mode: welcomeTextMode,
+                        text: welcomeText,
+                        translations: welcomeTextTranslations,
+                        messages: welcomeMessages,
+                        messagesTranslations: welcomeMessagesTranslations,
+                        selectedMessage: selectedWelcomeMessage,
+                        language: language || 'en',
+                        displayName: getUserDisplayName(),
+                        mainPrompt: t('mainPrompt'),
+                      })}
+                      titleStyle={getWelcomeTextGradientStyle(welcomeTextGradient)}
+                    />
 
                     {/* Chat input - centered like ChatGPT, hidden on mobile in initial view */}
                     <div className="w-full max-w-[52rem] mx-auto px-4 hidden sm:block">

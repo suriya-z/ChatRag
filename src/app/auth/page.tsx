@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { signInWithEmail, signUpWithEmail, signInWithSocial } from '@/lib/supabase-auth';
 import { Github, Loader2, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { isDemoLoginAllowed, DEMO_USER_STORAGE_KEY } from '@/lib/demo-mode';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -268,13 +269,13 @@ export default function AuthPage() {
             </div>
 
             {/* Instant Demo Access Button */}
-            <div className="pt-1">
+            {isDemoLoginAllowed() && <div className="pt-1">
               <motion.button
                 type="button"
                 whileTap={{ scale: 0.985 }}
                 onClick={() => {
                   if (typeof window !== 'undefined') {
-                    localStorage.setItem('chatrag_mock_user', JSON.stringify({
+                    localStorage.setItem(DEMO_USER_STORAGE_KEY, JSON.stringify({
                       id: 'demo-lead-operator',
                       email: 'lead.operator@pulsar.internal',
                       user_metadata: { name: 'Lead Operator' }
@@ -288,7 +289,7 @@ export default function AuthPage() {
                 <span>Enter Demo Workspace</span>
                 <span className="text-[10px] text-zinc-500 font-mono tracking-wider">• INSTANT PREVIEW</span>
               </motion.button>
-            </div>
+            </div>}
 
             {/* Toggle Login / Register */}
             <div className="text-center pt-5 border-t border-white/[0.06]">
